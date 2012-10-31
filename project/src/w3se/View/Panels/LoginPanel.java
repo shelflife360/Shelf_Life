@@ -18,12 +18,11 @@ import java.util.Observer;
 @SuppressWarnings("serial")
 public class LoginPanel extends JPanel implements Observer
 {
-	private JTextField m_userNameField;
-	private JPasswordField m_passwordField;
+	private JTextField userNameField;
+	private JPasswordField passwordField;
 	private Controller m_controller = null;
 	private MainView m_mainView = null;
 	private JButton m_btnLogin = null;
-	
 	/**
 	 * Create the panel.
 	 */
@@ -38,13 +37,13 @@ public class LoginPanel extends JPanel implements Observer
 		
 		JLabel lblUserName = new JLabel("User Name :");
 		
-		m_userNameField = new JTextField();
-		m_userNameField.setColumns(20);
+		userNameField = new JTextField();
+		userNameField.setColumns(20);
 		
 		JLabel lblPassword = new JLabel("Password : ");
 		
-		m_passwordField = new JPasswordField();
-		m_passwordField.setColumns(20);
+		passwordField = new JPasswordField();
+		passwordField.setColumns(20);
 		
 		JButton btnLogin = new JButton("Login");
 		GroupLayout groupLayout = new GroupLayout(this);
@@ -59,8 +58,8 @@ public class LoginPanel extends JPanel implements Observer
 								.addComponent(lblPassword, Alignment.TRAILING))
 							.addGap(49)
 							.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
-								.addComponent(m_passwordField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-								.addComponent(m_userNameField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+								.addComponent(passwordField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+								.addComponent(userNameField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
 						.addGroup(groupLayout.createSequentialGroup()
 							.addGap(329)
 							.addComponent(btnLogin)))
@@ -72,43 +71,40 @@ public class LoginPanel extends JPanel implements Observer
 					.addGap(52)
 					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lblUserName)
-						.addComponent(m_userNameField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+						.addComponent(userNameField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
 					.addGap(26)
 					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-						.addComponent(m_passwordField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(passwordField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 						.addComponent(lblPassword))
 					.addGap(74)
 					.addComponent(btnLogin)
 					.addContainerGap(233, Short.MAX_VALUE))
 		);
 		
-		
 		btnLogin.addActionListener(m_controller.getListener("login"));
-		m_userNameField.addActionListener(m_controller.getListener("login"));
-		m_passwordField.addActionListener(m_controller.getListener("login"));
-		
+		btnLogin.setActionCommand(userNameField.getText());
 		setLayout(groupLayout);
 		m_controller.registerView(this);
 	}
 
 	public void setUserName(String name)
 	{
-		m_userNameField.setText(name);
+		userNameField.setText(name);
 	}
 	
 	public void setPassword(String pass)
 	{
-		m_passwordField.setText(pass);
+		passwordField.setText(pass);
 	}
 	
 	public String getUsername()
 	{
-		return m_userNameField.getText();
+		return userNameField.getText();
 	}
 	
 	public String getPassword()
 	{
-		return m_passwordField.getText();
+		return passwordField.getText();
 	}
 	
 	@Override

@@ -2,34 +2,26 @@ package w3se.Model;
 
 import java.util.LinkedList;
 import java.util.Observable;
-import java.util.PriorityQueue;
 import java.util.Queue;
 
 import w3se.Base.User;
 
 public class TaskManager extends Observable
 {
-	private Queue<Task> m_taskQueue = new PriorityQueue<Task>();
+	private Queue<Task> m_taskQueue = new LinkedList<Task>();
 	
-	/**
-	 * method to add a task to the manager
-	 * @param task
-	 */
 	public void addTask(Task task)
 	{
-		m_taskQueue.offer(task);
+		m_taskQueue.add(task);
 		setChanged();
 		notifyObservers("task_added");
 	}
 	
-	/**
-	 * method to run the next task
-	 */
 	public void runTask()
 	{
 		User currentUser = IMS.getInstance().getUser();
 		int privilege = currentUser.getPrivilege();
-		Task task = m_taskQueue.poll();
+		Task task = m_taskQueue.remove();
 		
 		if (task.getPrivilege() <= privilege)
 		{
@@ -39,10 +31,6 @@ public class TaskManager extends Observable
 		
 	}
 	
-	/**
-	 * method to test if the manager has any tasks
-	 * @return
-	 */
 	public boolean hasTask()
 	{
 		if (m_taskQueue.peek() != null)

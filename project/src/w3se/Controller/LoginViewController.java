@@ -2,6 +2,7 @@ package w3se.Controller;
 
 import java.awt.event.ActionEvent;
 
+import w3se.Base.ListenerAdaptor;
 import w3se.Base.User;
 import w3se.Model.IMS;
 import w3se.Model.Task;
@@ -27,7 +28,7 @@ public class LoginViewController extends AbstractController
 					public void actionPerformed(ActionEvent e)
 					{
 						
-						m_model.getTaskManager().addTask(new Task(User.GENERAL, new 
+						m_model.getScheduler().addTask(new Task(User.GENERAL, new 
 								Runnable()
 								{
 									public void run()
@@ -51,7 +52,7 @@ public class LoginViewController extends AbstractController
 				{
 					public void actionPerformed(ActionEvent e)
 					{
-						m_model.getTaskManager().addTask(new Task(User.GENERAL, new 
+						m_model.getScheduler().addTask(new Task(User.WORKER, new 
 								Runnable()
 								{
 									public void run()

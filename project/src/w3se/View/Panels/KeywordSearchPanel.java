@@ -1,26 +1,27 @@
 package w3se.View.Panels;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.util.Observable;
-import java.util.Observer;
 
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 
-import w3se.Controller.Controller;
 import w3se.View.Subpanels.BookInfoPanel;
 import w3se.View.Subpanels.SearchPanel;
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 
-public class BrowseSearchPanel extends JPanel implements Observer
+public class KeywordSearchPanel extends JPanel
 {
 	public static final int WIDTH = 1020;
 	public static final int HEIGHT = 500;
+	public static final String SEARCH_FIELD = "search_field";
+	public static final String RESULT_LIST = "result_list";
+	public static final String PREV_VIEWED_LIST = "prev_viewed_list";
+	public static final String GENRES = "genres";
+	public static final String DISPLAY_ORDER = "display_order";
 	/**
 	 * Create the panel.
 	 */
-	public BrowseSearchPanel()
+	public KeywordSearchPanel(boolean editable)
 	{
 		setPreferredSize(new Dimension(WIDTH, HEIGHT));
 		setLayout(new BorderLayout());
@@ -28,16 +29,13 @@ public class BrowseSearchPanel extends JPanel implements Observer
 		splitPane.setEnabled(true);
 		add(splitPane, BorderLayout.CENTER);
 		
-		SearchPanel mainPanel = new SearchPanel(SearchPanel.BROWSE_HEADER);
-		BookInfoPanel infoPanel = new BookInfoPanel(false);
+		SearchPanel mainPanel = new SearchPanel(SearchPanel.KEYWORD_HEADER);
+		BookInfoPanel infoPanel = new BookInfoPanel(editable);
 		
 		splitPane.setLeftComponent(mainPanel);
 		splitPane.setRightComponent(infoPanel);
+
 	}
-	@Override
-	public void update(Observable o, Object arg)
-	{
-		// TODO Auto-generated method stub
-		
-	}
+	
+	
 }
