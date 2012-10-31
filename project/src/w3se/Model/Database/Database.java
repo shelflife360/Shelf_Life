@@ -3,15 +3,17 @@ package w3se.Model.Database;
 import java.sql.SQLException;
 
 
-public interface Database<T>
+
+public interface Database<T, R>
 {
-	public void retrieve(String searchTerm) throws Exception;
+	public void retrieve(String str) throws Exception;
 	
-	public boolean add(T obj) throws SQLException;
+	public void add(T obj) throws SQLException;
 	
-	public T getResult() throws Exception;
+	public R getResult() throws Exception;
 
 	public void shutdown() throws SQLException;
 	
 	public void close() throws SQLException;
+
 }

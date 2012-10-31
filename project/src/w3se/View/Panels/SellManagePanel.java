@@ -16,6 +16,7 @@ import java.awt.Color;
 import javax.swing.UIManager;
 import javax.swing.JTextPane;
 
+import w3se.Controller.Controller;
 import w3se.View.Subpanels.ReceiptInfoPanel;
 import w3se.View.Subpanels.SearchPanel;
 
@@ -28,7 +29,7 @@ public class SellManagePanel extends JPanel
 	/**
 	 * Create the panel.
 	 */
-	public SellManagePanel()
+	public SellManagePanel(Controller controller)
 	{
 		this.setBounds(0, 0, 940, 500);
 		setLayout(new BorderLayout());
@@ -36,7 +37,7 @@ public class SellManagePanel extends JPanel
 		
 		add(splitPane, BorderLayout.CENTER);
 		
-		SearchPanel mainPanel = new SearchPanel(SearchPanel.KEYWORD_HEADER);
+		SearchPanel mainPanel = new SearchPanel(SearchPanel.KEYWORD_HEADER, controller);
 		ReceiptInfoPanel infoPanel = new ReceiptInfoPanel();
 		
 		splitPane.setLeftComponent(mainPanel);

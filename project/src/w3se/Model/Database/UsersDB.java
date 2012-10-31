@@ -6,8 +6,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import w3se.Base.User;
+import w3se.Model.DelimitedString;
 
-public class UsersDB implements Database<User>
+public class UsersDB implements Database<User, User>
 {
 	private Statement m_statement = null;
 	private ResultSet m_resultSet = null;
@@ -39,21 +40,22 @@ public class UsersDB implements Database<User>
 		return user;	
 	}
 	
-	public boolean add(User user) throws SQLException
+	public void add(User user) throws SQLException
 	{
 		m_statement = m_connection.createStatement();
-		return  m_statement.execute("INSERT INTO Users VALUES ("+user.getUID()+", "+user.getPrivilege()+", '"+user.getUsername()+"','"+user.getPassword()+"'); COMMIT");	
+		m_statement.execute("INSERT INTO Users VALUES ("+user.getUID()+", "+user.getPrivilege()+", '"+user.getUsername()+"','"+user.getPassword()+"')");	
 	}
 	
 	public void shutdown() throws SQLException
 	{
-		m_statement = m_connection.createStatement();
-		m_statement.execute("SHUTDOWN");
 	}
 	
 	public void close() throws SQLException
 	{
-		m_statement.close();
-		m_resultSet.close();
+		if (!m_connection.isClosed())
+		{
+			m_statement.close();
+			m_resultSet.close();
+		}
 	}
 }

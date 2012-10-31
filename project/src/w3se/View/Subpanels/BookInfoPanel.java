@@ -2,18 +2,21 @@ package w3se.View.Subpanels;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.List;
 
 import javax.swing.GroupLayout;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
 
+import w3se.Base.BookGenres;
 import w3se.Controller.Controller;
+import javax.swing.JButton;
 
 public class BookInfoPanel extends JPanel
 {
@@ -26,13 +29,15 @@ public class BookInfoPanel extends JPanel
 	private JTextField m_authorField;
 	private JTextField m_publisherField;
 	private JTextPane m_descTextPane;
-	private JList genreList;
+	private JTextField m_genreList;
 	
 	/**
 	 * Create the panel.
 	 */
-	public BookInfoPanel(boolean editable)
+	public BookInfoPanel(boolean editable, Controller controller)
 	{
+		m_controller = controller;
+		
 		setPreferredSize(new Dimension(WIDTH, HEIGHT));
 		
 		JLabel lblBookInformation = new JLabel("Book Information");
@@ -44,7 +49,7 @@ public class BookInfoPanel extends JPanel
 		
 		JLabel lblISBN = new JLabel("ISBN:");
 		
-		JLabel lblPrice = new JLabel("Price:");
+		JLabel lblPrice = new JLabel("Price: $");
 		
 		JLabel lblAuthor = new JLabel("Author:");
 		
@@ -76,7 +81,21 @@ public class BookInfoPanel extends JPanel
 		
 		m_descTextPane = new JTextPane();
 		m_descTextPane.setEditable(editable);
-		genreList = new JList();
+		
+		m_genreList = new JTextField();
+		m_genreList.setColumns(13);
+		m_genreList.setEditable(editable);
+		
+		JScrollPane genrePane = new JScrollPane();
+		
+		genrePane.add(m_genreList);
+		
+		JButton btnClear = new JButton("Clear");
+		
+		JButton btnAccept = new JButton("Accept");
+		
+		btnClear.addActionListener(m_controller.getListener("info_clear"));
+		btnAccept.addActionListener(m_controller.getListener("info_accept"));
 		
 		GroupLayout gl_infoPanel = new GroupLayout(this);
 		gl_infoPanel.setHorizontalGroup(
@@ -84,23 +103,20 @@ public class BookInfoPanel extends JPanel
 				.addGroup(gl_infoPanel.createSequentialGroup()
 					.addGap(17)
 					.addGroup(gl_infoPanel.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_infoPanel.createSequentialGroup()
-							.addComponent(lblDesc)
-							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(m_descTextPane, GroupLayout.DEFAULT_SIZE, 448, Short.MAX_VALUE))
 						.addComponent(lblAuthor)
 						.addGroup(gl_infoPanel.createSequentialGroup()
+							.addPreferredGap(ComponentPlacement.RELATED)
 							.addComponent(lblPrice)
 							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(m_priceField, GroupLayout.DEFAULT_SIZE, 491, Short.MAX_VALUE))
+							.addComponent(m_priceField, GroupLayout.DEFAULT_SIZE, 387, Short.MAX_VALUE))
 						.addGroup(gl_infoPanel.createSequentialGroup()
 							.addComponent(lblISBN)
 							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(m_ISBNField, GroupLayout.DEFAULT_SIZE, 493, Short.MAX_VALUE))
+							.addComponent(m_ISBNField, GroupLayout.DEFAULT_SIZE, 389, Short.MAX_VALUE))
 						.addGroup(gl_infoPanel.createSequentialGroup()
 							.addComponent(lblTitle)
 							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(m_titleField, GroupLayout.DEFAULT_SIZE, 493, Short.MAX_VALUE))
+							.addComponent(m_titleField, GroupLayout.DEFAULT_SIZE, 389, Short.MAX_VALUE))
 						.addGroup(gl_infoPanel.createSequentialGroup()
 							.addGroup(gl_infoPanel.createParallelGroup(Alignment.LEADING)
 								.addComponent(lblPublisher)
@@ -109,19 +125,28 @@ public class BookInfoPanel extends JPanel
 							.addGroup(gl_infoPanel.createParallelGroup(Alignment.LEADING)
 								.addGroup(gl_infoPanel.createSequentialGroup()
 									.addGap(6)
-									.addComponent(genreList, GroupLayout.DEFAULT_SIZE, 457, Short.MAX_VALUE))
+									.addComponent(m_genreList, GroupLayout.DEFAULT_SIZE, 353, Short.MAX_VALUE))
 								.addGroup(gl_infoPanel.createSequentialGroup()
 									.addGap(6)
-									.addComponent(m_publisherField, GroupLayout.DEFAULT_SIZE, 457, Short.MAX_VALUE))
-								.addComponent(m_authorField, GroupLayout.DEFAULT_SIZE, 463, Short.MAX_VALUE))))
+									.addComponent(m_publisherField, GroupLayout.DEFAULT_SIZE, 353, Short.MAX_VALUE))
+								.addComponent(m_authorField, GroupLayout.DEFAULT_SIZE, 359, Short.MAX_VALUE)))
+						.addGroup(gl_infoPanel.createSequentialGroup()
+							.addComponent(lblDesc)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addGroup(gl_infoPanel.createParallelGroup(Alignment.LEADING)
+								.addGroup(gl_infoPanel.createSequentialGroup()
+									.addComponent(btnClear)
+									.addGap(36)
+									.addComponent(btnAccept))
+								.addComponent(m_descTextPane, GroupLayout.DEFAULT_SIZE, 344, Short.MAX_VALUE))))
 					.addContainerGap())
 				.addGroup(gl_infoPanel.createSequentialGroup()
-					.addContainerGap(290, Short.MAX_VALUE)
+					.addContainerGap(186, Short.MAX_VALUE)
 					.addComponent(lblBookInformation)
 					.addGap(155))
 				.addGroup(gl_infoPanel.createSequentialGroup()
 					.addContainerGap()
-					.addComponent(separator, GroupLayout.DEFAULT_SIZE, 542, Short.MAX_VALUE)
+					.addComponent(separator, GroupLayout.DEFAULT_SIZE, 438, Short.MAX_VALUE)
 					.addContainerGap())
 		);
 		gl_infoPanel.setVerticalGroup(
@@ -140,9 +165,9 @@ public class BookInfoPanel extends JPanel
 						.addComponent(lblISBN)
 						.addComponent(m_ISBNField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
 					.addPreferredGap(ComponentPlacement.RELATED)
-					.addGroup(gl_infoPanel.createParallelGroup(Alignment.TRAILING)
-						.addComponent(lblPrice)
-						.addComponent(m_priceField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+					.addGroup(gl_infoPanel.createParallelGroup(Alignment.BASELINE)
+						.addComponent(m_priceField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lblPrice))
 					.addPreferredGap(ComponentPlacement.UNRELATED)
 					.addGroup(gl_infoPanel.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lblAuthor)
@@ -154,14 +179,89 @@ public class BookInfoPanel extends JPanel
 					.addPreferredGap(ComponentPlacement.UNRELATED)
 					.addGroup(gl_infoPanel.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lblCategories)
-						.addComponent(genreList, GroupLayout.PREFERRED_SIZE, 21, GroupLayout.PREFERRED_SIZE))
+						.addComponent(m_genreList, GroupLayout.PREFERRED_SIZE, 21, GroupLayout.PREFERRED_SIZE))
 					.addPreferredGap(ComponentPlacement.UNRELATED)
 					.addGroup(gl_infoPanel.createParallelGroup(Alignment.LEADING)
 						.addComponent(lblDesc)
-						.addComponent(m_descTextPane, GroupLayout.DEFAULT_SIZE, 156, Short.MAX_VALUE))
-					.addContainerGap())
+						.addComponent(m_descTextPane, GroupLayout.PREFERRED_SIZE, 114, GroupLayout.PREFERRED_SIZE))
+					.addPreferredGap(ComponentPlacement.RELATED, 33, Short.MAX_VALUE)
+					.addGroup(gl_infoPanel.createParallelGroup(Alignment.BASELINE)
+						.addComponent(btnClear)
+						.addComponent(btnAccept))
+					.addGap(16))
 		);
 		setLayout(gl_infoPanel);
+		
+		
 	}
 
+	public String getTitle()
+	{
+		return m_titleField.getText();
+	}
+
+	public void setTitle(String str)
+	{
+		m_titleField.setText(str);
+	}
+
+	public String getISBN()
+	{
+		return m_ISBNField.getText();
+	}
+
+	public void setISBN(String str)
+	{
+		m_ISBNField.setText(str);
+	}
+
+	public String getPrice()
+	{
+		return m_priceField.getText();
+	}
+
+	public void setPrice(String str)
+	{
+		m_priceField.setText(str);
+	}
+
+	public String getAuthor()
+	{
+		return m_authorField.getText();
+	}
+
+	public void setAuthor(String str)
+	{
+		m_authorField.setText(str);
+	}
+
+	public String getPublisher()
+	{
+		return m_publisherField.getText();
+	}
+
+	public void setPublisher(String str)
+	{
+		m_publisherField.setText(str);
+	}
+
+	public String getDesc()
+	{
+		return m_descTextPane.getText();
+	}
+
+	public void setDesc(String str)
+	{
+		m_descTextPane.setText(str);
+	}
+
+	public String getGenreList()
+	{
+		return m_genreList.getText();
+	}
+
+	public void setGenreList(String genreList)
+	{
+		m_genreList.setText(genreList);
+	}
 }

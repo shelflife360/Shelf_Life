@@ -20,16 +20,18 @@ public class BrowseSearchPanel extends JPanel implements Observer
 	/**
 	 * Create the panel.
 	 */
-	public BrowseSearchPanel()
+	public BrowseSearchPanel(Controller controller)
 	{
+		controller.registerView(this);
+		
 		setPreferredSize(new Dimension(WIDTH, HEIGHT));
 		setLayout(new BorderLayout());
 		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
 		splitPane.setEnabled(true);
 		add(splitPane, BorderLayout.CENTER);
 		
-		SearchPanel mainPanel = new SearchPanel(SearchPanel.BROWSE_HEADER);
-		BookInfoPanel infoPanel = new BookInfoPanel(false);
+		SearchPanel mainPanel = new SearchPanel(SearchPanel.BROWSE_HEADER, controller);
+		BookInfoPanel infoPanel = new BookInfoPanel(false, controller);
 		
 		splitPane.setLeftComponent(mainPanel);
 		splitPane.setRightComponent(infoPanel);

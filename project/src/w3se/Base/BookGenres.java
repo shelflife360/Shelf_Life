@@ -2,6 +2,8 @@ package w3se.Base;
 
 import java.util.LinkedList;
 
+import w3se.Model.FileTokenizer;
+
 public class BookGenres
 {
 	private LinkedList<String> m_genreList = null;
@@ -9,6 +11,13 @@ public class BookGenres
 	public BookGenres()
 	{
 		m_genreList = new LinkedList<String>();
+	}
+	
+	public void importFromFile(String filename)
+	{
+		FileTokenizer tokenizer = new FileTokenizer();
+		tokenizer.readFile(filename);
+		m_genreList = tokenizer.tokenize();
 	}
 	
 	public void addGenre(String genre)
@@ -24,6 +33,11 @@ public class BookGenres
 	public void removeGenre(int index)
 	{
 		m_genreList.remove(index);
+	}
+	
+	public int getSize()
+	{
+		return m_genreList.size();
 	}
 	
 	public String[] toStringArray()
