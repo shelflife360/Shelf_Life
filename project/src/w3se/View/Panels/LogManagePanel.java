@@ -4,6 +4,9 @@ import javax.swing.JPanel;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import java.awt.Color;
+import java.util.Observable;
+import java.util.Observer;
+
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle.ComponentPlacement;
@@ -11,7 +14,9 @@ import javax.swing.JButton;
 import javax.swing.JList;
 import javax.swing.border.LineBorder;
 
-public class LogManagePanel extends JPanel
+import w3se.Model.IMS;
+
+public class LogManagePanel extends JPanel implements Observer
 {
 	private JTextField textField;
 
@@ -22,7 +27,6 @@ public class LogManagePanel extends JPanel
 	{
 		setBackground(new Color(255, 255, 255));
 		this.setBounds(0, 0, 940, 500);
-		
 		JLabel lblNewLabel = new JLabel("Search Term : ");
 		
 		textField = new JTextField();
@@ -96,5 +100,13 @@ public class LogManagePanel extends JPanel
 							.addGap(19))))
 		);
 		setLayout(groupLayout);
+		IMS.getInstance().addView(this);
+	}
+
+	@Override
+	public void update(Observable arg0, Object arg1)
+	{
+		// TODO Auto-generated method stub
+		
 	}
 }

@@ -3,15 +3,21 @@ package w3se.Model;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.StringTokenizer;
 
 public class FileTokenizer
 {
 	private String m_readFile = null;
+	public static final int UPPER_CASE = 0;
+	public static final int LOWER_CASE = 1;
+	public static final int UNTOUCHED = 2;
+	private int m_tokenType = UPPER_CASE;
 	
-	public FileTokenizer()
+	public FileTokenizer(int tokenType)
 	{
+		m_tokenType = tokenType;
 	}
 	
 	public void readFile(String filename)
@@ -39,14 +45,20 @@ public class FileTokenizer
 		} 
 	}
 	
-	public LinkedList<String> tokenize()
+	public ArrayList<String> tokenize()
 	{
-		StringTokenizer tokenizer = new StringTokenizer(m_readFile, ",");
-		LinkedList<String> list = new LinkedList<String>();
+		StringTokenizer tokenizer = new StringTokenizer(m_readFile, ", ");
+		ArrayList<String> list = new ArrayList<String>();
 		
 		while (tokenizer.hasMoreTokens())
 		{
-			list.add(tokenizer.nextToken());
+			String token = tokenizer.nextToken().replace(" ", "");
+			if (m_tokenType == UPPER_CASE)
+				list.add(token.toUpperCase());
+			else if (m_tokenType == LOWER_CASE)
+				list.add(token.toLowerCase());
+			else
+				list.add(token);
 		}
 		
 		return list;

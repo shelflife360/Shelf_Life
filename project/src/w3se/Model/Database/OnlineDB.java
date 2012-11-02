@@ -58,9 +58,10 @@ public class OnlineDB implements Database
 	 * @param response
 	 * @return
 	 */
-	private Book parseResponse(String response)
+	private ArrayList<Book> parseResponse(String response)
 	{
-		Book book = new Book();
+		ArrayList<Book> bookList = new ArrayList<Book>();
+		Book book = null;
 		
 		try
 		{
@@ -72,19 +73,26 @@ public class OnlineDB implements Database
 			doc.getDocumentElement().normalize();
 			
 			NodeList nList = doc.getElementsByTagName("BookData");
-			Element e1 = (Element)nList.item(0);
 			
-			if (e1 != null)
-			{
-				String isbn;
+			for (int i = 0; i < nList.getLength(); i++)
+			{	
+				Element e1 = (Element)nList.item(i);
 				
-				if ((isbn = getAttribute("isbn13", e1)) == null)		// if the book has isbn 13
-					isbn = getAttribute("isbn", e1);					// if the book has isbn 10
-				
-				book.setISBN(isbn);
-				book.setTitle(getTagValue("Title", e1));
-				book.setAuthor(getTagValue("AuthorsText", e1));
-				book.setPublisher(getTagValue("PublisherText", e1));
+				if (e1 != null)
+				{
+					book = new Book();
+					String isbn;
+					
+					if ((isbn = getAttribute("isbn13", e1)) == null)		// if the book has isbn 13
+						isbn = getAttribute("isbn", e1);					// if the book has isbn 10
+					
+					book.setISBN(isbn);
+					book.setTitle(getTagValue("Title", e1));
+					book.setAuthor(getTagValue("AuthorsText", e1));
+					book.setPublisher(getTagValue("PublisherText", e1));
+					
+					bookList.add(book);
+				}
 			}
 			
 		}
@@ -93,7 +101,7 @@ public class OnlineDB implements Database
 			e.printStackTrace();
 		}
 		
-		return book;
+		return bookList;
 	}
 	
 	/**
@@ -118,14 +126,16 @@ public class OnlineDB implements Database
 		NodeList nList = element.getElementsByTagName(tag).item(0).getChildNodes();
 		Node node = (Node) nList.item(0);
 		
-		return node.getNodeValue();
+		if (node != null)
+			return node.getNodeValue();
+		else
+			return "";
 	}
 	
 	@Override
-	public void retrieve(String searchTerm) throws Exception
+	public void retrieve(Object term) throws Exception
 	{
-		
-		
+		String searchTerm = (String)term;
 		try
 		{
 			userIsbn = searchTerm;

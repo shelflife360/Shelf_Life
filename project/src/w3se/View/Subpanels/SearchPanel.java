@@ -3,22 +3,30 @@ package w3se.View.Subpanels;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.List;
 
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
-import javax.swing.border.EtchedBorder;
 import java.awt.BorderLayout;
-import javax.swing.JComboBox;
+import java.util.ArrayList;
 
+import javax.swing.JComboBox;
+import javax.swing.border.EtchedBorder;
+import javax.swing.table.DefaultTableModel;
+
+import w3se.Base.Book;
 import w3se.Controller.Controller;
 import w3se.Controller.ControllerFactory;
+import w3se.View.ShelfLifeIcon;
 
 public class SearchPanel extends JPanel
 {
@@ -27,33 +35,32 @@ public class SearchPanel extends JPanel
 	public static final int HEADER_HEIGHT = 50;
 	public static final int KEYWORD_HEADER = 0;
 	public static final int BROWSE_HEADER = 1;
-	public static final String SEARCH_FIELD = "search_field";
-	public static final String RESULT_LIST = "result_list";
-	public static final String PREV_VIEWED_LIST = "prev_viewed_list";
-	public static final String GENRES = "genres";
-	public static final String DISPLAY_ORDER = "display_order";
 	private Controller m_controller = null;
 	
+	private int m_headerType = KEYWORD_HEADER;
+	
 	private JTextField m_searchField;
-	private JList m_resultsList;
-	private JList m_prevViewedList;
+	private JTable m_resultsList;
+	private List m_prevViewedList;
 	private JPanel m_header;
 	private JPanel m_body;
-	private JLabel lblRecentlyViewed;
-	private JLabel lblResults;
-	private JLabel lblLogo;
-	private JComboBox cbGenres;
-	private JComboBox cbOrder;
+	private JLabel m_lblRecentlyViewed;
+	private JLabel m_lblResults;
+	private JLabel m_lblLogo;
+	private JComboBox m_cbGenres = new JComboBox();
+	private JComboBox m_cbOrder = new JComboBox(new DefaultComboBoxModel());
 	
 	/**
 	 * Create the panel.
 	 */
-	public SearchPanel(int headerType)
+	public SearchPanel(int headerType, Controller controller)
 	{
-		//m_controller = ControllerFactory.createController(ControllerFactory.KEYWORD_SEARCH);
+		m_controller = controller;
 		setPreferredSize(new Dimension(WIDTH, HEIGHT));
-	
-		createHeader(headerType);
+		
+		m_headerType = headerType;
+		
+		createHeader(m_headerType);
 		createBody();
 		
 		setLayout(new BorderLayout());
@@ -70,6 +77,8 @@ public class SearchPanel extends JPanel
 		m_header = new JPanel();
 		m_header.setPreferredSize(new Dimension(WIDTH, HEADER_HEIGHT));
 		
+		JButton searchBtn = new JButton("Search");
+		
 		if (headerType == KEYWORD_HEADER)
 		{
 			m_header.setLayout(new FlowLayout());
@@ -77,37 +86,38 @@ public class SearchPanel extends JPanel
 			
 			m_searchField = new JTextField();
 			m_searchField.setColumns(20);
-			//m_searchField.addActionListener(m_controller.getListener(SEARCH_FIELD));
 			
 			m_header.add(kwSearchLbl);
 			m_header.add(m_searchField);
-		//	m_header.add(searchBtn);
+			m_header.add(searchBtn);
+			
+			searchBtn.addActionListener(m_controller.getListener("search_term"));
+			m_searchField.addActionListener(m_controller.getListener("search_term"));
 		}
 		else if (headerType == BROWSE_HEADER)
 		{
-			JButton searchBtn = new JButton("Search");
 			JLabel lblGenres =  new JLabel("Genres");
 			JLabel lblOrder = new JLabel("Order");
-			
-			
-			cbGenres = new JComboBox();
-			cbOrder = new JComboBox();
+			m_cbGenres.setSize(70, 10);
+			searchBtn.addActionListener(m_controller.getListener("browse_search"));
 			
 			GroupLayout gl_m_header = new GroupLayout(m_header);
 			gl_m_header.setHorizontalGroup(
 				gl_m_header.createParallelGroup(Alignment.LEADING)
 					.addGroup(gl_m_header.createSequentialGroup()
 						.addGap(22)
-						.addComponent(lblGenres)
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addComponent(cbGenres, GroupLayout.PREFERRED_SIZE, 162, GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addComponent(lblOrder)
-						.addPreferredGap(ComponentPlacement.RELATED)
-						.addComponent(cbOrder, GroupLayout.PREFERRED_SIZE, 147, GroupLayout.PREFERRED_SIZE)
-						.addGap(18)
-						.addComponent(searchBtn)
-						.addContainerGap())
+						.addGroup(gl_m_header.createParallelGroup(Alignment.LEADING, false)
+							.addGroup(gl_m_header.createSequentialGroup()
+								.addComponent(lblOrder)
+								.addGap(18)
+								.addComponent(m_cbOrder, GroupLayout.PREFERRED_SIZE, 234, GroupLayout.PREFERRED_SIZE)
+								.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+								.addComponent(searchBtn))
+							.addGroup(gl_m_header.createSequentialGroup()
+								.addComponent(lblGenres)
+								.addPreferredGap(ComponentPlacement.RELATED)
+								.addComponent(m_cbGenres, GroupLayout.PREFERRED_SIZE, 413, GroupLayout.PREFERRED_SIZE)))
+						.addContainerGap(227, Short.MAX_VALUE))
 			);
 			gl_m_header.setVerticalGroup(
 				gl_m_header.createParallelGroup(Alignment.LEADING)
@@ -115,9 +125,11 @@ public class SearchPanel extends JPanel
 						.addGap(5)
 						.addGroup(gl_m_header.createParallelGroup(Alignment.BASELINE)
 							.addComponent(lblGenres)
-							.addComponent(cbGenres, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+							.addComponent(m_cbGenres, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+						.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+						.addGroup(gl_m_header.createParallelGroup(Alignment.BASELINE)
 							.addComponent(lblOrder)
-							.addComponent(cbOrder, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+							.addComponent(m_cbOrder, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 							.addComponent(searchBtn)))
 			);
 			m_header.setLayout(gl_m_header);
@@ -129,17 +141,34 @@ public class SearchPanel extends JPanel
 		m_body = new JPanel();
 		m_body.setBackground(new Color(255, 255, 255));
 		m_body.setPreferredSize(new Dimension(WIDTH, (HEIGHT-HEADER_HEIGHT)));
-		m_resultsList = new JList();
-		m_resultsList.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 		
-		m_prevViewedList = new JList();
-		m_prevViewedList.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
+		// create an anonymous class to set the cells as not editable
+		DefaultTableModel tableModel = new DefaultTableModel(new String[] {"Title", "Price", "Author", "Genres"}, 0)
+			{
+				public boolean isCellEditable(int row, int height)
+				{
+					return false;
+				}
+			};
+			
+		m_resultsList = new JTable(tableModel);
+		m_resultsList.setBorder(new EtchedBorder());
+		JScrollPane resultScroll = new JScrollPane(m_resultsList);
 		
-		lblRecentlyViewed = new JLabel("Recently Viewed Books");
+		m_resultsList.addMouseListener(m_controller.getListener("results_list"));
+		m_prevViewedList = new List();
 		
-		lblResults = new JLabel("Search Results");
+		m_lblRecentlyViewed = new JLabel("Recently Viewed Books");
 		
-		lblLogo = new JLabel("ShelfLife");
+		m_lblResults = new JLabel("Search Results");
+		
+		m_lblLogo = new JLabel();
+		m_lblLogo.setIcon(new ShelfLifeIcon("icon.png"));
+		
+		JButton btnClearResults = new JButton("Clear Results");
+		btnClearResults.addActionListener(m_controller.getListener("results_clear"));
+		JButton btnClearRecentlyViewed = new JButton("Clear Recently Viewed");
+		btnClearRecentlyViewed.addActionListener(m_controller.getListener("recently_clear"));
 		
 		GroupLayout gl_m_body = new GroupLayout(m_body);
 		gl_m_body.setHorizontalGroup(
@@ -148,31 +177,101 @@ public class SearchPanel extends JPanel
 					.addGap(16)
 					.addGroup(gl_m_body.createParallelGroup(Alignment.LEADING)
 						.addGroup(gl_m_body.createSequentialGroup()
-							.addGap(6)
-							.addComponent(m_prevViewedList, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-						.addComponent(m_resultsList, GroupLayout.DEFAULT_SIZE, 505, Short.MAX_VALUE)
-						.addComponent(lblResults)
-						.addGroup(gl_m_body.createParallelGroup(Alignment.TRAILING)
-							.addComponent(lblLogo, Alignment.LEADING)
-							.addComponent(lblRecentlyViewed)))
-					.addContainerGap())
+							.addGroup(gl_m_body.createParallelGroup(Alignment.LEADING)
+								.addComponent(resultScroll, GroupLayout.DEFAULT_SIZE, 510, Short.MAX_VALUE)
+								.addGroup(gl_m_body.createSequentialGroup()
+									.addGap(6)
+									.addGroup(gl_m_body.createParallelGroup(Alignment.LEADING)
+										.addGroup(gl_m_body.createSequentialGroup()
+											.addGap(6)
+											.addComponent(m_lblLogo))
+										.addComponent(m_prevViewedList, GroupLayout.DEFAULT_SIZE, 504, Short.MAX_VALUE))))
+							.addContainerGap())
+						.addGroup(gl_m_body.createSequentialGroup()
+							.addComponent(m_lblResults)
+							.addPreferredGap(ComponentPlacement.RELATED, 217, Short.MAX_VALUE)
+							.addComponent(btnClearResults)
+							.addGap(86))
+						.addGroup(Alignment.TRAILING, gl_m_body.createSequentialGroup()
+							.addComponent(m_lblRecentlyViewed)
+							.addPreferredGap(ComponentPlacement.RELATED, 145, Short.MAX_VALUE)
+							.addComponent(btnClearRecentlyViewed)
+							.addGap(51))))
 		);
 		gl_m_body.setVerticalGroup(
 			gl_m_body.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_m_body.createSequentialGroup()
 					.addGap(37)
-					.addComponent(lblResults)
+					.addGroup(gl_m_body.createParallelGroup(Alignment.BASELINE)
+						.addComponent(m_lblResults)
+						.addComponent(btnClearResults))
 					.addPreferredGap(ComponentPlacement.UNRELATED)
-					.addComponent(m_resultsList, GroupLayout.PREFERRED_SIZE, 130, GroupLayout.PREFERRED_SIZE)
-					.addGap(37)
-					.addComponent(lblRecentlyViewed)
+					.addComponent(resultScroll, GroupLayout.PREFERRED_SIZE, 130, GroupLayout.PREFERRED_SIZE)
+					.addGap(18)
+					.addGroup(gl_m_body.createParallelGroup(Alignment.BASELINE)
+						.addComponent(btnClearRecentlyViewed)
+						.addComponent(m_lblRecentlyViewed))
+					.addGap(18)
+					.addComponent(m_prevViewedList, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
 					.addPreferredGap(ComponentPlacement.UNRELATED)
-					.addComponent(m_prevViewedList, GroupLayout.DEFAULT_SIZE, 105, Short.MAX_VALUE)
-					.addGap(42)
-					.addComponent(lblLogo)
-					.addGap(54))
+					.addComponent(m_lblLogo)
+					.addGap(47))
 		);
 		
 		m_body.setLayout(gl_m_body);
+	}
+	
+	/**
+	 * method to return the text in the search field
+	 * @return
+	 */
+	public String getSearchText()
+	{
+		return m_searchField.getText();
+	}
+	
+	/**
+	 * method to clear the search bar
+	 */
+	public void clearSearchText()
+	{
+		if (m_headerType == KEYWORD_HEADER)
+			m_searchField.setText("");
+	}
+	
+	public void setSearchResults(ArrayList<Book> list)
+	{
+		for (int i = 0; i < list.size(); i++)
+		{
+			Book book = list.get(i);
+			
+			String[] strings = new String[] {book.getTitle(),""+book.getPrice(),book.getAuthor(),book.getGenres()};
+			
+			
+			((DefaultTableModel)m_resultsList.getModel()).addRow(strings);
+		}
+	}
+	
+	public void clearLists()
+	{
+		while(((DefaultTableModel)m_resultsList.getModel()).getRowCount() > 0)
+		{
+			((DefaultTableModel)m_resultsList.getModel()).removeRow(0);
+		}
+		
+		for (int i = 0; i < m_prevViewedList.getItemCount(); i++)
+		{
+			m_prevViewedList.remove(i);
+		}
+	}
+	
+	public void setGenres(String[] genres)
+	{	
+		m_cbGenres.setModel(new DefaultComboBoxModel(genres));
+	}
+	
+	public String getSelectedGenre()
+	{
+		return (String)m_cbGenres.getModel().getSelectedItem();
 	}
 }

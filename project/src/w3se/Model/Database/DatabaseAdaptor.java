@@ -5,6 +5,9 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import org.hsqldb.persist.HsqlProperties;
+import org.hsqldb.server.Server;
+
 import w3se.Base.Book;
 import w3se.Base.User;
 import w3se.Model.DelimitedString;
@@ -16,31 +19,29 @@ public class DatabaseAdaptor implements Database
 	public static final int USERS_DB = 2;
 	public static final int LOGS_DB = 3;
 	
-	private Connection m_connection = null;
 	private Object m_returnObj = null;
 	private ShelfLifeDB m_shelfLifeDB;
 	private UsersDB m_usersDB;
 	private OnlineDB m_onlineDB;
 	private int m_state = -1;
+	private DBServer m_server = null;
 	
 	public DatabaseAdaptor()
 	{
-			try
-			{
-				Class.forName("org.hsqldb.jdbc.JDBCDriver");
-			
-				m_connection = DriverManager.getConnection("jdbc:hsqldb:file:database/SLDB", "SA", "");
-				m_shelfLifeDB = new ShelfLifeDB(m_connection);
-				m_usersDB = new UsersDB(m_connection);
-				m_onlineDB = new OnlineDB();
-			} 
-			catch (ClassNotFoundException e)
-			{
-				e.printStackTrace();
-			}catch (SQLException e)
-			{
-				System.out.println(e.getMessage());
-			}
+		String[] serverProperties = new String[6];
+		serverProperties[0] = "file:database/UsersDB";
+		serverProperties[1] = "UsersDB";
+		serverProperties[2] = "file:database/BooksDB";
+		serverProperties[3] = "BooksDB";
+		serverProperties[4] = "file:database/LogsDB";
+		serverProperties[5] = "LogsDB";
+		
+		m_server = new DBServer(serverProperties, 9001);
+		m_server.start();
+		
+		m_shelfLifeDB = new ShelfLifeDB();
+		m_usersDB = new UsersDB();
+		m_onlineDB = new OnlineDB();
 	}
 	
 	public void setState(int state)
@@ -48,7 +49,7 @@ public class DatabaseAdaptor implements Database
 		m_state = state;
 	}
 	
-	public void retrieve(String term) throws Exception
+	public void retrieve(Object term) throws Exception
 	{
 		
 		switch (m_state)
@@ -103,18 +104,16 @@ public class DatabaseAdaptor implements Database
 	
 	public void shutdown() throws SQLException
 	{
-		Statement statement = m_connection.createStatement();
-		statement.execute("SHUTDOWN");
+		m_server.shutdown();
 	}
 
 
 	@Override
 	public void close() throws SQLException
 	{
-		shutdown();
-		m_connection.close();
-		m_shelfLifeDB.close();
 		m_usersDB.close();
+		m_shelfLifeDB.close();
+		shutdown();
 	}
 
 

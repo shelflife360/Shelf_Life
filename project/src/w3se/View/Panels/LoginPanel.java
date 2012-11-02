@@ -9,6 +9,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JButton;
 import w3se.Controller.Controller;
 import w3se.Model.IMS;
+import w3se.Model.States;
 import w3se.View.MainView;
 
 import java.awt.Color;
@@ -18,32 +19,33 @@ import java.util.Observer;
 @SuppressWarnings("serial")
 public class LoginPanel extends JPanel implements Observer
 {
-	private JTextField userNameField;
-	private JPasswordField passwordField;
+	private JTextField m_userNameField;
+	private JPasswordField m_passwordField;
 	private Controller m_controller = null;
-	private MainView m_mainView = null;
+	private MainView m_parent = null;
 	private JButton m_btnLogin = null;
+	
 	/**
 	 * Create the panel.
 	 */
 	public LoginPanel(MainView mainView, Controller controller)
 	{
-		m_mainView = mainView;
+		m_parent = mainView;
 		
 		m_controller = controller;
+		m_controller.registerView(this);
 		
-		IMS.getInstance().addObserver(this);
 		setBackground(new Color(255, 255, 255));
 		
 		JLabel lblUserName = new JLabel("User Name :");
 		
-		userNameField = new JTextField();
-		userNameField.setColumns(20);
+		m_userNameField = new JTextField();
+		m_userNameField.setColumns(20);
 		
 		JLabel lblPassword = new JLabel("Password : ");
 		
-		passwordField = new JPasswordField();
-		passwordField.setColumns(20);
+		m_passwordField = new JPasswordField();
+		m_passwordField.setColumns(20);
 		
 		JButton btnLogin = new JButton("Login");
 		GroupLayout groupLayout = new GroupLayout(this);
@@ -58,8 +60,8 @@ public class LoginPanel extends JPanel implements Observer
 								.addComponent(lblPassword, Alignment.TRAILING))
 							.addGap(49)
 							.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
-								.addComponent(passwordField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-								.addComponent(userNameField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+								.addComponent(m_passwordField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+								.addComponent(m_userNameField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
 						.addGroup(groupLayout.createSequentialGroup()
 							.addGap(329)
 							.addComponent(btnLogin)))
@@ -71,45 +73,50 @@ public class LoginPanel extends JPanel implements Observer
 					.addGap(52)
 					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lblUserName)
-						.addComponent(userNameField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+						.addComponent(m_userNameField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
 					.addGap(26)
 					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-						.addComponent(passwordField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(m_passwordField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 						.addComponent(lblPassword))
 					.addGap(74)
 					.addComponent(btnLogin)
 					.addContainerGap(233, Short.MAX_VALUE))
 		);
 		
+		
 		btnLogin.addActionListener(m_controller.getListener("login"));
-		btnLogin.setActionCommand(userNameField.getText());
+		m_userNameField.addActionListener(m_controller.getListener("login"));
+		m_passwordField.addActionListener(m_controller.getListener("login"));
+		
 		setLayout(groupLayout);
 		m_controller.registerView(this);
+		IMS.getInstance().addView(this);
 	}
 
 	public void setUserName(String name)
 	{
-		userNameField.setText(name);
+		m_userNameField.setText(name);
 	}
 	
 	public void setPassword(String pass)
 	{
-		passwordField.setText(pass);
+		m_passwordField.setText(pass);
 	}
 	
 	public String getUsername()
 	{
-		return userNameField.getText();
+		return m_userNameField.getText();
 	}
 	
 	public String getPassword()
 	{
-		return passwordField.getText();
+		return m_passwordField.getText();
 	}
 	
 	@Override
 	public void update(Observable o, Object arg)
 	{
-		m_mainView.changeState(IMS.getInstance().getLoginState());
+		States state = IMS.getInstance().getLoginState();
+		m_parent.changeState(state);
 	}
 }

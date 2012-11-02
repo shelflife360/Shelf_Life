@@ -11,6 +11,7 @@ import w3se.View.Subpanels.SearchPanel;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -18,12 +19,6 @@ public class BookSearchPanel extends JPanel implements Observer
 {
 	public static final int WIDTH = 1020;
 	public static final int HEIGHT = 500;
-	/*public static final String SEARCH_FIELD = "search_field";
-	public static final String RESULT_LIST = "result_list";
-	public static final String PREV_VIEWED_LIST = "prev_viewed_list";
-	public static final String GENRES = "genres";
-	public static final String DISPLAY_ORDER = "display_order";*/
-	
 	private SearchPanel m_mainPanel;
 	private BookInfoPanel m_infoPanel;
 	
@@ -33,7 +28,7 @@ public class BookSearchPanel extends JPanel implements Observer
 	public BookSearchPanel(int headerType, boolean editable, Controller controller)
 	{
 		controller.registerView(this);
-		IMS.getInstance().addObserver(this);
+		
 		setPreferredSize(new Dimension(WIDTH, HEIGHT));
 		setLayout(new BorderLayout());
 		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
@@ -45,7 +40,8 @@ public class BookSearchPanel extends JPanel implements Observer
 		
 		splitPane.setLeftComponent(m_mainPanel);
 		splitPane.setRightComponent(m_infoPanel);
-
+		
+		IMS.getInstance().addView(this);
 	}
 	
 	/**
@@ -78,14 +74,21 @@ public class BookSearchPanel extends JPanel implements Observer
 		book.setPublisher(m_infoPanel.getPublisher());
 		book.setGenres(m_infoPanel.getGenreList());
 		book.setDescription(m_infoPanel.getDesc());
-		
+		book.setQuantity(m_infoPanel.getQuantity());
 		return book;
+	}
+	
+	public String getGenre()
+	{
+		return m_mainPanel.getSelectedGenre();
 	}
 	
 	public void update(Observable sender, Object obj)
 	{
-		Book book = IMS.getInstance().getCurrentBook();
+		ArrayList<Book> list = IMS.getInstance().getListOfFoundBooks();
 		m_mainPanel.clearSearchText();
+		m_mainPanel.clearLists();
+		Book book = IMS.getInstance().getCurrentBook();	
 		m_infoPanel.setTitle(book.getTitle());
 		m_infoPanel.setISBN(book.getISBN());
 		m_infoPanel.setPrice(""+book.getPrice());
@@ -93,14 +96,9 @@ public class BookSearchPanel extends JPanel implements Observer
 		m_infoPanel.setPublisher(book.getPublisher());
 		m_infoPanel.setDesc(book.getDescription());
 		m_infoPanel.setGenreList(book.getGenres());
-		m_mainPanel.clearLists();
-		m_mainPanel.setSearchResults(IMS.getInstance().getListOfBooks());
-	}
-
-	public int getSelectedBook()
-	{
-		return m_mainPanel.getSelectedBookIndex();
+		m_infoPanel.setQuantity(book.getQuantity());
+		m_mainPanel.setSearchResults(list);
+		m_mainPanel.setGenres(IMS.getInstance().getGenres().toStringArray());
 	}
 	
-	//public void get
 }

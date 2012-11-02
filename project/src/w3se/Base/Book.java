@@ -6,11 +6,13 @@ public class Book
 	private String m_title = "";
 	private String m_ISBN = "";
 	private double m_price = 0.0f;
+	private int m_oldQuantity = 0;
 	private String m_author = "";
 	private String m_publisher = "";
 	private String m_genres = "";
 	private String m_description = "";
 	private int m_quantity = 0;
+	private int m_totalCopies = 0;
 	
 	public Book()
 	{
@@ -108,6 +110,16 @@ public class Book
 		m_description = description;
 	}
 	
+	public int getOldQuantity()
+	{
+		return m_oldQuantity;
+	}
+	
+	public void setOldQuantity(int quantity)
+	{
+		m_oldQuantity = quantity;
+	}
+	
 	public int getQuantity()
 	{
 		return m_quantity;
@@ -116,5 +128,15 @@ public class Book
 	public void setQuantity(int quantity)
 	{
 		m_quantity = quantity;
+	}
+	
+	public int getTotalCopies()
+	{
+		return m_totalCopies;
+	}
+	
+	public void setTotalCopies(int total)
+	{
+		m_totalCopies = total;
 	}
 }

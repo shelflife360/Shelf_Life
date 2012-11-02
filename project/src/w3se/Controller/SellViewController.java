@@ -5,21 +5,19 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
 import javax.swing.JTable;
-import javax.swing.event.ChangeEvent;
-import javax.swing.table.DefaultTableModel;
 
 import w3se.Base.Book;
 import w3se.Base.User;
 import w3se.Model.IMS;
 import w3se.Model.Task;
-import w3se.View.Panels.BookSearchPanel;
+import w3se.View.Panels.SellManagePanel;
 
-public class BookSearchController extends AbstractController
+public class SellViewController extends AbstractController
 {
 	private IMS m_model = null;
-	private BookSearchPanel m_view = null;
+	private SellManagePanel m_view = null;
 	
-	public BookSearchController(IMS model)
+	public SellViewController(IMS model)
 	{
 		m_model = model;
 		propagateMap();
@@ -33,7 +31,8 @@ public class BookSearchController extends AbstractController
 					public void actionPerformed(ActionEvent e)
 					{
 						final String search = m_view.getSearchTerm();
-						m_model.getTaskManager().addTask(new Task(User.GENERAL, new 
+						
+						m_model.getTaskManager().addTask(new Task(User.WORKER, new 
 								Runnable()
 								{
 									public void run()
@@ -41,7 +40,8 @@ public class BookSearchController extends AbstractController
 										String[] term = new String[2];
 										term[0] = "KEYWORD";
 										term[1] = search;
-										m_model.findBook(term);
+										m_model.findBook(term);						// find the book
+										m_model.addToSoldList(m_model.getCurrentBook());// then add it to the sold list
 									}
 								}));
 					}
@@ -52,7 +52,7 @@ public class BookSearchController extends AbstractController
 				{
 					public void actionPerformed(ActionEvent e)
 					{
-						m_model.getTaskManager().addTask(new Task(User.GENERAL, new 
+						m_model.getTaskManager().addTask(new Task(User.WORKER, new 
 								Runnable()
 								{
 									public void run()
@@ -64,39 +64,6 @@ public class BookSearchController extends AbstractController
 					}
 				});
 		
-		addListener("info_clear", new
-				ListenerAdaptor()
-				{
-					public void actionPerformed(ActionEvent e)
-					{
-						m_model.getTaskManager().addTask(new Task(User.WORKER, new 
-								Runnable()
-								{
-									public void run()
-									{
-										m_model.setCurrentBook(new Book());
-									}
-								}));
-					}
-				});
-		
-		addListener("info_accept", new
-				ListenerAdaptor()
-				{
-					public void actionPerformed(ActionEvent e)
-					{
-						m_model.getTaskManager().addTask(new Task(User.WORKER, new 
-								Runnable()
-								{
-									public void run()
-									{
-										m_model.setCurrentBook(m_view.getBook());
-										m_model.addCurrentBookToDB();
-										m_model.setCurrentBook(new Book());
-									}
-								}));
-					}
-				});
 		
 		addListener("results_list", new
 				ListenerAdaptor()
@@ -106,59 +73,77 @@ public class BookSearchController extends AbstractController
 						JTable table = (JTable)e.getSource();
 						final int row = table.rowAtPoint(e.getPoint());
 						
-						m_model.getTaskManager().addTask(new Task(User.GENERAL, new 
+						m_model.getTaskManager().addTask(new Task(User.WORKER, new 
 								Runnable()
 								{
 									public void run()
 									{
-										Book book = m_model.selectBook(row);
-										m_model.setCurrentBook(book);
+										Book book = m_model.getListOfFoundBooks().get(row);
+										m_model.addToSoldList(book);
 									}
 								}));
 					}
 				});
 		
-		addListener("tab_changed", new
+		addListener("receipt_list", new
 				ListenerAdaptor()
 				{
-					public void stateChanged(ChangeEvent e)
+					public void mouseClicked(MouseEvent e)
 					{
-						m_model.getTaskManager().addTask(new Task(User.GENERAL, new 
+						JTable table = (JTable)e.getSource();
+						final int row = table.rowAtPoint(e.getPoint());
+						
+						m_model.getTaskManager().addTask(new Task(User.WORKER, new 
 								Runnable()
 								{
 									public void run()
 									{
+										m_model.removeFromSoldList(row);
 									}
 								}));
 					}
 				});
 		
-		addListener("browse_search", new
+		addListener("receipt_cancel", new
 				ListenerAdaptor()
 				{
 					public void actionPerformed(ActionEvent e)
 					{
-						m_model.getTaskManager().addTask(new Task(User.GENERAL, new 
+						m_model.getTaskManager().addTask(new Task(User.WORKER, new 
 								Runnable()
 								{
 									public void run()
 									{
-										String[] term = new String[2];
-										term[0] = "BROWSE";
-										term[1] = m_view.getGenre();
-										m_model.findBook(term);
+										m_model.removeAllFromSoldList();
 									}
 								}));
+					}
+					
+				});
+		
+				/*	public void actionPerformed(ActionEvent e)
+					{
+						m_model.removeAllFromSoldList();
+					}*/
+				
+				
+		
+		addListener("receipt_sell", new
+				ListenerAdaptor()
+				{
+					public void actionPerformed(ActionEvent e)
+					{
+						m_model.finalizeSell();
 					}
 				});
 	}
 
-
+	
 	@Override
 	public void registerView(Object view)
 	{
-		m_view = (BookSearchPanel)view;
+		m_view = (SellManagePanel)view;
+		m_model.addObserver(m_view);
 	}
-
 
 }

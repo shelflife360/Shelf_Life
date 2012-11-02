@@ -10,6 +10,7 @@ import javax.swing.JButton;
 import w3se.Controller.Controller;
 import w3se.Controller.ControllerFactory;
 import w3se.Model.IMS;
+import w3se.Model.States;
 import w3se.View.MainView;
 
 import java.awt.Color;
@@ -39,7 +40,8 @@ public class LogoutPanel extends JPanel implements Observer
 
 	public void update(Observable o, Object arg)
 	{
-		m_parent.changeState(IMS.getInstance().getLoginState());
+		States state = (States)arg;
+		m_parent.changeState(state);
 	}
 	
 

@@ -16,7 +16,8 @@ public class Main
 	 */
 	public static void main(String[] args) throws Exception
 	{	
-		ControllerFactory.getInstance().registerModel(IMS.getInstance());
+		IMS ims = IMS.getInstance();
+		ControllerFactory conFactory = ControllerFactory.getInstance();
 		
 		EventQueue.invokeLater(new Runnable()
 		{
@@ -27,7 +28,6 @@ public class Main
 					MainView frame = new MainView();
 					
 					frame.setVisible(true);
-					
 					
 				} catch (Exception e)
 				{

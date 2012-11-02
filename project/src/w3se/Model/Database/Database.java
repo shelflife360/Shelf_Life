@@ -6,7 +6,7 @@ import java.sql.SQLException;
 
 public interface Database<T, R>
 {
-	public void retrieve(String str) throws Exception;
+	public void retrieve(Object obj) throws Exception;
 	
 	public void add(T obj) throws SQLException;
 	

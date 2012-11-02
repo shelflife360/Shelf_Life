@@ -4,13 +4,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-public class ListenerAdaptor implements ActionListener, ItemListener, ChangeListener, WindowListener
+public class ListenerAdaptor implements ActionListener, ItemListener, ChangeListener, WindowListener, MouseListener
 {
 
 	public void stateChanged(ChangeEvent arg0)
@@ -50,6 +52,26 @@ public class ListenerAdaptor implements ActionListener, ItemListener, ChangeList
 	}
 	
 	public void windowOpened(WindowEvent arg0)
+	{
+	}
+
+	public void mouseClicked(MouseEvent arg0)
+	{
+	}
+
+	public void mouseEntered(MouseEvent arg0)
+	{
+	}
+
+	public void mouseExited(MouseEvent arg0)
+	{
+	}
+
+	public void mousePressed(MouseEvent arg0)
+	{
+	}
+
+	public void mouseReleased(MouseEvent arg0)
 	{
 	}
 

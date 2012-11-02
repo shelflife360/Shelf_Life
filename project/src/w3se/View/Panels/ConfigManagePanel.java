@@ -2,16 +2,19 @@ package w3se.View.Panels;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.util.Observable;
+import java.util.Observer;
 
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 
 import w3se.Controller.Controller;
+import w3se.Model.IMS;
 import w3se.View.MainView;
 import w3se.View.Subpanels.AddUserPanel;
 import w3se.View.Subpanels.ConfigSubPanel;
 
-public class ConfigManagePanel extends JPanel
+public class ConfigManagePanel extends JPanel implements Observer
 {
 	public static final int WIDTH = 1020;
 	public static final int HEIGHT = 500;
@@ -26,7 +29,6 @@ public class ConfigManagePanel extends JPanel
 	{
 		m_parent = mainView;
 		m_controller = controller;
-		
 		setPreferredSize(new Dimension(WIDTH, HEIGHT));
 		setLayout(new BorderLayout());
 		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
@@ -39,6 +41,7 @@ public class ConfigManagePanel extends JPanel
 		splitPane.setLeftComponent(mainPanel);
 		splitPane.setRightComponent(m_infoPanel);
 		m_controller.registerView(this);
+		IMS.getInstance().addView(this);
 	}
 
 	public String getUsername()
@@ -59,5 +62,12 @@ public class ConfigManagePanel extends JPanel
 	public int getUID()
 	{
 		return m_infoPanel.getUID();
+	}
+
+	@Override
+	public void update(Observable o, Object arg)
+	{
+		// TODO Auto-generated method stub
+		
 	}
 }
