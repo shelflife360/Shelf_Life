@@ -6,52 +6,70 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.StringTokenizer;
-
-import org.hsqldb.persist.HsqlProperties;
-import org.hsqldb.server.Server;
-
 import w3se.Base.Book;
-import w3se.Model.DelimitedString;
+import w3se.Model.Configurations;
+import w3se.View.Subpanels.SearchPanel;
 
 
-public class ShelfLifeDB implements Database<Book, ArrayList<Book>>
+public class BookDB implements Database<Book, ArrayList<Book>>
 {
 	private Statement m_statement = null;
 	private ResultSet m_resultSet = null;
 	private Connection m_connection = null;
+	public static final String KEYWORD = "keyword";
+	public static final String BROWSE = "browse";
 	
 	public static final int BOOK_LIST_SIZE = 100;
 	
-	public ShelfLifeDB()
+	public BookDB(Configurations config)
 	{	
 		try
 		{
-			Class.forName("org.hsqldb.jdbcDriver").newInstance();
-			m_connection = DriverManager.getConnection("jdbc:hsqldb:hsql://localhost/BooksDB", "SA", "");
-		} catch (Exception e)
+			Class.forName(config.getValue("DatabaseDriver")).newInstance();
+			m_connection = DriverManager.getConnection(config.getValue("BooksDBUrl"));
+		} 
+		catch (Exception e)
 		{
 			System.out.println("Failed to open JDBC Driver");
 		}
 	}
 	
-	
 	public void retrieve(Object term ) throws SQLException
 	{		
 		String[] searchTerm = (String[])term;
 		
-		if (searchTerm[0].equalsIgnoreCase("KEYWORD"))
+		if (searchTerm[0].equals(KEYWORD))
 		{
+			
 			m_statement = m_connection.createStatement();
 			m_resultSet = m_statement.executeQuery("SELECT * FROM Books WHERE ISBN LIKE '%"+searchTerm[1]+
-				"%' OR Title LIKE '%"+searchTerm[1]+"%' OR Author LIKE '%"+searchTerm[1]+"%'"+
-				"OR Publisher LIKE '%"+searchTerm[1]+"%'");
+			"%' OR Title LIKE '%"+searchTerm[1]+"%' OR Author LIKE '%"+searchTerm[1]+"%'"+
+			"OR Publisher LIKE '%"+searchTerm[1]+"%'");
 		}
-		else if (searchTerm[0].equalsIgnoreCase("BROWSE"))
+		
+		else if (searchTerm[0].equals(BROWSE))
 		{
+			String orderBy = "";
+			
+			if (searchTerm[1].equals("ANY"))
+				searchTerm[1] = "";
+				
+			if (searchTerm[2].equals(""+SearchPanel.ORDER_PRICE_ASCEND))
+					orderBy = "ORDER BY Price ASC";
+			else if (searchTerm[2].equals(""+SearchPanel.ORDER_PRICE_DESCEND))
+					orderBy = "ORDER BY Price DESC";
+			else if (searchTerm[2].equals(""+SearchPanel.ORDER_TITLE))
+					orderBy = "ORDER BY Title";
+			else if (searchTerm[2].equals(""+SearchPanel.ORDER_AUTHOR))
+					orderBy = "ORDER BY Author";
+			else if (searchTerm[2].equals(""+SearchPanel.ORDER_PUBLISHER))
+					orderBy = "ORDER BY Publisher";
+			
 			m_statement = m_connection.createStatement();
 			m_resultSet = m_statement.executeQuery("SELECT * FROM Books WHERE GENRES LIKE '%"+searchTerm[1]+
-				"%'");
+			"%'"+orderBy);
+			
+			
 		}
 	}
 	
@@ -59,36 +77,40 @@ public class ShelfLifeDB implements Database<Book, ArrayList<Book>>
 	{
 		ArrayList<Book> bookList = new ArrayList<Book>();
 		
-			while (m_resultSet.next() && bookList.size() < BOOK_LIST_SIZE)
-			{
-				Book book = new Book();
-				book.setTitle(m_resultSet.getString("Title"));
-				book.setISBN(m_resultSet.getString("ISBN"));
-				book.setPrice(m_resultSet.getDouble("Price"));
-				book.setAuthor(m_resultSet.getString("Author"));
-				book.setPublisher(m_resultSet.getString("Publisher"));
-				book.setGenres(m_resultSet.getString("Genres"));
-				book.setDescription(m_resultSet.getString("Description"));
-				book.setQuantity(m_resultSet.getInt("Quantity"));
-				book.setOldQuantity(m_resultSet.getInt("Quantity"));
-				bookList.add(book);
-			}
-			
+		while (m_resultSet.next() && bookList.size() < BOOK_LIST_SIZE)
+		{
+			Book book = new Book();
+			book.setTitle(m_resultSet.getString("Title"));
+			book.setISBN(m_resultSet.getString("ISBN"));
+			book.setPrice(m_resultSet.getDouble("Price"));
+			book.setAuthor(m_resultSet.getString("Author"));
+			book.setPublisher(m_resultSet.getString("Publisher"));
+			book.setGenres(m_resultSet.getString("Genres"));
+			book.setDescription(m_resultSet.getString("Description"));
+			book.setQuantity(m_resultSet.getInt("Quantity"));
+			book.setOldQuantity(m_resultSet.getInt("Quantity"));
+			bookList.add(book);
+		}
+				
 		return bookList;
 	}
 	
 	public void shutdown() throws SQLException
 	{
-		m_statement = m_connection.createStatement();
-		m_statement.execute("SHUTDOWN");
-		m_statement.close();
+		try
+		{
+			m_statement = m_connection.createStatement();
+			m_statement.execute("SHUTDOWN");
+			m_statement.close();
+		}
+		catch (Exception e)
+		{}
 	}
 	
 	public void close() throws SQLException
 	{
 		try
 		{
-			shutdown();
 			m_connection.close();
 		}
 		catch(Exception e)
@@ -117,9 +139,16 @@ public class ShelfLifeDB implements Database<Book, ArrayList<Book>>
 	@Override
 	public void add(Book obj) throws SQLException
 	{
-		retrieve((obj.getISBN()));
+		String[] term = {KEYWORD, obj.getISBN()};
+		retrieve(term);
 		//ArrayList<Book> list = getResult();
 		Book book = adjustStatement(obj);
+		int quantity;
+		
+		if (obj.getQuantity() <= 0)
+			quantity = 0;
+		else
+			quantity = obj.getQuantity();
 		
 		// if no book is already there
 		if (!m_resultSet.next())
@@ -134,18 +163,24 @@ public class ShelfLifeDB implements Database<Book, ArrayList<Book>>
 				}
 			}*/
 			m_statement = m_connection.createStatement();
-			m_statement.execute("INSERT INTO Books VALUES ('"+book.getISBN()+"', '"+book.getTitle()+"','"+book.getAuthor()+"','"+book.getPublisher()+"',"+book.getPrice()+",'"+book.getGenres()+"','"+book.getDescription()+"',"+book.getQuantity()+"); COMMIT");
+			m_statement.execute("INSERT INTO Books VALUES ('"+book.getISBN()+"', '"+book.getTitle()+"','"+book.getAuthor()+"','"+book.getPublisher()+"',"+book.getPrice()+",'"+book.getGenres()+"','"+book.getDescription()+"',"+quantity+"); COMMIT");
 		}
 		// if no book is already there
 		else
 		{
-			int quantity = obj.getQuantity();
+			quantity = obj.getQuantity();
 			m_statement = m_connection.createStatement();
 			m_statement.execute("UPDATE Books "+
 					"SET ISBN='"+book.getISBN()+"', Title='"+book.getTitle()+"', Author='"+book.getAuthor()+"', Publisher='"
 					+book.getPublisher()+"', Price="+book.getPrice()+", Genres='"+book.getGenres()+"', Description='"+book.getDescription()+"', Quantity="+quantity+" " +
 					"WHERE ISBN='"+book.getISBN()+"'; COMMIT");
 		}
+	}
+
+	public void remove(Book obj) throws Exception
+	{
+		m_statement = m_connection.createStatement();
+		m_statement.execute("DELETE FROM Books WHERE ISBN='"+obj.getISBN()+"'; COMMIT");
 	}
 	
 }

@@ -3,15 +3,17 @@ package w3se.Controller;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.Date;
 
 import javax.swing.JTable;
 import javax.swing.event.ChangeEvent;
-import javax.swing.table.DefaultTableModel;
-
 import w3se.Base.Book;
+import w3se.Base.LogItem;
+import w3se.Base.LogItemFactory;
 import w3se.Base.User;
 import w3se.Model.IMS;
 import w3se.Model.Task;
+import w3se.Model.Database.BookDB;
 import w3se.View.Panels.BookSearchPanel;
 
 public class BookSearchController extends AbstractController
@@ -39,7 +41,7 @@ public class BookSearchController extends AbstractController
 									public void run()
 									{
 										String[] term = new String[2];
-										term[0] = "KEYWORD";
+										term[0] = BookDB.KEYWORD;
 										term[1] = search;
 										m_model.findBook(term);
 									}
@@ -92,7 +94,9 @@ public class BookSearchController extends AbstractController
 									{
 										m_model.setCurrentBook(m_view.getBook());
 										m_model.addCurrentBookToDB();
+										m_model.addLog(LogItemFactory.createLogItem(new Date().toString(), LogItem.INVENTORY, m_view.getBook().getTitle()+" added to the database."));
 										m_model.setCurrentBook(new Book());
+										
 									}
 								}));
 					}
@@ -143,9 +147,10 @@ public class BookSearchController extends AbstractController
 								{
 									public void run()
 									{
-										String[] term = new String[2];
-										term[0] = "BROWSE";
+										String[] term = new String[3];
+										term[0] = BookDB.BROWSE;
 										term[1] = m_view.getGenre();
+										term[2] = ""+m_view.getOrder();
 										m_model.findBook(term);
 									}
 								}));

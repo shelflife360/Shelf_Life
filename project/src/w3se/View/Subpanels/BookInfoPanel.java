@@ -2,8 +2,6 @@ package w3se.View.Subpanels;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.List;
-
 import javax.swing.GroupLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -14,11 +12,10 @@ import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
-
-import w3se.Base.BookGenres;
 import w3se.Controller.Controller;
 import javax.swing.JButton;
 
+@SuppressWarnings("serial")
 public class BookInfoPanel extends JPanel
 {
 	public static final int WIDTH = 450;

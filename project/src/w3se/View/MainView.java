@@ -2,24 +2,17 @@ package w3se.View;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Observable;
 import java.util.Observer;
-
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JTabbedPane;
-
-import w3se.Base.User;
 import w3se.Controller.Controller;
 import w3se.Controller.ControllerFactory;
 import w3se.Model.IMS;
 import w3se.Model.States;
 import w3se.View.Panels.BookSearchPanel;
-import w3se.View.Panels.BrowseSearchPanel;
 import w3se.View.Panels.ConfigManagePanel;
 import w3se.View.Panels.LogManagePanel;
 import w3se.View.Panels.LoginPanel;
@@ -27,6 +20,7 @@ import w3se.View.Panels.LogoutPanel;
 import w3se.View.Panels.SellManagePanel;
 import w3se.View.Subpanels.SearchPanel;
 
+@SuppressWarnings("serial")
 public class MainView extends JFrame implements Observer
 {
 

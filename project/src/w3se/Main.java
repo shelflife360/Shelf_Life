@@ -1,12 +1,10 @@
 package w3se;
 
 import java.awt.EventQueue;
-
-import w3se.Base.User;
 import w3se.Controller.ControllerFactory;
 import w3se.Model.IMS;
-import w3se.Model.Database.DatabaseAdaptor;
 import w3se.View.MainView;
+import w3se.View.SplashScreen;
 
 public class Main
 {
@@ -16,6 +14,8 @@ public class Main
 	 */
 	public static void main(String[] args) throws Exception
 	{	
+		SplashScreen splash = new SplashScreen("logo.png");
+		splash.run();
 		IMS ims = IMS.getInstance();
 		ControllerFactory conFactory = ControllerFactory.getInstance();
 		

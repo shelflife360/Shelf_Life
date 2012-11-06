@@ -4,7 +4,6 @@ import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.StringTokenizer;
 
 public class FileTokenizer
@@ -47,7 +46,7 @@ public class FileTokenizer
 	
 	public ArrayList<String> tokenize()
 	{
-		StringTokenizer tokenizer = new StringTokenizer(m_readFile, ", ");
+		StringTokenizer tokenizer = new StringTokenizer(m_readFile, ",");
 		ArrayList<String> list = new ArrayList<String>();
 		
 		while (tokenizer.hasMoreTokens())

@@ -1,10 +1,13 @@
 package w3se.Controller;
 
 import java.awt.event.WindowEvent;
+import java.util.Date;
 
 import javax.swing.JTabbedPane;
 import javax.swing.event.ChangeEvent;
 
+import w3se.Base.LogItem;
+import w3se.Base.LogItemFactory;
 import w3se.Base.User;
 import w3se.Model.IMS;
 import w3se.Model.Task;
@@ -28,6 +31,7 @@ public class MainViewController extends AbstractController
 				{
 					public void windowClosing(WindowEvent e)
 					{
+						m_model.addLog(LogItemFactory.createLogItem(new Date().toString(), LogItem.SYSTEM, "System shutdown."));
 						m_model.shutdownSystem();
 					}
 					
@@ -38,7 +42,7 @@ public class MainViewController extends AbstractController
 								{
 									public void run()
 									{
-										// blank task to force the system to update all of it's views for the first time
+										m_model.addLog(LogItemFactory.createLogItem(new Date().toString(), LogItem.SYSTEM, "System startup."));
 									}
 								}));
 					}

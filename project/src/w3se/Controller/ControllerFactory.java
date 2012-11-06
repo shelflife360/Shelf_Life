@@ -1,7 +1,6 @@
 package w3se.Controller;
 
 import w3se.Model.IMS;
-import w3se.View.Panels.LoginPanel;
 
 public class ControllerFactory
 {

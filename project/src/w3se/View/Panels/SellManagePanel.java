@@ -3,31 +3,16 @@ package w3se.View.Panels;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import java.awt.BorderLayout;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
-import javax.swing.LayoutStyle.ComponentPlacement;
-import javax.swing.JList;
-import javax.swing.JButton;
-import javax.swing.border.EtchedBorder;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.JSeparator;
-import java.awt.Color;
-import javax.swing.UIManager;
-import javax.swing.JTextPane;
-
 import w3se.Base.Book;
 import w3se.Controller.Controller;
 import w3se.Model.IMS;
 import w3se.View.Subpanels.ReceiptInfoPanel;
 import w3se.View.Subpanels.SearchPanel;
-
-import java.awt.SystemColor;
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 
+@SuppressWarnings("serial")
 public class SellManagePanel extends JPanel implements Observer
 {
 	private Controller m_controller;

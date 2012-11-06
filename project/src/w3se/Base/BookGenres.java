@@ -1,23 +1,30 @@
 package w3se.Base;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.StringTokenizer;
-
 import w3se.Model.FileTokenizer;
 
 public class BookGenres
 {
-	private HashMap<String, String> m_genreList = null;
+	private LinkedHashMap<String, String> m_genreList = null;
 	private String m_filename = null;
 	public BookGenres()
 	{
-		m_genreList = new HashMap<String, String>();
+		m_genreList = new LinkedHashMap<String, String>();
 	}
 	
+	/**
+	 * merge genres from a file
+	 * @param filename
+	 */
 	public void mergeFromFile(String filename)
 	{
 		m_filename = filename;
@@ -34,21 +41,45 @@ public class BookGenres
 		}
 	}
 	
+	/**
+	 * merge genres from a book
+	 * @param book
+	 */
 	public void mergeFromBook(Book book)
 	{
 		String str = book.getGenres();
-		StringTokenizer tokenizer = new StringTokenizer(",");
-		ArrayList<String> tokens = new ArrayList<String>();
-		
+		StringTokenizer tokenizer = new StringTokenizer(str, ", ");
+		ArrayList<String> genres = new ArrayList<String>();
 		while (tokenizer.hasMoreTokens())
 		{
 			String tok = tokenizer.nextToken().toUpperCase();
+			genres.add(tok);
 			if (!m_genreList.containsKey(tok))
 			{
 				m_genreList.put(tok, tok);
 			}
 		}
+		fixGenres(book, genres);
+	}
+	
+	/**
+	 * fix the genre of a book (replace with uppercase versions of what was typed)
+	 * @param book - book to have genres altered
+	 * @param genres - list of genres
+	 */
+	private void fixGenres(Book book, ArrayList<String> genres)
+	{
+		StringBuilder strBuilder = new StringBuilder();
 		
+		for (int i = 0; i < genres.size(); i++)
+		{
+			if (i == (genres.size()-1))
+				strBuilder.append(genres.get(i));
+			else
+				strBuilder.append(genres.get(i)+", ");
+		}
+		
+		book.setGenres(strBuilder.toString());
 	}
 	
 	public void addGenre(String genre)
@@ -84,5 +115,28 @@ public class BookGenres
 			i++;
 		}
 		return genres;
+	}
+	
+	public void writeToFile()
+	{
+		File file = new File(m_filename);
+		StringBuilder content = new StringBuilder();
+		String[] genres = toStringArray();
+		for (int i = 0; i < genres.length; i++)
+		{
+			content.append(genres[i]+",");
+		}
+		try
+		{
+			FileWriter writer = new FileWriter(file.getAbsoluteFile());
+			BufferedWriter buffWriter = new BufferedWriter(writer);
+			buffWriter.write(content.toString());
+			buffWriter.close();
+		} catch (IOException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 }

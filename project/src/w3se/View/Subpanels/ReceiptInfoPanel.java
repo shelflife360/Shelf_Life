@@ -2,29 +2,24 @@ package w3se.View.Subpanels;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.List;
 import java.text.NumberFormat;
 import java.util.ArrayList;
-import java.util.Currency;
 import java.util.Locale;
-
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.border.EtchedBorder;
-import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
-
 import w3se.Base.Book;
 import w3se.Controller.Controller;
 import javax.swing.JTable;
 
+@SuppressWarnings("serial")
 public class ReceiptInfoPanel extends JPanel
 {
 	public static final int WIDTH = 450;
@@ -57,7 +52,13 @@ public class ReceiptInfoPanel extends JPanel
 		JButton btnCancel = new JButton("Cancel");
 		btnCancel.addActionListener(m_controller.getListener("receipt_cancel"));
 		
-		DefaultTableModel model = new DefaultTableModel(new String[] {"ISBN", "Title", "Author", "Price"}, 0);
+		DefaultTableModel model = new DefaultTableModel(new String[] {"ISBN", "Title", "Author", "Price"}, 0)
+		{
+			public boolean isCellEditable(int row, int height)
+			{
+				return false;
+			}
+		};
 		m_receiptList = new JTable(model);
 
 		m_receiptList.setBorder(new EtchedBorder());

@@ -1,8 +1,15 @@
 package w3se.Controller;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseEvent;
+import java.util.Date;
 
+import javax.swing.JTable;
+
+import w3se.Base.LogItem;
+import w3se.Base.LogItemFactory;
 import w3se.Base.User;
+import w3se.Model.Configurations;
 import w3se.Model.IMS;
 import w3se.Model.Task;
 import w3se.View.Panels.ConfigManagePanel;
@@ -25,7 +32,7 @@ public class ConfigViewController extends AbstractController
 	protected void propagateMap()
 	{
 		// add the call back for the login button event
-		addListener("add_user", new 
+		addListener("config_add_user", new 
 				ListenerAdaptor()
 				{
 					public void actionPerformed(ActionEvent e)
@@ -36,32 +43,124 @@ public class ConfigViewController extends AbstractController
 								{
 									public void run()
 									{
-										User user = new User();
-										user.setUID(m_view.getUID());
-										user.setPrivilege(m_view.getPrivilege());
-										user.setUsername(m_view.getUsername());
-										user.setPassword(m_view.getPassword());
-										
-										m_model.createUser(user);
+										m_model.createUser(m_view.getUser());
+										m_model.setVolatileUser(new User());
+										m_model.addLog(LogItemFactory.createLogItem(new Date().toString(), LogItem.USER, m_view.getUser().getUsername()+" added to the database."));
 									}
 								}));
 					}
 				});
 		
-		// create and add a listener for the logout button event
-		addListener("", new
+		addListener("config_user_search", new
 				ListenerAdaptor()
 				{
 					public void actionPerformed(ActionEvent e)
 					{
-						m_model.getTaskManager().addTask(new Task(User.WORKER, new 
+						m_model.getTaskManager().addTask(new Task(User.MANAGER, new 
 								Runnable()
 								{
 									public void run()
 									{
-								
+										User user = m_model.retreiveUser(new String[]{m_view.getSearchBy(),m_view.getSearchTerm()});
+										m_model.setVolatileUser(user);
 									}
 								}));
+					}
+				});
+		
+		addListener("config_remove_user_search", new
+				ListenerAdaptor()
+				{
+					public void actionPerformed(ActionEvent e)
+					{
+						m_model.getTaskManager().addTask(new Task(User.MANAGER, new 
+								Runnable()
+								{
+									public void run()
+									{
+										
+										User user = m_model.retreiveUser(new String[]{m_view.getSearchBy(),m_view.getSearchTerm()});
+										m_model.addToRemoveUserList(user);
+									}
+								}));
+					}
+				});
+		
+		addListener("config_remove_user_remove", new
+				ListenerAdaptor()
+				{
+					public void mouseClicked(MouseEvent e)
+					{
+						JTable table = (JTable)e.getSource();
+						final int row = table.rowAtPoint(e.getPoint());
+						
+						m_model.getTaskManager().addTask(new Task(User.MANAGER, new 
+							Runnable()
+							{
+								public void run()
+								{
+									m_model.removeFromRemoveUserList(row);
+								}
+							}));
+					}
+				});
+		
+		addListener("config_remove_user_clear", new
+				ListenerAdaptor()
+				{
+					public void actionPerformed(ActionEvent e)
+					{
+						m_model.getTaskManager().addTask(new Task(User.MANAGER, new 
+							Runnable()
+							{
+								public void run()
+								{
+									m_model.clearRemoveUserList();
+								}
+							}));
+					}
+				});
+		
+		addListener("config_remove_user_accept", new
+				ListenerAdaptor()
+				{
+					public void actionPerformed(ActionEvent e)
+					{
+						m_model.getTaskManager().addTask(new Task(User.MANAGER, new 
+							Runnable()
+							{
+								public void run()
+								{
+									for (int i = 0; i < m_model.getRemoveUserList().size(); i++)
+									{
+										m_model.addLog(LogItemFactory.createLogItem(new Date().toString(), LogItem.USER, m_model.getRemoveUserList().get(i).getUsername()+" removed from the database."));
+										m_model.removeUserFromDB(m_model.getRemoveUserList().get(i));
+									}
+									m_model.clearRemoveUserList();
+								}
+							}));
+					}
+				});
+		
+		addListener("config_sql_accept", new
+				ListenerAdaptor()
+				{
+					public void actionPerformed(ActionEvent e)
+					{
+						m_model.getTaskManager().addTask(new Task(User.MANAGER, new 
+							Runnable()
+							{
+								public void run()
+								{
+									String[] params = m_view.getSQLParams();
+									Configurations config = IMS.getInstance().getInstance().getConfigurations();
+									config.setNewConfiguration("DatabaseDriver", params[0]);
+									config.setNewConfiguration("BooksDBUrl", params[1]);
+									config.setNewConfiguration("UsersDBUrl", params[2]);
+									config.setNewConfiguration("LogsDBUrl", params[3]);
+									config.setNewConfiguration("ServerMode", params[4]);
+								}
+							}));
 					}
 				});
 	}

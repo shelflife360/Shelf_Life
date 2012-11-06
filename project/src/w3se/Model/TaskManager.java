@@ -1,6 +1,5 @@
 package w3se.Model;
 
-import java.util.LinkedList;
 import java.util.Observable;
 import java.util.PriorityQueue;
 import java.util.Queue;
@@ -29,16 +28,25 @@ public class TaskManager extends Observable
 	/**
 	 * method to run the next task
 	 */
-	public void runTask()
+	public void runTask() throws Exception
 	{
-		User currentUser = IMS.getInstance().getUser();
+		User currentUser = IMS.getInstance().getCurrentUser();
 		int privilege = currentUser.getPrivilege();
 		Task task = m_taskQueue.poll();
 		
 		if (task.getPrivilege() <= privilege)
 		{
-			task.run();
+			try
+			{
+				task.run();
+			}
+			catch (Exception e)
+			{
+				throw e;
+			}
 		}
+		else
+			throw new Exception("Privileges do not allow this action.\n Changes will not be applied!");
 		
 		
 	}

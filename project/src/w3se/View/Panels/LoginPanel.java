@@ -44,7 +44,7 @@ public class LoginPanel extends JPanel implements Observer
 		
 		JLabel lblPassword = new JLabel("Password : ");
 		
-		m_passwordField = new JPasswordField();
+		m_passwordField = new JPasswordField("");
 		m_passwordField.setColumns(20);
 		
 		JButton btnLogin = new JButton("Login");

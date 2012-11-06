@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 
+@SuppressWarnings("serial")
 public class BookSearchPanel extends JPanel implements Observer
 {
 	public static final int WIDTH = 1020;
@@ -83,6 +84,11 @@ public class BookSearchPanel extends JPanel implements Observer
 		return m_mainPanel.getSelectedGenre();
 	}
 	
+	public int getOrder()
+	{
+		return m_mainPanel.getSelectedOrder();
+	}
+	
 	public void update(Observable sender, Object obj)
 	{
 		ArrayList<Book> list = IMS.getInstance().getListOfFoundBooks();
@@ -99,6 +105,7 @@ public class BookSearchPanel extends JPanel implements Observer
 		m_infoPanel.setQuantity(book.getQuantity());
 		m_mainPanel.setSearchResults(list);
 		m_mainPanel.setGenres(IMS.getInstance().getGenres().toStringArray());
+		m_mainPanel.setPrevViewedList(IMS.getInstance().getPrevViewedList());
 	}
 	
 }

@@ -3,17 +3,14 @@ package w3se.Model.Database;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Scanner;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -21,13 +18,11 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
 import w3se.Base.Book;
-import w3se.Model.DelimitedString;
 
+@SuppressWarnings("rawtypes")
 public class OnlineDB implements Database
 {
-	private Document m_responseDOM = null;
 	private HttpURLConnection connection = null;
-	private OutputStreamWriter writer = null;
 	private BufferedReader buffReader = null;
 	StringBuilder strBuilder = null;
 	String line = null;
@@ -98,7 +93,7 @@ public class OnlineDB implements Database
 		}
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			System.out.println(e.getMessage());
 		}
 		
 		return bookList;
@@ -132,7 +127,6 @@ public class OnlineDB implements Database
 			return "";
 	}
 	
-	@Override
 	public void retrieve(Object term) throws Exception
 	{
 		String searchTerm = (String)term;
@@ -151,17 +145,14 @@ public class OnlineDB implements Database
 			
 		} catch (IOException e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
 	}
 
-	@Override
 	public void add(Object obj) throws SQLException
 	{}
 
-	@Override
 	public Object getResult() throws Exception
 	{
 		StringBuilder str = new StringBuilder();
@@ -174,16 +165,15 @@ public class OnlineDB implements Database
 		return parseResponse(str.toString());
 	}
 
-	@Override
 	public void shutdown() throws SQLException
 	{
 		connection.disconnect();
 	}
 
-	@Override
 	public void close() throws SQLException
-	{
-		
-	}
+	{}
+
+	public void remove(Object obj) throws Exception
+	{}
 
 }

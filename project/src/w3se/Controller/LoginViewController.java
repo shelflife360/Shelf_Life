@@ -1,7 +1,12 @@
 package w3se.Controller;
 
 import java.awt.event.ActionEvent;
+import java.util.Date;
 
+import javax.swing.JOptionPane;
+
+import w3se.Base.LogItem;
+import w3se.Base.LogItemFactory;
 import w3se.Base.User;
 import w3se.Model.IMS;
 import w3se.Model.Task;
@@ -35,10 +40,12 @@ public class LoginViewController extends AbstractController
 										m_model.setUser(new User(-1, User.GENERAL, m_view.getUsername(), m_view.getPassword()));
 										try
 										{
+											m_model.addLog(LogItemFactory.createLogItem(new Date().toString(), LogItem.LOGIN, m_view.getUsername()+" logged onto the system."));
 											m_model.login();
 										} catch (Exception e)
 										{
-											System.out.println(e.getMessage());
+											if (m_model.showDialogs())
+												JOptionPane.showMessageDialog(m_view, e.getMessage(), "Login Failure", JOptionPane.ERROR_MESSAGE);
 										}
 									}
 								}));
@@ -56,6 +63,7 @@ public class LoginViewController extends AbstractController
 								{
 									public void run()
 									{
+										m_model.addLog(LogItemFactory.createLogItem(new Date().toString(), LogItem.LOGIN, m_model.getCurrentUser().getUsername()+" logged out of the system."));
 										m_model.setUser( new User(-1, User.GENERAL, "General", "General"));
 										m_model.logout();
 									}

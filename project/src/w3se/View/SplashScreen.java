@@ -1,11 +1,9 @@
 package w3se.View;
 
 import java.awt.BorderLayout;
-import java.awt.EventQueue;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -13,6 +11,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
 
+@SuppressWarnings("serial")
 public class SplashScreen extends JFrame
 {
 
@@ -25,12 +24,14 @@ public class SplashScreen extends JFrame
 	public SplashScreen(final String filename) 
 	{
 		init(filename);
-		
+	}
+	
+	public void run()
+	{
 		long startTime = System.currentTimeMillis();
 		while (System.currentTimeMillis()-startTime < 2000)
 		{}
 		dispose();
-		
 	}
 	
 	private void init(String filename)
