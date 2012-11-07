@@ -53,7 +53,7 @@ public class LogManagePanel extends JPanel implements Observer
 					public void actionPerformed(ActionEvent e)
 					{
 						IMS.getInstance().getLogs(LogItem.ALL);
-						m_view.
+						//m_view.
 					}
 				});
 		// create an anonymous class to set the cells as not editable
@@ -159,8 +159,6 @@ public class LogManagePanel extends JPanel implements Observer
 	public void update(Observable arg0, Object arg1)
 	{
 		ArrayList<LogItem> items = IMS.getInstance().getLogs(LogItem.ALL);
-		
-		
 	}
 	
 	

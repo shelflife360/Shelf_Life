@@ -132,13 +132,20 @@ public class SellViewController extends AbstractController
 				{
 					public void actionPerformed(ActionEvent e)
 					{
-						ArrayList<Book> books = m_model.getListofSoldBooks();
-						
-						for (int i = 0; i < books.size(); i++)
-						{
-							m_model.addLog(LogItemFactory.createLogItem(new Date().toString(), LogItem.SALES, books.get(i).getTitle()+" sold for "+books.get(i).getPrice()+"."));
-						}
-						m_model.finalizeSell();
+						m_model.getTaskManager().addTask(new Task(User.WORKER, new 
+								Runnable()
+								{
+									public void run()
+									{
+										ArrayList<Book> books = m_model.getListofSoldBooks();
+										
+										for (int i = 0; i < books.size(); i++)
+										{
+											m_model.addLog(LogItemFactory.createLogItem(new Date().toString(), LogItem.SALES, books.get(i).getTitle()+" sold for "+books.get(i).getPrice()+"."));
+										}
+										m_model.finalizeSell();
+									}
+								}));
 					}
 				});
 	}

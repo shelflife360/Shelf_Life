@@ -1,6 +1,6 @@
 package w3se.Base;
 
-public class Book
+public class Book implements Exportable
 {
 	private int m_id = 0;
 	private String m_title = "";
@@ -138,5 +138,41 @@ public class Book
 	public void setTotalCopies(int total)
 	{
 		m_totalCopies = total;
+	}
+
+	
+	public String getExportableTitle()
+	{
+		return "Book Database Export";
+	}
+	
+	public String[] getExportableHeadRow()
+	{
+		String[] format = new String[8];
+		format[0] = "ISBN";
+		format[1] = "Title";
+		format[2] = "Author";
+		format[3] = "Publisher";
+		format[4] = "Genres";
+		format[5] = "Description";
+		format[6] = "Quantity";
+		format[7] = "Price";
+		
+		return format;
+	}
+	
+	public String[] getExportableRow()
+	{
+		String[] format = new String[8];
+		format[0] = m_ISBN;
+		format[1] = m_title;
+		format[2] = m_author;
+		format[3] = m_publisher;
+		format[4] = m_genres;
+		format[5] = m_description;
+		format[6] = ""+m_quantity;
+		format[7] = ""+m_price;
+		
+		return format;
 	}
 }

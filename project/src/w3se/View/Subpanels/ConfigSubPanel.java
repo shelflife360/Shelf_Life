@@ -30,7 +30,7 @@ public class ConfigSubPanel extends JPanel
 		m_parent = parent;
 		m_controller = controller;
 		setPreferredSize(new Dimension(WIDTH, HEIGHT));
-		final JToggleButton[] buttons = new JToggleButton[4];
+		final JToggleButton[] buttons = new JToggleButton[5];
 		
 		buttons[0] = new JToggleButton("Add User");
 		
@@ -39,6 +39,8 @@ public class ConfigSubPanel extends JPanel
 		buttons[1] = new JToggleButton("Edit User");
 		
 		buttons[3] = new JToggleButton("SQL Configurations");
+		
+		buttons[4] = new JToggleButton("Export to File");
 		
 		JButton btnLogPreferences = new JButton("Log Preferences");
 		
@@ -105,6 +107,23 @@ public class ConfigSubPanel extends JPanel
 					}
 			
 				});
+		
+		buttons[4].addActionListener(new 
+				ActionListener()
+				{
+					public void actionPerformed(ActionEvent e)
+					{
+						if (buttons[4].isSelected())
+						{
+							m_parent.setInfoPanel(ConfigManagePanel.EXPORT);
+							toggleButtons(buttons, 4);
+						}
+						else
+							m_parent.setInfoPanel(-1);
+					}
+			
+				});
+		
 		GroupLayout groupLayout = new GroupLayout(this);
 		groupLayout.setHorizontalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
@@ -116,6 +135,7 @@ public class ConfigSubPanel extends JPanel
 						.addComponent(buttons[0])
 						.addComponent(buttons[2])
 						.addComponent(buttons[3])
+						.addComponent(buttons[4])
 					//.addContainerGap(179, Short.MAX_VALUE))
 		)));
 		groupLayout.setVerticalGroup(
@@ -129,6 +149,8 @@ public class ConfigSubPanel extends JPanel
 					.addComponent(buttons[2])
 					.addPreferredGap(ComponentPlacement.UNRELATED)
 					.addComponent(buttons[3])
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addComponent(buttons[4])
 					.addPreferredGap(ComponentPlacement.UNRELATED)
 					.addComponent(btnLogPreferences)
 					.addContainerGap(71, Short.MAX_VALUE))

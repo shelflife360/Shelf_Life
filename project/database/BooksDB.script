@@ -48,10 +48,10 @@ GRANT DBA TO SA
 SET SCHEMA SYSTEM_LOBS
 INSERT INTO BLOCKS VALUES(0,2147483647,0)
 SET SCHEMA PUBLIC
-INSERT INTO BOOKS VALUES('9780696215469','Biggest book of slow cooker recipes','','Des Moines, IA : Better Homes and Gardens Books, 2002.',0.0E0,'COOKING','',-1)
 INSERT INTO BOOKS VALUES('725274102273','People Magazine','','PEOPLE',1.0E0,'TEEN, SOCIAL, MAGAZINE','This is a shitty magazine for mom and Sheena',0)
-INSERT INTO BOOKS VALUES('9780201379501','Efficient C++','Dov Bulka, David Mayhew','Reading, Mass. : Addison-Wesley, c2000.',3.0E0,'TECHNOLOGY, SCIENCE, NON-FICTION','Performance analysis and efficient coding in C++',-3)
-INSERT INTO BOOKS VALUES('9780140385069','The teen''s vegetarian cookbook','by Judy Krizmanic; illustrations by Matthew Wawiorka','New York : Viking, 1999.',10.0E0,'TEEN, VEGETARIAN','asdfsdf',-1)
-INSERT INTO BOOKS VALUES('9780805065251','The gluten-free gourmet cooks fast and healthy','Bette Hagman; [foreword by Joseph A. Murray]','New York : Henry Holt, c2000.',0.0E0,'','',-3)
-INSERT INTO BOOKS VALUES('9781450811071','100 Best Cupcake Recipes','Editors of Favorite Brand Name Recipes (Editor)','Publications International, Ltd.',0.0E0,'','',-3)
-INSERT INTO BOOKS VALUES('9788183331869','32/64-Bit 80x86 Assembly Language Architecture','James C. Leiterman, ','BPB Publications',10.0E0,'TECHNOLOGY, SCIENCE, NON-FICTION','64 bit assembly techniques, and SIMD routines in SSE, MMX, and 3DNow!',-5)
+INSERT INTO BOOKS VALUES('9780696215469','Biggest book of slow cooker recipes','','Des Moines, IA : Better Homes and Gardens Books, 2002.',20.0E0,'COOKING','Cookbook ',1)
+INSERT INTO BOOKS VALUES('9780201379501','Efficient C++','Dov Bulka, David Mayhew','Reading, Mass. : Addison-Wesley, c2000.',3.0E0,'TECHNOLOGY, SCIENCE, NON-FICTION','Performance analysis and efficient coding in C++',1)
+INSERT INTO BOOKS VALUES('9780140385069','The teen''s vegetarian cookbook','by Judy Krizmanic; illustrations by Matthew Wawiorka','New York : Viking, 1999.',10.0E0,'TEEN, VEGETARIAN','Vegetarian cookbook\u000a',1)
+INSERT INTO BOOKS VALUES('9780805065251','The gluten-free gourmet cooks fast and healthy','Bette Hagman; [foreword by Joseph A. Murray]','New York : Henry Holt, c2000.',13.25E0,'COOKING, HEALTH','Cookbook',1)
+INSERT INTO BOOKS VALUES('9788183331869','32/64-Bit 80x86 Assembly Language Architecture','James C. Leiterman, ','BPB Publications',10.0E0,'TECHNOLOGY, SCIENCE, NON-FICTION','64 bit assembly techniques, and SIMD routines in SSE, MMX, and 3DNow!',1)
+INSERT INTO BOOKS VALUES('9781450811071','100 Best Cupcake Recipes','Editors of Favorite Brand Name Recipes (Editor)','Publications International, Ltd.',3.15E0,'','',1)

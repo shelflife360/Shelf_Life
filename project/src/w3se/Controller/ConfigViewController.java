@@ -4,14 +4,19 @@ import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.util.Date;
 
+import javax.swing.JFileChooser;
 import javax.swing.JTable;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
+import w3se.Base.ExcelExporter;
+import w3se.Base.Exportable;
 import w3se.Base.LogItem;
 import w3se.Base.LogItemFactory;
 import w3se.Base.User;
 import w3se.Model.Configurations;
 import w3se.Model.IMS;
 import w3se.Model.Task;
+import w3se.Model.Database.DatabaseAdaptor;
 import w3se.View.Panels.ConfigManagePanel;
 
 public class ConfigViewController extends AbstractController
@@ -61,7 +66,7 @@ public class ConfigViewController extends AbstractController
 								{
 									public void run()
 									{
-										User user = m_model.retreiveUser(new String[]{m_view.getSearchBy(),m_view.getSearchTerm()});
+										User user = m_model.retreiveUser(new String[]{m_view.getSearchBy(),m_view.getSearchTerm()}).get(0);
 										m_model.setVolatileUser(user);
 									}
 								}));
@@ -79,7 +84,7 @@ public class ConfigViewController extends AbstractController
 									public void run()
 									{
 										
-										User user = m_model.retreiveUser(new String[]{m_view.getSearchBy(),m_view.getSearchTerm()});
+										User user = m_model.retreiveUser(new String[]{m_view.getSearchBy(),m_view.getSearchTerm()}).get(0);
 										m_model.addToRemoveUserList(user);
 									}
 								}));
@@ -159,6 +164,84 @@ public class ConfigViewController extends AbstractController
 									config.setNewConfiguration("UsersDBUrl", params[2]);
 									config.setNewConfiguration("LogsDBUrl", params[3]);
 									config.setNewConfiguration("ServerMode", params[4]);
+								}
+							}));
+					}
+				});
+		
+		addListener("books_export", new
+				ListenerAdaptor()
+				{
+					public void actionPerformed(ActionEvent e)
+					{
+						m_model.getTaskManager().addTask(new Task(User.WORKER, new 
+							Runnable()
+							{
+								public void run()
+								{
+									JFileChooser dialog = new JFileChooser();
+									FileNameExtensionFilter filter = new FileNameExtensionFilter("EXCEL Files", "xls");
+									dialog.setFileFilter(filter);
+									int returnVal = dialog.showSaveDialog(null);
+									
+									m_model.setExporter(new ExcelExporter());
+								
+									if (returnVal == JFileChooser.APPROVE_OPTION)
+									{
+										m_model.export(DatabaseAdaptor.BOOK_DB, dialog.getSelectedFile().getAbsolutePath()+".xls");
+									}
+								}
+							}));
+					}
+				});
+		
+		addListener("users_export", new
+				ListenerAdaptor()
+				{
+					public void actionPerformed(ActionEvent e)
+					{
+						m_model.getTaskManager().addTask(new Task(User.MANAGER, new 
+							Runnable()
+							{
+								public void run()
+								{
+									JFileChooser dialog = new JFileChooser();
+									FileNameExtensionFilter filter = new FileNameExtensionFilter("EXCEL Files", "xls");
+									dialog.setFileFilter(filter);
+									int returnVal = dialog.showSaveDialog(null);
+									
+									m_model.setExporter(new ExcelExporter());
+								
+									if (returnVal == JFileChooser.APPROVE_OPTION)
+									{
+										m_model.export(DatabaseAdaptor.USERS_DB, dialog.getSelectedFile().getAbsolutePath()+".xls");
+									}
+								}
+							}));
+					}
+				});
+		
+		addListener("logs_export", new
+				ListenerAdaptor()
+				{
+					public void actionPerformed(ActionEvent e)
+					{
+						m_model.getTaskManager().addTask(new Task(User.MANAGER, new 
+							Runnable()
+							{
+								public void run()
+								{
+									JFileChooser dialog = new JFileChooser();
+									FileNameExtensionFilter filter = new FileNameExtensionFilter("EXCEL Files", "xls");
+									dialog.setFileFilter(filter);
+									int returnVal = dialog.showSaveDialog(null);
+									
+									m_model.setExporter(new ExcelExporter());
+								
+									if (returnVal == JFileChooser.APPROVE_OPTION)
+									{
+										m_model.export(DatabaseAdaptor.LOGS_DB, dialog.getSelectedFile().getAbsolutePath()+".xls");
+									}
 								}
 							}));
 					}

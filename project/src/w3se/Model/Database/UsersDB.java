@@ -5,11 +5,12 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 import w3se.Base.User;
 import w3se.Model.Configurations;
 
-public class UsersDB implements Database<User, User>
+public class UsersDB implements Database<User, ArrayList<User>>
 {
 	private Statement m_statement = null;
 	private ResultSet m_resultSet = null;
@@ -33,28 +34,36 @@ public class UsersDB implements Database<User, User>
 	public void retrieve(Object term) throws Exception
 	{
 		String[] searchTerm = (String[])term;
-			
-		if (searchTerm[0].equals(U_ID))
-			searchTerm[1] = ""+Integer.parseInt(searchTerm[1])+"";
-		else
-			searchTerm[1] = "'"+searchTerm[1]+"'";
 		
 		m_statement = m_connection.createStatement();
-		m_resultSet = m_statement.executeQuery("SELECT * FROM Users WHERE "+searchTerm[0]+" = "+searchTerm[1]);
+		
+		if (searchTerm[0].equals(U_ID))
+		{
+			searchTerm[1] = Integer.parseInt(searchTerm[1])+"";
+			m_resultSet = m_statement.executeQuery("SELECT * FROM Users WHERE "+searchTerm[0]+" = "+searchTerm[1]);
+		}
+		else if (searchTerm[0].equals(USERNAME))
+		{
+			searchTerm[1] = "'%"+searchTerm[1]+"%'";
+			m_resultSet = m_statement.executeQuery("SELECT * FROM Users WHERE "+searchTerm[0]+" LIKE "+searchTerm[1]);
+		}
 	}
 
 	@Override
-	public User getResult() throws Exception
+	public ArrayList<User> getResult() throws Exception
 	{
-		User user = new User();
+		ArrayList<User> list = new ArrayList<User>();
 		
-		m_resultSet.next();
-		user.setUID(m_resultSet.getInt("U_id"));
-		user.setPrivilege(m_resultSet.getInt("Privilege"));
-		user.setUsername(m_resultSet.getString("Username"));
-		user.setHashedPassword(m_resultSet.getString("Password"));
-		
-		return user;	
+		while (m_resultSet.next())
+		{
+			User user = new User();
+			user.setUID(m_resultSet.getInt("U_id"));
+			user.setPrivilege(m_resultSet.getInt("Privilege"));
+			user.setUsername(m_resultSet.getString("Username"));
+			user.setHashedPassword(m_resultSet.getString("Password"));
+			list.add(user);
+		}
+		return list;	
 	}
 	
 	public void add(User user) throws SQLException

@@ -21,9 +21,13 @@ import org.xml.sax.InputSource;
 
 import w3se.Base.Book;
 import w3se.Base.BookGenres;
+import w3se.Base.ExcelExporter;
+import w3se.Base.Exportable;
+import w3se.Base.Exporter;
 import w3se.Base.LogItem;
 import w3se.Base.LogItemFactory;
 import w3se.Base.User;
+import w3se.Model.Database.BookDB;
 import w3se.Model.Database.DatabaseAdaptor;
 import w3se.Model.Database.UsersDB;
 
@@ -41,7 +45,7 @@ public class IMS extends Observable implements Observer
 	private ArrayList<Book> m_prevViewedList = new ArrayList<Book>();
 	private ArrayList<User> m_removeUserList = new ArrayList<User>();
 	private ArrayList<LogItem> m_logList = new ArrayList<LogItem>();
-	
+	private Exporter m_exporter;
 	private Configurations m_config;
 	private BookGenres m_genres = new BookGenres();
 	private boolean m_showDialogs = true;
@@ -64,7 +68,6 @@ public class IMS extends Observable implements Observer
 		m_genres.mergeFromFile(m_config.getValue("GenreListLoc"));
 		m_scheduler.addObserver(this);
 		m_dbAdaptor = new DatabaseAdaptor(m_config.getValue("ServerMode"), m_config);
-		
 	}
 	
 	public static IMS getInstance()
@@ -101,20 +104,25 @@ public class IMS extends Observable implements Observer
 			throw new Exception("Login Failed: Username or password incorrect");
 		}
 		
-		User user = (User)m_dbAdaptor.getResult();
+		ArrayList<User> userList = (ArrayList<User>)m_dbAdaptor.getResult();
 		
-		if (m_currentUser.getUsername().equals(user.getUsername()) && m_currentUser.getPassword().equals(user.getPassword()))
+		System.out.println(userList.size());
+		if (userList.size() > 0)
 		{
-			m_state = States.LOGGED_IN;
-			m_currentUser = user;
-		}
-		else
-		{
-			m_state = States.LOGGED_OUT;
-			addLog(LogItemFactory.createLogItem(new Date().toString(), LogItem.LOGIN, "Login failure."));
-			throw new Exception("Login Failed: Username or password incorrect");
-			
-			
+			User user = userList.get(0);
+			if (m_currentUser.getUsername().equals(user.getUsername()) && m_currentUser.getPassword().equals(user.getPassword()))
+			{
+				m_state = States.LOGGED_IN;
+				m_currentUser = user;
+			}
+			else
+			{
+				m_state = States.LOGGED_OUT;
+				addLog(LogItemFactory.createLogItem(new Date().toString(), LogItem.LOGIN, "Login failure."));
+				throw new Exception("Login Failed: Username or password incorrect");
+				
+				
+			}
 		}
 	}
 	
@@ -177,15 +185,15 @@ public class IMS extends Observable implements Observer
 		return copy;
 	}
 	
-	public User retreiveUser(String[] userName)
+	public ArrayList<User> retreiveUser(String[] userName)
 	{
 		m_dbAdaptor.setState(DatabaseAdaptor.USERS_DB);
-		User user = new User();
+		ArrayList<User> user = new ArrayList<User>();
 		
 		try
 		{
 			m_dbAdaptor.retrieve(userName);
-			user = (User)m_dbAdaptor.getResult();
+			user = (ArrayList<User>)m_dbAdaptor.getResult();
 		} 
 		catch (Exception e)
 		{
@@ -251,8 +259,10 @@ public class IMS extends Observable implements Observer
 			m_foundBookList = (ArrayList<Book>)m_dbAdaptor.getResult();
 			
 			if (m_foundBookList.size() > 0)
+			{
 				setCurrentBook(m_foundBookList.get(0));
-	
+				
+			}
 			else if (m_currentUser.getPrivilege() > User.GENERAL)
 			{
 				m_scheduler.addTask(new Task(User.WORKER, new 
@@ -484,5 +494,42 @@ public class IMS extends Observable implements Observer
 		}
 		
 		return items;
+	}
+	
+	public void setExporter(Exporter exporter)
+	{
+		m_exporter = exporter;
+	}
+	
+	public void export(int dbType, String filename)
+	{
+		m_exporter.setFilename(filename);
+		ArrayList list;
+		System.out.println(dbType);
+		
+		switch (dbType)
+		{
+			case DatabaseAdaptor.BOOK_DB:
+				findBook(new String[] {BookDB.KEYWORD, ""});	// find all the books
+				list = m_foundBookList;
+				break;
+			case DatabaseAdaptor.USERS_DB:
+				list = (ArrayList<User>)retreiveUser(new String[] {UsersDB.USERNAME, ""});
+				break;
+			default:
+				list = new ArrayList();
+				break;
+		}
+		
+		
+		try
+		{
+			m_exporter.export(list);
+		} 
+		catch (Exception e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

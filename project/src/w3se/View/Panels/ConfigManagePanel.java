@@ -15,6 +15,7 @@ import w3se.View.MainView;
 import w3se.View.Subpanels.AddUserPanel;
 import w3se.View.Subpanels.ConfigSQLPanel;
 import w3se.View.Subpanels.ConfigSubPanel;
+import w3se.View.Subpanels.ExportPanel;
 import w3se.View.Subpanels.RemoveUserPanel;
 
 @SuppressWarnings("serial")
@@ -27,12 +28,15 @@ public class ConfigManagePanel extends JPanel implements Observer
 	public static final int USER_EDIT = 2;
 	public static final int USER_REMOVE = 3;
 	public static final int SQL_CONFIG = 4;
+	public static final int EXPORT = 5;
+	
 	private MainView m_parent = null;
 	private Controller m_controller = null;
 	private JSplitPane m_splitPane;
 	private AddUserPanel m_addUser;
 	private RemoveUserPanel m_removeUser;
 	private ConfigSQLPanel m_sqlConfig;
+	private ExportPanel m_exportPanel;
 	
 	private int m_currentPanel = NULL;
 	/**
@@ -58,6 +62,8 @@ public class ConfigManagePanel extends JPanel implements Observer
 		m_addUser = new AddUserPanel(m_controller);
 		m_removeUser = new RemoveUserPanel(m_controller);
 		m_sqlConfig = new ConfigSQLPanel(m_controller);
+		m_exportPanel = new ExportPanel(m_controller);
+		
 		
 	}
 
@@ -82,6 +88,10 @@ public class ConfigManagePanel extends JPanel implements Observer
 			case SQL_CONFIG:
 				m_currentPanel = SQL_CONFIG;
 				m_splitPane.setRightComponent(m_sqlConfig);
+				break;
+			case EXPORT:
+				m_currentPanel = EXPORT;
+				m_splitPane.setRightComponent(m_exportPanel);
 				break;
 			default:
 				m_currentPanel = NULL;
