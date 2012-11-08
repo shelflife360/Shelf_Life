@@ -19,16 +19,15 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
-import w3se.Base.Book;
-import w3se.Base.BookGenres;
-import w3se.Base.ExcelExporter;
-import w3se.Base.Exportable;
-import w3se.Base.Exporter;
-import w3se.Base.LogItem;
-import w3se.Base.LogItemFactory;
-import w3se.Base.User;
+import w3se.Model.Base.Book;
+import w3se.Model.Base.BookGenres;
+import w3se.Model.Base.LogItem;
+import w3se.Model.Base.LogItemFactory;
+import w3se.Model.Base.States;
+import w3se.Model.Base.User;
 import w3se.Model.Database.BookDB;
 import w3se.Model.Database.DatabaseAdaptor;
+import w3se.Model.Database.LogsDB;
 import w3se.Model.Database.UsersDB;
 
 public class IMS extends Observable implements Observer
@@ -50,13 +49,13 @@ public class IMS extends Observable implements Observer
 	private BookGenres m_genres = new BookGenres();
 	private boolean m_showDialogs = true;
 	
-	public static final int NAN = -1;
+	/*public static final int NAN = -1;
 	public static final int KEYWORD_S = 0;
 	public static final int BROWSE_S = 1;
 	public static final int ADD_EDIT = 2;
 	public static final int SELL = 3;
 	public static final int LOGIN = 0;
-	public static final int BOOKS = 1;
+	public static final int BOOKS = 1;*/
 
 	/**
 	 * constructor
@@ -70,6 +69,10 @@ public class IMS extends Observable implements Observer
 		m_dbAdaptor = new DatabaseAdaptor(m_config.getValue("ServerMode"), m_config);
 	}
 	
+	/**
+	 * gotta love singletons (GLOBAL CHAOS!)
+	 * @return
+	 */
 	public static IMS getInstance()
 	{
 		if (m_instance == null)	
@@ -77,6 +80,7 @@ public class IMS extends Observable implements Observer
 		
 		return m_instance;
 	}
+	
 	/**
 	 * method to set the current user of the system
 	 * @param user
@@ -91,6 +95,7 @@ public class IMS extends Observable implements Observer
 	 * method to login
 	 * @throws Exception
 	 */
+	@SuppressWarnings("unchecked")
 	public void login() throws Exception
 	{
 		m_dbAdaptor.setState(DatabaseAdaptor.USERS_DB);
@@ -100,13 +105,12 @@ public class IMS extends Observable implements Observer
 		}
 		catch (Exception e)
 		{
-			addLog(LogItemFactory.createLogItem(new Date().toString(), LogItem.LOGIN, "Login failure."));
+			addLog(LogItemFactory.createLogItem(LogItem.LOGIN, "Login failure."));
 			throw new Exception("Login Failed: Username or password incorrect");
 		}
 		
 		ArrayList<User> userList = (ArrayList<User>)m_dbAdaptor.getResult();
 		
-		System.out.println(userList.size());
 		if (userList.size() > 0)
 		{
 			User user = userList.get(0);
@@ -118,12 +122,14 @@ public class IMS extends Observable implements Observer
 			else
 			{
 				m_state = States.LOGGED_OUT;
-				addLog(LogItemFactory.createLogItem(new Date().toString(), LogItem.LOGIN, "Login failure."));
+				addLog(LogItemFactory.createLogItem(LogItem.LOGIN, "Login failure."));
 				throw new Exception("Login Failed: Username or password incorrect");
 				
 				
 			}
 		}
+		else
+			throw new Exception("Username or password incorrect");
 	}
 	
 	/**
@@ -147,20 +153,23 @@ public class IMS extends Observable implements Observer
 		{
 			m_dbAdaptor.add(user);
 		}
-		catch (SQLException e)
+		catch (Exception e)
 		{
-			addLog(LogItemFactory.createLogItem(new Date().toString(), LogItem.SYSTEM, "Unable to create user."));
+			addLog(LogItemFactory.createLogItem(LogItem.SYSTEM, "Unable to create user."));
 		}
 		
 		return false;
 	}
 	
 	/**
+	 * @throws Exception 
 	 * 
 	 */
-	public void shutdownSystem()
+	public void shutdownSystem() throws Exception
 	{
 		System.out.println("Exiting.....");
+		logout();
+		addLog(LogItemFactory.createLogItem(LogItem.LOGIN, getCurrentUser().getUsername()+" logged out of the system."));
 		m_dbAdaptor.close();
 		m_genres.writeToFile();
 		m_config.writeToFile();
@@ -185,19 +194,26 @@ public class IMS extends Observable implements Observer
 		return copy;
 	}
 	
-	public ArrayList<User> retreiveUser(String[] userName)
+	/**
+	 * method to retreive a user 
+	 * @param term String[] - first index is the query type (UserDB.U_ID or UserDB.USERNAME) second index holds the id 
+	 * or the username
+	 * @return ArrayList<User> - found users matching the criteria
+	 */
+	@SuppressWarnings("unchecked")
+	public ArrayList<User> retreiveUser(String[] term)
 	{
 		m_dbAdaptor.setState(DatabaseAdaptor.USERS_DB);
 		ArrayList<User> user = new ArrayList<User>();
 		
 		try
 		{
-			m_dbAdaptor.retrieve(userName);
+			m_dbAdaptor.retrieve(term);
 			user = (ArrayList<User>)m_dbAdaptor.getResult();
 		} 
 		catch (Exception e)
 		{
-			addLog(LogItemFactory.createLogItem(new Date().toString(), LogItem.SYSTEM, "Unable to find user."));
+			addLog(LogItemFactory.createLogItem(LogItem.SYSTEM, "Unable to find user."));
 		}
 		
 		return user;
@@ -215,7 +231,7 @@ public class IMS extends Observable implements Observer
 	
 	/**
 	 * method to get the task manager
-	 * @return
+	 * @return TaskManager - reference to the task manager of the system
 	 */
 	public TaskManager getTaskManager()
 	{
@@ -237,8 +253,8 @@ public class IMS extends Observable implements Observer
 			catch (Exception e)
 			{
 				if (m_showDialogs)
-					JOptionPane.showMessageDialog(null, e.getMessage(), "Privilege Error", JOptionPane.ERROR_MESSAGE);
-				addLog(LogItemFactory.createLogItem(new Date().toString(), LogItem.SYSTEM, "Privilege Authenication Failure."));
+					JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+				addLog(LogItemFactory.createLogItem(LogItem.SYSTEM, "Privilege Authenication Failure."));
 			}
 			setChanged();
 			notifyObservers();
@@ -247,7 +263,8 @@ public class IMS extends Observable implements Observer
 	
 	/**
 	 * method to find a requested book
-	 * @param searchTerm
+	 * @param searchTerm String[] - first index is query type (BookDB.KEYWORD or BookDB.BROWSE) second index is the actual
+	 * searchable term
 	 */
 	@SuppressWarnings("unchecked")
 	public void findBook(final String[] searchTerm)
@@ -282,7 +299,7 @@ public class IMS extends Observable implements Observer
 								{
 									if (m_showDialogs)
 										JOptionPane.showMessageDialog(null, e.getMessage(), "Book not found.", JOptionPane.ERROR_MESSAGE);
-									addLog(LogItemFactory.createLogItem(new Date().toString(), LogItem.INVENTORY, "Unable to find book."));
+									addLog(LogItemFactory.createLogItem(LogItem.INVENTORY, "Unable to find book."));
 								}
 								
 							}
@@ -293,7 +310,7 @@ public class IMS extends Observable implements Observer
 				if (m_showDialogs)
 					JOptionPane.showMessageDialog(null, "Book not in inventory.", "Book not found.", JOptionPane.ERROR_MESSAGE);
 				
-				addLog(LogItemFactory.createLogItem(new Date().toString(), LogItem.INVENTORY, "Unable to find book."));
+				addLog(LogItemFactory.createLogItem(LogItem.INVENTORY, "Unable to find book."));
 		
 			}
 		}
@@ -301,10 +318,14 @@ public class IMS extends Observable implements Observer
 		{
 			if (m_showDialogs)
 				JOptionPane.showMessageDialog(null, e.getMessage(), "Book not found.", JOptionPane.ERROR_MESSAGE);
-			addLog(LogItemFactory.createLogItem(new Date().toString(), LogItem.INVENTORY, "Unable to find book."));
+			addLog(LogItemFactory.createLogItem(LogItem.INVENTORY, "Unable to find book."));
 		}
 	}
 	
+	/**
+	 * method to get the list of found books from the system (found books are the result of findBook(String[] searchTerm)
+	 * @return ArrayList<Book> - list of found books from the system
+	 */
 	public ArrayList<Book> getListOfFoundBooks()
 	{
 		return m_foundBookList;
@@ -312,42 +333,60 @@ public class IMS extends Observable implements Observer
 	
 	/**
 	 * method to get the current book of the system
-	 * @return
+	 * @return Book - get the current active book in the system
 	 */
 	public Book getCurrentBook()
 	{
 		return m_currentBook;
 	}
 	
+	/**
+	 * method to set the list of found books
+	 * @param books
+	 */
 	public void setListOfFoundBooks(ArrayList<Book> books)
 	{
 		m_foundBookList = books;
 	}
 	
+	/**
+	 * method to add a book to the sold list of the system
+	 * @param book
+	 */
 	public void addToSoldList(Book book)
 	{
 		m_soldBookList.add(book);
 	}
 	
+	/**
+	 * method to get the list of sold books from the system
+	 * @return
+	 */
 	public ArrayList<Book> getListofSoldBooks()
 	{
 		return m_soldBookList;
 	}
 	
+	/**
+	 * method to remove a particular book from the sold list of a system
+	 * @param index
+	 */
 	public void removeFromSoldList(int index)
 	{
 		m_soldBookList.remove(index);
 	}
 	
-	public void removeAllFromSoldList()
+	/**
+	 * method to purge the sold list
+	 */
+	public void setListOfSoldBooks(ArrayList<Book> list)
 	{
-		int size = m_soldBookList.size();
-		for (int i = 0; i < size; i++)
-		{
-			m_soldBookList.remove(i);
-		}
+		m_soldBookList = list;
 	}
 	
+	/**
+	 * method to finalize the sell of all the books in the sold list (decrement the quantity of books and log the sell)
+	 */
 	public void finalizeSell()
 	{
 		for (int i = 0; i < m_soldBookList.size(); i++)
@@ -370,11 +409,19 @@ public class IMS extends Observable implements Observer
 		m_currentBook = book;
 	}
 	
+	/**
+	 * method to select a particular book from the found book list
+	 * @param index
+	 * @return
+	 */
 	public Book selectBook(int index)
 	{
 		return m_foundBookList.get(index);
 	}
 	
+	/**
+	 * method to insert the current active book of the system into the book database
+	 */
 	public void addCurrentBookToDB()
 	{
 		try
@@ -382,57 +429,95 @@ public class IMS extends Observable implements Observer
 			m_genres.mergeFromBook(m_currentBook);
 			m_dbAdaptor.setState(DatabaseAdaptor.BOOK_DB);
 			m_dbAdaptor.add(m_currentBook);
-		} catch (SQLException e)
+		} catch (Exception e)
 		{
-			addLog(LogItemFactory.createLogItem(new Date().toString(), LogItem.SYSTEM, "Unable to add book to database."));
+			addLog(LogItemFactory.createLogItem(LogItem.SYSTEM, "Unable to add book to database."));
 		}
 	}
 	
-	public ArrayList<Book> getPrevViewedList()
+	
+	// uncomment later
+	/*public ArrayList<Book> getPrevViewedList()
 	{
 		return m_prevViewedList;
-	}
+	}*/
 	
+	
+	/**
+	 * method to merge the genres from a book with the main genres list of the system
+	 * @param book
+	 */
 	public void addNewGenresFromBook(Book book)
 	{
 		m_genres.mergeFromBook(book);
 	}
 	
+	/**
+	 * method to get the genres list of the system
+	 * @return BookGenres
+	 */
 	public BookGenres getGenres()
 	{
 		return m_genres;
 	}
 	
+	/**
+	 * method to set the mutable user of the system (used for editing a previous user) 
+	 * @param user
+	 */
 	public void setVolatileUser(User user)
 	{
 		m_volatileUser = user;
 	}
 	
+	/**
+	 * method to get the current mutable user of the system
+	 * @return
+	 */
 	public User getVolatileUser()
 	{
 		return m_volatileUser;
 	}
 	
+	/**
+	 * method to add a user to the dispose list of the system
+	 * @param user
+	 */
 	public void addToRemoveUserList(User user)
 	{
 		m_removeUserList.add(user);
 	}
 	
+	/**
+	 * method to purge the dispose list without removing user from the database
+	 */
 	public void clearRemoveUserList()
 	{
 		m_removeUserList = new ArrayList<User>();
 	}
 	
+	/**
+	 * method to get the dispose list of the system
+	 * @return
+	 */
 	public ArrayList<User> getRemoveUserList()
 	{
 		return m_removeUserList;
 	}
 	
+	/**
+	 * method to remove a particular user from the dispose list
+	 * @param index
+	 */
 	public void removeFromRemoveUserList(int index)
 	{
 		m_removeUserList.remove(index);
 	}
 	
+	/**
+	 * method to remove a particular user from the user database
+	 * @param user
+	 */
 	public void removeUserFromDB(User user)
 	{
 		m_dbAdaptor.setState(DatabaseAdaptor.USERS_DB);
@@ -442,25 +527,45 @@ public class IMS extends Observable implements Observer
 		} 
 		catch (Exception e)
 		{
-			addLog(LogItemFactory.createLogItem(new Date().toString(), LogItem.SYSTEM, "Unable to remove user from database."));
+			addLog(LogItemFactory.createLogItem(LogItem.SYSTEM, "Unable to remove user from database."));
 		}
 	}
 
+	/**
+	 * method to get the database adaptor of the system
+	 * @return DatabaseAdaptor
+	 */
 	public DatabaseAdaptor getDatabaseAdaptor()
 	{
 		return m_dbAdaptor;
 	}
 	
+	/**
+	 * method to get the system configurations
+	 * @return Configurations
+	 */
 	public Configurations getConfigurations()
 	{
 		return m_config;
 	}
 	
+	/**
+	 * method to see if the system is set to show dialogs
+	 * @return
+	 */
 	public boolean showDialogs()
 	{
 		return m_showDialogs;
 	}
 	
+	public void toggleDialog(boolean isEnabled)
+	{
+		m_showDialogs = isEnabled;
+	}
+	/**
+	 * method to add a log entry to the log database
+	 * @param logItem
+	 */
 	public void addLog(LogItem logItem)
 	{
 		m_dbAdaptor.setState(DatabaseAdaptor.LOGS_DB);
@@ -468,44 +573,55 @@ public class IMS extends Observable implements Observer
 		{
 			m_dbAdaptor.add(logItem);
 		} 
-		catch (SQLException e)
+		catch (Exception e)
 		{
 			e.printStackTrace();
 		}
 	}
 	
-	public ArrayList<LogItem> getLogs(int actionType)
+	/**
+	 * method to get the log entries from the system
+	 * @param actionType - LogItem.Action
+	 * @return - list of log items
+	 */
+	@SuppressWarnings("unchecked")
+	public ArrayList<LogItem> getLogs(String[] term)
 	{
 		m_dbAdaptor.setState(DatabaseAdaptor.LOGS_DB);
 		ArrayList<LogItem> items = new ArrayList<LogItem>();
-		
-		LogItem item = new LogItem();
-		item.setAction(actionType);
-		
+	
 		try
 		{
-			m_dbAdaptor.retrieve(item);
+			m_dbAdaptor.retrieve(term);
 			items = (ArrayList<LogItem>)m_dbAdaptor.getResult();
 		} 
 		catch (Exception e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
 		return items;
 	}
 	
+	/**
+	 * set the exporter for the system
+	 * @param exporter
+	 */
 	public void setExporter(Exporter exporter)
 	{
 		m_exporter = exporter;
 	}
 	
+	/**
+	 * method to export a database to a particular file
+	 * @param dbType - DatabaseAdaptor.BOOK_DB, DatabaseAdaptor.USERS_DB, DatabaseAdaptor.ONLINE_DB, DatabaseAdaptor.LOGS_DB
+	 * @param filename
+	 */
+	@SuppressWarnings("rawtypes")
 	public void export(int dbType, String filename)
 	{
 		m_exporter.setFilename(filename);
 		ArrayList list;
-		System.out.println(dbType);
 		
 		switch (dbType)
 		{
@@ -515,6 +631,9 @@ public class IMS extends Observable implements Observer
 				break;
 			case DatabaseAdaptor.USERS_DB:
 				list = (ArrayList<User>)retreiveUser(new String[] {UsersDB.USERNAME, ""});
+				break;
+			case DatabaseAdaptor.LOGS_DB:
+				 list = getLogs(new String[] {LogsDB.ALL, LogsDB.TIME,""});
 				break;
 			default:
 				list = new ArrayList();
@@ -528,7 +647,6 @@ public class IMS extends Observable implements Observer
 		} 
 		catch (Exception e)
 		{
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

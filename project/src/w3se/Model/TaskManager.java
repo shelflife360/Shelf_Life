@@ -4,7 +4,8 @@ import java.util.Observable;
 import java.util.PriorityQueue;
 import java.util.Queue;
 
-import w3se.Base.User;
+import w3se.Model.Base.User;
+
 
 public class TaskManager extends Observable
 {

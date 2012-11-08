@@ -7,14 +7,22 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-import w3se.Base.LogItem;
+import javax.swing.JOptionPane;
+
 import w3se.Model.Configurations;
+import w3se.Model.IMS;
+import w3se.Model.Base.LogItem;
+import w3se.Model.Base.LogItemFactory;
 
 public class LogsDB implements Database<LogItem, ArrayList<LogItem>>
 {
 	private Statement m_statement = null;
 	private ResultSet m_resultSet = null;
 	private Connection m_connection = null;
+	public static final String ALL = "ALL";
+	public static final String ACTION = "Action";
+	public static final String TIME = "Timestamp";
+	public static final String ID = "L_id";
 	
 	public LogsDB(Configurations config)
 	{
@@ -24,22 +32,28 @@ public class LogsDB implements Database<LogItem, ArrayList<LogItem>>
 			m_connection = DriverManager.getConnection(config.getValue("LogsDBUrl"));
 		} catch (Exception e)
 		{
-			System.out.println("Failed to open JDBC Driver");
+			System.out.println("Failed to JDBC connection with LogsDB");
 		}
+		
 	}
 
 	@Override
 	public void retrieve(Object term) throws Exception
 	{
-		String searchTerm;
-		
-		if (((LogItem)term).getAction() == LogItem.ALL)
-			searchTerm = "";
-		else
-			searchTerm = ""+((LogItem)term).getAction();
-		
 		m_statement = m_connection.createStatement();
-		m_resultSet = m_statement.executeQuery("SELECT * FROM Logs WHERE Action LIKE "+searchTerm+"");
+		
+		String[] searchTerm = (String[])term;
+		
+		if (searchTerm[0].equals(ALL))
+			m_resultSet = m_statement.executeQuery("SELECT * FROM Logs ORDER BY "+searchTerm[1]);
+		else
+		{
+			m_resultSet = m_statement.executeQuery("SELECT * FROM Logs WHERE "+searchTerm[0]+" LIKE '%"+searchTerm[2]+"%' ORDER BY "+searchTerm[1]);
+		}
+		
+		
+		
+		
 	}
 
 	@Override
@@ -51,8 +65,8 @@ public class LogsDB implements Database<LogItem, ArrayList<LogItem>>
 		{
 			LogItem log = new LogItem();
 		
-			log.setID(m_resultSet.getInt("L_id"));
-			log.setTimeStamp(m_resultSet.getString("Timestamp"));
+			log.setID(m_resultSet.getLong("L_id"));
+			log.setTimeStamp(m_resultSet.getTimestamp("Timestamp"));
 			log.setAction(m_resultSet.getInt("Action"));
 			log.setDesc(m_resultSet.getString("Description"));
 			
@@ -64,7 +78,7 @@ public class LogsDB implements Database<LogItem, ArrayList<LogItem>>
 	public void add(LogItem log) throws SQLException
 	{
 		m_statement = m_connection.createStatement();
-		m_statement.execute("INSERT INTO Logs VALUES ("+log.getID()+", '"+log.getTimeStamp()+"', "+log.getAction()+",'"+log.getDesc()+"'); COMMIT");	
+		m_statement.execute("INSERT INTO Logs VALUES ("+log.getID()+", NOW(), "+log.getAction()+",'"+log.getDesc()+"'); COMMIT");	
 	}
 	
 	public void shutdown() throws SQLException

@@ -1,6 +1,8 @@
 package w3se.View;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -14,7 +16,8 @@ import javax.swing.JLabel;
 @SuppressWarnings("serial")
 public class SplashScreen extends JFrame
 {
-
+	public static final int HEIGHT = 450;
+	public static final int WIDTH = 450;
 	private JPanel contentPane;
 
 	/**
@@ -37,7 +40,11 @@ public class SplashScreen extends JFrame
 	private void init(String filename)
 	{
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 450, 300);
+		setBounds(100, 100, 450, 450);
+		// make it appear at the center of the screen
+		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+		setLocation(d.width/2-getSize().width/2, d.height/2-getSize().height/2);
+		
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setLayout(new BorderLayout(0, 0));

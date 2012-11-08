@@ -6,8 +6,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import w3se.Base.Book;
+
+import javax.swing.JOptionPane;
+
 import w3se.Model.Configurations;
+import w3se.Model.IMS;
+import w3se.Model.Base.Book;
 import w3se.View.Subpanels.SearchPanel;
 
 
@@ -19,7 +23,6 @@ public class BookDB implements Database<Book, ArrayList<Book>>
 	public static final String KEYWORD = "keyword";
 	public static final String BROWSE = "browse";
 	
-	public static final int BOOK_LIST_SIZE = 100;
 	
 	public BookDB(Configurations config)
 	{	
@@ -27,10 +30,10 @@ public class BookDB implements Database<Book, ArrayList<Book>>
 		{
 			Class.forName(config.getValue("DatabaseDriver")).newInstance();
 			m_connection = DriverManager.getConnection(config.getValue("BooksDBUrl"));
-		} 
+		}
 		catch (Exception e)
 		{
-			System.out.println("Failed to open JDBC Driver");
+			System.out.println("Failed to JDBC connection with BooksDB");
 		}
 	}
 	
@@ -42,9 +45,9 @@ public class BookDB implements Database<Book, ArrayList<Book>>
 		{
 			
 			m_statement = m_connection.createStatement();
-			m_resultSet = m_statement.executeQuery("SELECT * FROM Books WHERE ISBN LIKE '%"+searchTerm[1]+
-			"%' OR Title LIKE '%"+searchTerm[1]+"%' OR Author LIKE '%"+searchTerm[1]+"%'"+
-			"OR Publisher LIKE '%"+searchTerm[1]+"%'");
+			m_resultSet = m_statement.executeQuery("SELECT * FROM Books WHERE ISBN LIKE UPPER('%"+searchTerm[1]+
+			"%') OR UPPER(Title) LIKE UPPER('%"+searchTerm[1]+"%') OR UPPER(Author) LIKE UPPER('%"+searchTerm[1]+"%')"+
+			"OR UPPER(Publisher) LIKE UPPER('%"+searchTerm[1]+"%')");
 		}
 		
 		else if (searchTerm[0].equals(BROWSE))
@@ -66,8 +69,8 @@ public class BookDB implements Database<Book, ArrayList<Book>>
 					orderBy = "ORDER BY Publisher";
 			
 			m_statement = m_connection.createStatement();
-			m_resultSet = m_statement.executeQuery("SELECT * FROM Books WHERE GENRES LIKE '%"+searchTerm[1]+
-			"%'"+orderBy);
+			m_resultSet = m_statement.executeQuery("SELECT * FROM Books WHERE UPPER(GENRES) LIKE UPPER('%"+searchTerm[1]+
+			"%')"+orderBy);
 			
 			
 		}
@@ -77,7 +80,7 @@ public class BookDB implements Database<Book, ArrayList<Book>>
 	{
 		ArrayList<Book> bookList = new ArrayList<Book>();
 		
-		while (m_resultSet.next() && bookList.size() < BOOK_LIST_SIZE)
+		while (m_resultSet.next())
 		{
 			Book book = new Book();
 			book.setTitle(m_resultSet.getString("Title"));
@@ -137,19 +140,23 @@ public class BookDB implements Database<Book, ArrayList<Book>>
 	}
 	
 	@Override
-	public void add(Book obj) throws SQLException
+	public void add(Book obj) throws Exception
 	{
+		int quantity = 0;
+		
+		if (obj.getQuantity() > 0)
+			quantity = obj.getQuantity();
+		else if (obj.getQuantity() == -911)
+		{
+			remove(obj);
+			return;
+		}
+		
 		String[] term = {KEYWORD, obj.getISBN()};
 		retrieve(term);
 		//ArrayList<Book> list = getResult();
 		Book book = adjustStatement(obj);
-		int quantity;
-		
-		if (obj.getQuantity() <= 0)
-			quantity = 0;
-		else
-			quantity = obj.getQuantity();
-		
+	
 		// if no book is already there
 		if (!m_resultSet.next())
 		{
@@ -162,13 +169,13 @@ public class BookDB implements Database<Book, ArrayList<Book>>
 					
 				}
 			}*/
+			
 			m_statement = m_connection.createStatement();
 			m_statement.execute("INSERT INTO Books VALUES ('"+book.getISBN()+"', '"+book.getTitle()+"','"+book.getAuthor()+"','"+book.getPublisher()+"',"+book.getPrice()+",'"+book.getGenres()+"','"+book.getDescription()+"',"+quantity+"); COMMIT");
 		}
 		// if no book is already there
 		else
 		{
-			quantity = obj.getQuantity();
 			m_statement = m_connection.createStatement();
 			m_statement.execute("UPDATE Books "+
 					"SET ISBN='"+book.getISBN()+"', Title='"+book.getTitle()+"', Author='"+book.getAuthor()+"', Publisher='"

@@ -7,12 +7,12 @@ import java.util.Date;
 
 import javax.swing.JTable;
 
-import w3se.Base.Book;
-import w3se.Base.LogItem;
-import w3se.Base.LogItemFactory;
-import w3se.Base.User;
 import w3se.Model.IMS;
 import w3se.Model.Task;
+import w3se.Model.Base.Book;
+import w3se.Model.Base.LogItem;
+import w3se.Model.Base.LogItemFactory;
+import w3se.Model.Base.User;
 import w3se.Model.Database.BookDB;
 import w3se.Model.Database.DatabaseAdaptor;
 import w3se.View.Panels.SellManagePanel;
@@ -119,7 +119,8 @@ public class SellViewController extends AbstractController
 								{
 									public void run()
 									{
-										m_model.removeAllFromSoldList();
+										m_model.setListOfSoldBooks(new ArrayList<Book>());
+										m_view.toggleSellButton(true);
 									}
 								}));
 					}
@@ -141,9 +142,10 @@ public class SellViewController extends AbstractController
 										
 										for (int i = 0; i < books.size(); i++)
 										{
-											m_model.addLog(LogItemFactory.createLogItem(new Date().toString(), LogItem.SALES, books.get(i).getTitle()+" sold for "+books.get(i).getPrice()+"."));
+											m_model.addLog(LogItemFactory.createLogItem(LogItem.SALES, books.get(i).getTitle()+" sold for "+books.get(i).getPrice()+"."));
 										}
 										m_model.finalizeSell();
+										m_view.toggleSellButton(false);
 									}
 								}));
 					}

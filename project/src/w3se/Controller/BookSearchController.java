@@ -7,12 +7,13 @@ import java.util.Date;
 
 import javax.swing.JTable;
 import javax.swing.event.ChangeEvent;
-import w3se.Base.Book;
-import w3se.Base.LogItem;
-import w3se.Base.LogItemFactory;
-import w3se.Base.User;
+
 import w3se.Model.IMS;
 import w3se.Model.Task;
+import w3se.Model.Base.Book;
+import w3se.Model.Base.LogItem;
+import w3se.Model.Base.LogItemFactory;
+import w3se.Model.Base.User;
 import w3se.Model.Database.BookDB;
 import w3se.View.Panels.BookSearchPanel;
 
@@ -94,7 +95,7 @@ public class BookSearchController extends AbstractController
 									{
 										m_model.setCurrentBook(m_view.getBook());
 										m_model.addCurrentBookToDB();
-										m_model.addLog(LogItemFactory.createLogItem(new Date().toString(), LogItem.INVENTORY, m_view.getBook().getTitle()+" added to the database."));
+										m_model.addLog(LogItemFactory.createLogItem(LogItem.INVENTORY, m_view.getBook().getTitle()+" added to the database."));
 										m_model.setCurrentBook(new Book());
 										
 									}

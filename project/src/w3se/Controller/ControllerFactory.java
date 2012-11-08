@@ -10,6 +10,7 @@ public class ControllerFactory
 	public static final int CONFIG = 3;
 	public static final int BROWSE = 4;
 	public static final int SELL = 5;
+	public static final int LOGS = 6;
 	
 	private static ControllerFactory m_conFactory = null;
 	
@@ -72,8 +73,13 @@ public class ControllerFactory
 				controller = new ConfigViewController(m_model);
 				return controller;
 				
+			case LOGS:
+				controller = new LogViewController(m_model);
+				return controller;
+			
+			default:
+				return controller;
 		}
 		
-		return controller;
 	}
 }

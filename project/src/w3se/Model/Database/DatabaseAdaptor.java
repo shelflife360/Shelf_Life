@@ -2,10 +2,14 @@ package w3se.Model.Database;
 
 import java.sql.SQLException;
 
-import w3se.Base.Book;
-import w3se.Base.LogItem;
-import w3se.Base.User;
+import javax.swing.JOptionPane;
+
 import w3se.Model.Configurations;
+import w3se.Model.IMS;
+import w3se.Model.Base.Book;
+import w3se.Model.Base.LogItem;
+import w3se.Model.Base.LogItemFactory;
+import w3se.Model.Base.User;
 
 @SuppressWarnings("rawtypes")
 public class DatabaseAdaptor implements Database
@@ -95,7 +99,7 @@ public class DatabaseAdaptor implements Database
 	}
 	
 	
-	public void add(Object obj) throws SQLException
+	public void add(Object obj) throws Exception
 	{
 		switch (m_state)
 		{
@@ -136,7 +140,7 @@ public class DatabaseAdaptor implements Database
 		}
 	}
 	
-	public Object getResult()
+	public Object getResult() throws Exception
 	{
 		return m_returnObj;
 	}

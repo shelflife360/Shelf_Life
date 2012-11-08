@@ -2,15 +2,12 @@ package w3se.Controller;
 
 import java.awt.event.WindowEvent;
 import java.util.Date;
-
-import javax.swing.JTabbedPane;
 import javax.swing.event.ChangeEvent;
-
-import w3se.Base.LogItem;
-import w3se.Base.LogItemFactory;
-import w3se.Base.User;
 import w3se.Model.IMS;
 import w3se.Model.Task;
+import w3se.Model.Base.LogItem;
+import w3se.Model.Base.LogItemFactory;
+import w3se.Model.Base.User;
 import w3se.View.MainView;
 
 public class MainViewController extends AbstractController
@@ -29,10 +26,15 @@ public class MainViewController extends AbstractController
 		addListener("exit_system", new 
 				ListenerAdaptor()
 				{
+					// cannot run in task manager as it is a shutdown method and will jam the manager
 					public void windowClosing(WindowEvent e)
 					{
-						m_model.addLog(LogItemFactory.createLogItem(new Date().toString(), LogItem.SYSTEM, "System shutdown."));
-						m_model.shutdownSystem();
+						m_model.addLog(LogItemFactory.createLogItem(LogItem.SYSTEM, "System shutdown."));
+						try
+						{
+							m_model.shutdownSystem();
+						} 
+						catch (Exception ex){}
 					}
 					
 					public void windowOpened(WindowEvent e)
@@ -42,7 +44,7 @@ public class MainViewController extends AbstractController
 								{
 									public void run()
 									{
-										m_model.addLog(LogItemFactory.createLogItem(new Date().toString(), LogItem.SYSTEM, "System startup."));
+										m_model.addLog(LogItemFactory.createLogItem(LogItem.SYSTEM, "System startup."));
 									}
 								}));
 					}

@@ -15,8 +15,8 @@ import javax.swing.JTextField;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
 
-import w3se.Base.User;
 import w3se.Controller.Controller;
+import w3se.Model.Base.User;
 import w3se.Model.Database.UsersDB;
 
 public class ExportPanel extends JPanel
@@ -24,11 +24,12 @@ public class ExportPanel extends JPanel
 
 	public static final int WIDTH = 450;
 	public static final int HEIGHT = 500;
-	public static final int ADD = 0;
-	public static final int EDIT = 1;
+	public static final int EXCEL_EXP = 0;
+	public static final int TEXT_EXP = 1;
+	
 	private Controller m_controller;
-	private int m_state = ADD;
 	private User m_user = new User();
+	private JComboBox m_exportType;
 	
 	/**
 	 * Create the panel.
@@ -40,7 +41,7 @@ public class ExportPanel extends JPanel
 		
 		JLabel lblTitle = new JLabel("Export Manager");
 		
-		JLabel label = new JLabel("");
+		JLabel label = new JLabel();
 		
 		JButton btnExportBookDatabase = new JButton("Export Book Database");
 		
@@ -52,6 +53,11 @@ public class ExportPanel extends JPanel
 		
 		btnExportUserDatabase.addActionListener(m_controller.getListener("users_export"));
 		
+		btnExportLogDatabase.addActionListener(m_controller.getListener("logs_export"));
+		
+		m_exportType = new JComboBox(new String[] {"Excel Exporter", "Plain Text Exporter"});
+		
+		
 		GroupLayout groupLayout = new GroupLayout(this);
 		groupLayout.setHorizontalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
@@ -62,35 +68,40 @@ public class ExportPanel extends JPanel
 							.addComponent(lblTitle))
 						.addGroup(groupLayout.createSequentialGroup()
 							.addGap(79)
-							.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
-								.addComponent(btnExportUserDatabase)
-								.addGroup(groupLayout.createSequentialGroup()
-									.addComponent(label)
-									.addGap(39)
-									.addComponent(btnExportBookDatabase))
-								.addComponent(btnExportLogDatabase))))
-					.addContainerGap(150, Short.MAX_VALUE))
+							.addComponent(label))
+						.addGroup(groupLayout.createSequentialGroup()
+							.addGap(130)
+							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING, false)
+								.addComponent(m_exportType, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+								.addComponent(btnExportLogDatabase)
+								.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
+									.addComponent(btnExportBookDatabase, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+									.addComponent(btnExportUserDatabase, Alignment.LEADING)))))
+					.addContainerGap(138, Short.MAX_VALUE))
 		);
 		groupLayout.setVerticalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
 				.addGroup(groupLayout.createSequentialGroup()
 					.addGap(20)
 					.addComponent(lblTitle)
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addGroup(groupLayout.createSequentialGroup()
-							.addGap(73)
-							.addComponent(label))
-						.addGroup(groupLayout.createSequentialGroup()
-							.addGap(59)
-							.addComponent(btnExportBookDatabase)))
-					.addGap(18)
+					.addGap(50)
+					.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
+						.addComponent(label)
+						.addComponent(m_exportType, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+					.addGap(52)
+					.addComponent(btnExportBookDatabase)
+					.addGap(34)
 					.addComponent(btnExportUserDatabase)
-					.addGap(18)
+					.addGap(32)
 					.addComponent(btnExportLogDatabase)
-					.addContainerGap(282, Short.MAX_VALUE))
+					.addContainerGap(182, Short.MAX_VALUE))
 		);
 		setLayout(groupLayout);
 
 	}
 	
+	public int getExporterSelection()
+	{
+		return m_exportType.getSelectedIndex();
+	}
 }

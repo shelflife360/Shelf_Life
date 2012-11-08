@@ -3,9 +3,9 @@ package w3se.View.Panels;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import java.awt.BorderLayout;
-import w3se.Base.Book;
 import w3se.Controller.Controller;
 import w3se.Model.IMS;
+import w3se.Model.Base.Book;
 import w3se.View.Subpanels.ReceiptInfoPanel;
 import w3se.View.Subpanels.SearchPanel;
 import java.util.ArrayList;
@@ -59,6 +59,16 @@ public class SellManagePanel extends JPanel implements Observer
 		return m_mainPanel.getSearchText();
 	}
 
+	
+	public void clearReceipt()
+	{
+		m_infoPanel.clearReceipt();
+	}
+	
+	public void toggleSellButton(boolean isEnabled)
+	{
+		m_infoPanel.toggleSellButton(isEnabled);
+	}
 	
 	public void update(Observable sender, Object obj)
 	{

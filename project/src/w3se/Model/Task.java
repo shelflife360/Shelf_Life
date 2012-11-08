@@ -1,7 +1,8 @@
 package w3se.Model;
 
+import w3se.Model.Base.User;
 
-import w3se.Base.User;
+
 
 public class Task implements Comparable<Task>
 {

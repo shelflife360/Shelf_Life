@@ -4,7 +4,7 @@ import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import javax.swing.JButton;
 import w3se.Controller.Controller;
-import w3se.Model.States;
+import w3se.Model.Base.States;
 import w3se.View.MainView;
 import java.awt.Color;
 import java.util.Observable;

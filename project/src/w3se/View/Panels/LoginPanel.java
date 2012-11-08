@@ -8,13 +8,16 @@ import javax.swing.GroupLayout.Alignment;
 import javax.swing.JPasswordField;
 import javax.swing.JButton;
 import w3se.Controller.Controller;
+import w3se.Model.Configurations;
 import w3se.Model.IMS;
-import w3se.Model.States;
+import w3se.Model.Base.States;
 import w3se.View.MainView;
+import w3se.View.ShelfLifeIcon;
 
 import java.awt.Color;
 import java.util.Observable;
 import java.util.Observer;
+import javax.swing.LayoutStyle.ComponentPlacement;
 
 @SuppressWarnings("serial")
 public class LoginPanel extends JPanel implements Observer
@@ -38,59 +41,38 @@ public class LoginPanel extends JPanel implements Observer
 		setBackground(new Color(255, 255, 255));
 		
 		JLabel lblUserName = new JLabel("User Name :");
+		lblUserName.setBounds(353, 144, 76, 16);
 		
 		m_userNameField = new JTextField();
+		m_userNameField.setBounds(458, 138, 254, 28);
 		m_userNameField.setColumns(20);
 		
 		JLabel lblPassword = new JLabel("Password : ");
+		lblPassword.setBounds(353, 218, 71, 16);
 		
 		m_passwordField = new JPasswordField("");
+		m_passwordField.setBounds(458, 212, 254, 28);
 		m_passwordField.setColumns(20);
 		
 		JButton btnLogin = new JButton("Login");
-		GroupLayout groupLayout = new GroupLayout(this);
-		groupLayout.setHorizontalGroup(
-			groupLayout.createParallelGroup(Alignment.LEADING)
-				.addGroup(groupLayout.createSequentialGroup()
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addGroup(groupLayout.createSequentialGroup()
-							.addGap(182)
-							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-								.addComponent(lblUserName, Alignment.TRAILING)
-								.addComponent(lblPassword, Alignment.TRAILING))
-							.addGap(49)
-							.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
-								.addComponent(m_passwordField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-								.addComponent(m_userNameField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
-						.addGroup(groupLayout.createSequentialGroup()
-							.addGap(329)
-							.addComponent(btnLogin)))
-					.addContainerGap(175, Short.MAX_VALUE))
-		);
-		groupLayout.setVerticalGroup(
-			groupLayout.createParallelGroup(Alignment.LEADING)
-				.addGroup(groupLayout.createSequentialGroup()
-					.addGap(52)
-					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-						.addComponent(lblUserName)
-						.addComponent(m_userNameField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addGap(26)
-					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-						.addComponent(m_passwordField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-						.addComponent(lblPassword))
-					.addGap(74)
-					.addComponent(btnLogin)
-					.addContainerGap(233, Short.MAX_VALUE))
-		);
+		btnLogin.setBounds(540, 269, 79, 29);
 		
 		
 		btnLogin.addActionListener(m_controller.getListener("login"));
-		m_userNameField.addActionListener(m_controller.getListener("login"));
 		m_passwordField.addActionListener(m_controller.getListener("login"));
-		
-		setLayout(groupLayout);
 		m_controller.registerView(this);
 		IMS.getInstance().addView(this);
+		setLayout(null);
+		add(lblUserName);
+		add(lblPassword);
+		add(m_passwordField);
+		add(m_userNameField);
+		add(btnLogin);
+		
+		JLabel lblIcon = new JLabel("");
+		lblIcon.setIcon(new ShelfLifeIcon(Configurations.SL_ICON));
+		lblIcon.setBounds(75, 409, 167, 64);
+		add(lblIcon);
 	}
 
 	public void setUserName(String name)

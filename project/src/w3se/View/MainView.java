@@ -2,6 +2,8 @@ package w3se.View;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.util.Observable;
 import java.util.Observer;
 import javax.swing.JFrame;
@@ -11,7 +13,7 @@ import javax.swing.JTabbedPane;
 import w3se.Controller.Controller;
 import w3se.Controller.ControllerFactory;
 import w3se.Model.IMS;
-import w3se.Model.States;
+import w3se.Model.Base.States;
 import w3se.View.Panels.BookSearchPanel;
 import w3se.View.Panels.ConfigManagePanel;
 import w3se.View.Panels.LogManagePanel;
@@ -47,6 +49,8 @@ public class MainView extends JFrame implements Observer
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1080, 630);
 		setTitle("ShelfLife");
+		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
+		setLocation(d.width/2-getSize().width/2, d.height/2-getSize().height/2);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -65,8 +69,8 @@ public class MainView extends JFrame implements Observer
 		m_subLevelManagePane = new JTabbedPane(JTabbedPane.TOP);
 		m_subLevelManagePane.addTab("Sell", new SellManagePanel(m_conFac.createController(ControllerFactory.SELL)));
 		m_subLevelManagePane.addTab("Add/Edit", new BookSearchPanel(SearchPanel.KEYWORD_HEADER, true, m_conFac.createController(ControllerFactory.SEARCH)));
-		m_subLevelManagePane.addTab("Log", new LogManagePanel());
 		m_subLevelManagePane.addTab("Config.", new ConfigManagePanel(this, m_conFac.createController(ControllerFactory.CONFIG)));
+		m_subLevelManagePane.addTab("Log", new LogManagePanel(m_conFac.createController(ControllerFactory.LOGS)));
 		
 		// tab 0
 		m_topLevelPane.addTab("Search", m_subLevelSearchPane);

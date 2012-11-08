@@ -14,10 +14,8 @@ public class Main
 	 */
 	public static void main(String[] args) throws Exception
 	{	
-		SplashScreen splash = new SplashScreen("logo.png");
+		SplashScreen splash = new SplashScreen("W3SE.jpg");
 		splash.run();
-		IMS ims = IMS.getInstance();
-		ControllerFactory conFactory = ControllerFactory.getInstance();
 		
 		EventQueue.invokeLater(new Runnable()
 		{
@@ -29,7 +27,8 @@ public class Main
 					
 					frame.setVisible(true);
 					
-				} catch (Exception e)
+				} 
+				catch (Exception e)
 				{
 					e.printStackTrace();
 				}

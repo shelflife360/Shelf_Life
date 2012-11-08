@@ -12,8 +12,8 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.JPasswordField;
 import javax.swing.JComboBox;
 import javax.swing.JButton;
-import w3se.Base.User;
 import w3se.Controller.Controller;
+import w3se.Model.Base.User;
 import w3se.Model.Database.UsersDB;
 import javax.swing.DefaultComboBoxModel;
 
@@ -125,15 +125,13 @@ public class AddUserPanel extends JPanel
 											.addGap(18)
 											.addComponent(btnAddUser))
 										.addComponent(m_cbSearchBy, 0, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-									.addGap(18))
-								.addGroup(groupLayout.createSequentialGroup()
-									.addComponent(m_searchField)
-									.addPreferredGap(ComponentPlacement.RELATED)))
-							.addComponent(m_btnSearch))
+									.addGap(6)
+									.addComponent(m_btnSearch))
+								.addComponent(m_searchField, 266, 266, 266)))
 						.addGroup(groupLayout.createSequentialGroup()
 							.addGap(151)
 							.addComponent(lblAddUser)))
-					.addContainerGap())
+					.addGap(12))
 		);
 		groupLayout.setVerticalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
@@ -141,16 +139,13 @@ public class AddUserPanel extends JPanel
 					.addGap(20)
 					.addComponent(lblAddUser)
 					.addGap(18)
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addGroup(groupLayout.createSequentialGroup()
-							.addGap(18)
-							.addComponent(m_btnSearch))
-						.addGroup(groupLayout.createSequentialGroup()
-							.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-								.addComponent(m_searchField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-								.addComponent(m_lblSearch))
-							.addGap(10)
-							.addComponent(m_cbSearchBy, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
+					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+						.addComponent(m_searchField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(m_lblSearch))
+					.addGap(10)
+					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+						.addComponent(m_cbSearchBy, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(m_btnSearch))
 					.addGap(12)
 					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(m_usernameField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
@@ -167,7 +162,7 @@ public class AddUserPanel extends JPanel
 					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(m_uidField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 						.addComponent(lblUserId))
-					.addPreferredGap(ComponentPlacement.RELATED, 45, Short.MAX_VALUE)
+					.addPreferredGap(ComponentPlacement.RELATED, 40, Short.MAX_VALUE)
 					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(btnClearFields)
 						.addComponent(btnAddUser))

@@ -14,8 +14,8 @@ import javax.swing.JTable;
 import javax.swing.JComboBox;
 import javax.swing.border.EtchedBorder;
 import javax.swing.table.DefaultTableModel;
-import w3se.Base.User;
 import w3se.Controller.Controller;
+import w3se.Model.Base.User;
 import w3se.Model.Database.UsersDB;
 import java.util.ArrayList;
 

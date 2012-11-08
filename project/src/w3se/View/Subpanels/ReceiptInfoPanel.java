@@ -15,8 +15,9 @@ import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.border.EtchedBorder;
 import javax.swing.table.DefaultTableModel;
-import w3se.Base.Book;
 import w3se.Controller.Controller;
+import w3se.Model.Base.Book;
+
 import javax.swing.JTable;
 
 @SuppressWarnings("serial")
@@ -29,6 +30,7 @@ public class ReceiptInfoPanel extends JPanel
 	private JLabel m_lblTotal = null;
 	private double m_total = 0.0;
 	private NumberFormat m_numFormat;
+	private JButton m_btnSell;
 	
 	/**
 	 * Create the panel.
@@ -44,12 +46,12 @@ public class ReceiptInfoPanel extends JPanel
 		m_numFormat = NumberFormat.getCurrencyInstance(Locale.US);
 		m_lblTotal = new JLabel("Total : " + m_numFormat.format(m_total));
 		
-		JButton btnSell = new JButton("Sell");
-		btnSell.addActionListener(m_controller.getListener("receipt_sell"));
+		m_btnSell = new JButton("Sell");
+		m_btnSell.addActionListener(m_controller.getListener("receipt_sell"));
 		
 		JButton btnPrint = new JButton("Print Receipt");
 		
-		JButton btnCancel = new JButton("Cancel");
+		JButton btnCancel = new JButton("Clear");
 		btnCancel.addActionListener(m_controller.getListener("receipt_cancel"));
 		
 		DefaultTableModel model = new DefaultTableModel(new String[] {"ISBN", "Title", "Author", "Price"}, 0)
@@ -87,7 +89,7 @@ public class ReceiptInfoPanel extends JPanel
 					.addGroup(gl_infoPanel.createParallelGroup(Alignment.LEADING)
 						.addComponent(m_lblTotal, GroupLayout.PREFERRED_SIZE, 300, GroupLayout.PREFERRED_SIZE)
 						.addGroup(gl_infoPanel.createSequentialGroup()
-							.addComponent(btnSell)
+							.addComponent(m_btnSell)
 							.addGap(18)
 							.addComponent(btnPrint)
 							.addGap(18)
@@ -107,12 +109,17 @@ public class ReceiptInfoPanel extends JPanel
 					.addComponent(m_lblTotal)
 					.addPreferredGap(ComponentPlacement.RELATED, 48, Short.MAX_VALUE)
 					.addGroup(gl_infoPanel.createParallelGroup(Alignment.BASELINE)
-						.addComponent(btnSell)
+						.addComponent(m_btnSell)
 						.addComponent(btnPrint)
 						.addComponent(btnCancel))
 					.addGap(38))
 		);
 		setLayout(gl_infoPanel);
+	}
+	
+	public void toggleSellButton(boolean isEnabled)
+	{
+		m_btnSell.setEnabled(isEnabled);
 	}
 	
 	public void setReceiptList(ArrayList<Book> list)

@@ -26,6 +26,10 @@ import org.xml.sax.InputSource;
 
 public class Configurations
 {
+	public static final String SL_ICON = "icon.jpg";
+	public static final String SL_LOGO = "logo.jpg";
+	public static final String W3SE_LOGO = "w3se.jpg";
+	
 	private LinkedHashMap<String, String> m_docMap = new LinkedHashMap<String, String>();
 	private static String m_filename;
 	

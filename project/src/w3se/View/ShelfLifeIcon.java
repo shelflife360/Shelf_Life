@@ -13,8 +13,9 @@ import javax.swing.Icon;
 public class ShelfLifeIcon implements Icon
 {
 	private static final int HEIGHT = 64;
-	private static final int WIDTH = 64;
+	private static final int WIDTH = 167;
 	private BufferedImage m_img = null;
+	
 	public ShelfLifeIcon(String filename)
 	{
 		try

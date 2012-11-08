@@ -7,8 +7,11 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-import w3se.Base.User;
+import javax.swing.JOptionPane;
+
 import w3se.Model.Configurations;
+import w3se.Model.IMS;
+import w3se.Model.Base.User;
 
 public class UsersDB implements Database<User, ArrayList<User>>
 {
@@ -17,6 +20,7 @@ public class UsersDB implements Database<User, ArrayList<User>>
 	private Connection m_connection = null;
 	public static final String U_ID = "U_id";
 	public static final String USERNAME = "Username";
+	public static final String ALL = "";
 	
 	public UsersDB(Configurations config)
 	{
@@ -24,9 +28,10 @@ public class UsersDB implements Database<User, ArrayList<User>>
 		{
 			Class.forName(config.getValue("DatabaseDriver")).newInstance();
 			m_connection = DriverManager.getConnection(config.getValue("UsersDBUrl"));
-		} catch (Exception e)
+		}
+		catch (Exception e)
 		{
-			System.out.println("Failed to open JDBC Driver");
+			System.out.println("Failed to JDBC connection with UsersDB");
 		}
 	}
 
@@ -45,7 +50,7 @@ public class UsersDB implements Database<User, ArrayList<User>>
 		else if (searchTerm[0].equals(USERNAME))
 		{
 			searchTerm[1] = "'%"+searchTerm[1]+"%'";
-			m_resultSet = m_statement.executeQuery("SELECT * FROM Users WHERE "+searchTerm[0]+" LIKE "+searchTerm[1]);
+			m_resultSet = m_statement.executeQuery("SELECT * FROM Users WHERE UPPER("+searchTerm[0]+") LIKE UPPER("+searchTerm[1]+")");
 		}
 	}
 
@@ -119,7 +124,7 @@ public class UsersDB implements Database<User, ArrayList<User>>
 	public void remove(User obj) throws Exception
 	{
 		m_statement = m_connection.createStatement();
-		m_statement.execute("DELETE FROM Users WHERE U_id = '"+obj.getUID()+"';");
+		m_statement.execute("DELETE FROM Users WHERE U_id ="+obj.getUID()+";");
 	}
 	
 }

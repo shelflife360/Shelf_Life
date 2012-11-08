@@ -3,9 +3,9 @@ package w3se.View.Panels;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 
-import w3se.Base.Book;
 import w3se.Controller.Controller;
 import w3se.Model.IMS;
+import w3se.Model.Base.Book;
 import w3se.View.Subpanels.BookInfoPanel;
 import w3se.View.Subpanels.SearchPanel;
 
@@ -105,7 +105,7 @@ public class BookSearchPanel extends JPanel implements Observer
 		m_infoPanel.setQuantity(book.getQuantity());
 		m_mainPanel.setSearchResults(list);
 		m_mainPanel.setGenres(IMS.getInstance().getGenres().toStringArray());
-		m_mainPanel.setPrevViewedList(IMS.getInstance().getPrevViewedList());
+		//m_mainPanel.setPrevViewedList(IMS.getInstance().getPrevViewedList());
 	}
 	
 }

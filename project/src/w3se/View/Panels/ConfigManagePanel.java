@@ -8,14 +8,15 @@ import java.util.Observer;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 
-import w3se.Base.User;
 import w3se.Controller.Controller;
 import w3se.Model.IMS;
+import w3se.Model.Base.User;
 import w3se.View.MainView;
 import w3se.View.Subpanels.AddUserPanel;
 import w3se.View.Subpanels.ConfigSQLPanel;
 import w3se.View.Subpanels.ConfigSubPanel;
 import w3se.View.Subpanels.ExportPanel;
+import w3se.View.Subpanels.GeneralSettingsPanel;
 import w3se.View.Subpanels.RemoveUserPanel;
 
 @SuppressWarnings("serial")
@@ -24,15 +25,17 @@ public class ConfigManagePanel extends JPanel implements Observer
 	public static final int WIDTH = 1020;
 	public static final int HEIGHT = 500;
 	public static final int NULL = 0;
-	public static final int USER_ADD = 1;
-	public static final int USER_EDIT = 2;
-	public static final int USER_REMOVE = 3;
-	public static final int SQL_CONFIG = 4;
-	public static final int EXPORT = 5;
+	public static final int GENERAL = 1;
+	public static final int USER_ADD = 2;
+	public static final int USER_EDIT = 3;
+	public static final int USER_REMOVE = 4;
+	public static final int SQL_CONFIG = 5;
+	public static final int EXPORT = 6;
 	
 	private MainView m_parent = null;
 	private Controller m_controller = null;
 	private JSplitPane m_splitPane;
+	private GeneralSettingsPanel m_generalSettings;
 	private AddUserPanel m_addUser;
 	private RemoveUserPanel m_removeUser;
 	private ConfigSQLPanel m_sqlConfig;
@@ -59,6 +62,8 @@ public class ConfigManagePanel extends JPanel implements Observer
 		m_splitPane.setRightComponent(new JPanel());
 		m_controller.registerView(this);
 		IMS.getInstance().addView(this);
+		
+		m_generalSettings = new GeneralSettingsPanel(m_controller);
 		m_addUser = new AddUserPanel(m_controller);
 		m_removeUser = new RemoveUserPanel(m_controller);
 		m_sqlConfig = new ConfigSQLPanel(m_controller);
@@ -71,6 +76,10 @@ public class ConfigManagePanel extends JPanel implements Observer
 	{
 		switch (panel)
 		{
+			case GENERAL:
+				m_currentPanel = GENERAL;
+				m_splitPane.setRightComponent(m_generalSettings);
+				break;
 			case USER_ADD:
 				m_addUser.setAddMode();
 				m_currentPanel = USER_ADD;
@@ -140,6 +149,11 @@ public class ConfigManagePanel extends JPanel implements Observer
 	public String[] getSQLParams()
 	{
 		return m_sqlConfig.getSQLParams();
+	}
+	
+	public int getExportType()
+	{
+		return m_exportPanel.getExporterSelection();
 	}
 	
 	@Override
