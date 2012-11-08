@@ -13,6 +13,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JComboBox;
 import javax.swing.JButton;
 import w3se.Controller.Controller;
+import w3se.Model.IMS;
 import w3se.Model.Base.User;
 import w3se.Model.Database.UsersDB;
 import javax.swing.DefaultComboBoxModel;
@@ -44,7 +45,7 @@ public class AddUserPanel extends JPanel
 	{
 		m_controller = controller;
 		setPreferredSize(new Dimension(WIDTH, HEIGHT));
-		
+		setBackground(IMS.getInstance().getTheme().getSecondaryColor());
 		m_usernameField = new JTextField();
 		m_usernameField.setColumns(20);
 		

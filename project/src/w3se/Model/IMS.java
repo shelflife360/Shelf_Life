@@ -1,6 +1,7 @@
 package w3se.Model;
 
 
+import java.awt.Color;
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
@@ -24,6 +25,7 @@ import w3se.Model.Base.BookGenres;
 import w3se.Model.Base.LogItem;
 import w3se.Model.Base.LogItemFactory;
 import w3se.Model.Base.States;
+import w3se.Model.Base.Theme;
 import w3se.Model.Base.User;
 import w3se.Model.Database.BookDB;
 import w3se.Model.Database.DatabaseAdaptor;
@@ -48,22 +50,25 @@ public class IMS extends Observable implements Observer
 	private Configurations m_config;
 	private BookGenres m_genres = new BookGenres();
 	private boolean m_showDialogs = true;
+	private boolean m_showNotifySMode = true;
+	private Theme m_theme;
 	
-	/*public static final int NAN = -1;
-	public static final int KEYWORD_S = 0;
-	public static final int BROWSE_S = 1;
-	public static final int ADD_EDIT = 2;
-	public static final int SELL = 3;
-	public static final int LOGIN = 0;
-	public static final int BOOKS = 1;*/
-
 	/**
 	 * constructor
 	 */
 	private IMS()
 	{
+		
+		
 		m_config = Configurations.getConfigFromFile("config");
 		m_showDialogs = Boolean.parseBoolean(m_config.getValue("ErrorDialog"));
+		m_showNotifySMode = Boolean.parseBoolean(m_config.getValue("NotifyOfSMode"));
+		
+		if (m_showNotifySMode)
+			JOptionPane.showMessageDialog(null, "Running in "+ m_config.getValue("ServerMode")+ " mode.", "Mode of Operation", JOptionPane.INFORMATION_MESSAGE);
+		
+		m_theme = new Theme(new Color(Integer.parseInt(m_config.getValue("MainColor"))), new Color(Integer.parseInt(m_config.getValue("SecColor"))));
+		
 		m_genres.mergeFromFile(m_config.getValue("GenreListLoc"));
 		m_scheduler.addObserver(this);
 		m_dbAdaptor = new DatabaseAdaptor(m_config.getValue("ServerMode"), m_config);
@@ -558,10 +563,21 @@ public class IMS extends Observable implements Observer
 		return m_showDialogs;
 	}
 	
+	public boolean showNotifyOfServerMode()
+	{
+		return m_showNotifySMode;
+	}
+	
 	public void toggleDialog(boolean isEnabled)
 	{
 		m_showDialogs = isEnabled;
 	}
+	
+	public void toggleNotifySMode(boolean isEnabled)
+	{
+		m_showNotifySMode = isEnabled;
+	}
+	
 	/**
 	 * method to add a log entry to the log database
 	 * @param logItem
@@ -610,6 +626,16 @@ public class IMS extends Observable implements Observer
 	public void setExporter(Exporter exporter)
 	{
 		m_exporter = exporter;
+	}
+	
+	public void setTheme(Theme theme)
+	{
+		m_theme = theme;
+	}
+	
+	public Theme getTheme()
+	{
+		return m_theme;
 	}
 	
 	/**

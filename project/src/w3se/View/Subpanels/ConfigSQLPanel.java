@@ -7,6 +7,8 @@ import java.awt.event.ActionListener;
 import javax.swing.JPanel;
 
 import w3se.Controller.Controller;
+import w3se.Model.IMS;
+
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JLabel;
@@ -36,6 +38,7 @@ public class ConfigSQLPanel extends JPanel
 	{
 		m_controller = controller;
 		setPreferredSize(new Dimension(WIDTH, HEIGHT));
+		setBackground(IMS.getInstance().getTheme().getSecondaryColor());
 		
 		JLabel lblSqlConfigurations = new JLabel("SQL Configurations");
 		

@@ -38,7 +38,7 @@ public class LoginPanel extends JPanel implements Observer
 		m_controller = controller;
 		m_controller.registerView(this);
 		
-		setBackground(new Color(255, 255, 255));
+		setBackground(IMS.getInstance().getTheme().getMainColor());
 		
 		JLabel lblUserName = new JLabel("User Name :");
 		lblUserName.setBounds(353, 144, 76, 16);

@@ -15,6 +15,7 @@ import javax.swing.border.EtchedBorder;
 
 import w3se.Controller.Controller;
 import w3se.Model.Configurations;
+import w3se.Model.IMS;
 import w3se.View.ShelfLifeIcon;
 import w3se.View.Panels.ConfigManagePanel;
 import javax.swing.JLabel;
@@ -36,7 +37,7 @@ public class ConfigSubPanel extends JPanel
 		m_parent = parent;
 		m_controller = controller;
 		setPreferredSize(new Dimension(WIDTH, HEIGHT));
-		setBackground(new Color(255, 255, 255));
+		setBackground(IMS.getInstance().getTheme().getMainColor());
 		setBorder(new EtchedBorder());
 		setLayout(null);
 		

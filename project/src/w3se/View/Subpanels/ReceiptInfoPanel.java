@@ -16,6 +16,7 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.border.EtchedBorder;
 import javax.swing.table.DefaultTableModel;
 import w3se.Controller.Controller;
+import w3se.Model.IMS;
 import w3se.Model.Base.Book;
 
 import javax.swing.JTable;
@@ -39,6 +40,8 @@ public class ReceiptInfoPanel extends JPanel
 	{
 		m_controller = controller;
 		setPreferredSize(new Dimension(WIDTH, HEIGHT));
+		setBackground(IMS.getInstance().getTheme().getSecondaryColor());
+		
 		JLabel lblReceipt = new JLabel("Receipt");
 	
 		JSeparator separator = new JSeparator();

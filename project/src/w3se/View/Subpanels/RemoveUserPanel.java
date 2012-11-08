@@ -15,6 +15,7 @@ import javax.swing.JComboBox;
 import javax.swing.border.EtchedBorder;
 import javax.swing.table.DefaultTableModel;
 import w3se.Controller.Controller;
+import w3se.Model.IMS;
 import w3se.Model.Base.User;
 import w3se.Model.Database.UsersDB;
 import java.util.ArrayList;
@@ -39,6 +40,7 @@ public class RemoveUserPanel extends JPanel
 	{
 		m_controller = controller;
 		setPreferredSize(new Dimension(WIDTH, HEIGHT));
+		setBackground(IMS.getInstance().getTheme().getSecondaryColor());
 		
 		JLabel lblTitle = new JLabel("Remove User");
 		

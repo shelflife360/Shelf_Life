@@ -50,7 +50,7 @@ public class LogManagePanel extends JPanel implements Observer
 		m_controller = controller;
 		m_controller.registerView(this);
 				
-		setBackground(new Color(255, 255, 255));
+		setBackground(IMS.getInstance().getTheme().getMainColor());
 		this.setBounds(0, 0, 940, 500);
 		JLabel lblSearchBy = new JLabel("Search By : ");
 		

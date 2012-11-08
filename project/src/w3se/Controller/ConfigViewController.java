@@ -1,11 +1,14 @@
 package w3se.Controller;
 
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Date;
 
+import javax.swing.JColorChooser;
 import javax.swing.JFileChooser;
+import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -17,6 +20,7 @@ import w3se.Model.PlainTextExporter;
 import w3se.Model.Task;
 import w3se.Model.Base.LogItem;
 import w3se.Model.Base.LogItemFactory;
+import w3se.Model.Base.Theme;
 import w3se.Model.Base.User;
 import w3se.Model.Database.DatabaseAdaptor;
 import w3se.View.Panels.ConfigManagePanel;
@@ -269,19 +273,72 @@ public class ConfigViewController extends AbstractController
 							{
 								public void run()
 								{
-									
-									if (m_runOnce == false)
-										m_model.toggleDialog(false);
-									else
-									{
-										m_model.toggleDialog(true);
-										m_runOnce = false;
-									}
-									
+									m_model.toggleDialog(m_view.isDialogCheckSelected());
+									m_model.getConfigurations().setNewConfiguration("ErrorDialog", ""+m_view.isDialogCheckSelected());
 								}
+								
 							}));
 					}
 				});
+		
+		addListener("notify_smode_toggle", new
+				ListenerAdaptor()
+				{
+					public void actionPerformed(ActionEvent e)
+					{
+						m_model.getTaskManager().addTask(new Task(User.WORKER, new 
+							Runnable()
+							{
+								public void run()
+								{
+									m_model.toggleNotifySMode(m_view.isNotifyCheckSelected());
+									m_model.getConfigurations().setNewConfiguration("NotifyOfSMode", ""+m_view.isNotifyCheckSelected());
+								}
+								
+							}));
+					}
+				});
+		
+		addListener("select_main_color", new
+				ListenerAdaptor()
+				{
+					public void actionPerformed(ActionEvent e)
+					{
+						m_model.getTaskManager().addTask(new Task(User.WORKER, new 
+							Runnable()
+							{
+								public void run()
+								{
+									Theme theme = m_model.getTheme();
+									Color bgColor = JColorChooser.showDialog(null, "Choose Main Color", null);
+									m_model.setTheme(new Theme(bgColor, theme.getSecondaryColor()));
+									m_model.getConfigurations().setNewConfiguration("MainColor", ""+bgColor.getRGB());
+								}
+								
+							}));
+					}
+				});
+		
+		addListener("select_secondary_color", new
+				ListenerAdaptor()
+				{
+					public void actionPerformed(ActionEvent e)
+					{
+						m_model.getTaskManager().addTask(new Task(User.WORKER, new 
+							Runnable()
+							{
+								public void run()
+								{
+									Theme theme = m_model.getTheme();
+									Color color = JColorChooser.showDialog(null, "Choose Secondary Color", null);
+									m_model.setTheme(new Theme(theme.getMainColor(), color));
+									m_model.getConfigurations().setNewConfiguration("SecColor", ""+color.getRGB());
+								}
+								
+							}));
+					}
+				});
+		
 	}
 
 	@Override

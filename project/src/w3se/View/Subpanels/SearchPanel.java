@@ -21,6 +21,7 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.table.DefaultTableModel;
 import w3se.Controller.Controller;
 import w3se.Model.Configurations;
+import w3se.Model.IMS;
 import w3se.Model.Base.Book;
 import w3se.View.ShelfLifeIcon;
 
@@ -83,6 +84,7 @@ public class SearchPanel extends JPanel
 	{
 		m_header = new JPanel();
 		m_header.setPreferredSize(new Dimension(WIDTH, HEADER_HEIGHT));
+		m_header.setBackground(IMS.getInstance().getTheme().getSecondaryColor());
 		
 		JButton searchBtn = new JButton("Search");
 		
@@ -147,7 +149,7 @@ public class SearchPanel extends JPanel
 	private void createBody()
 	{
 		m_body = new JPanel();
-		m_body.setBackground(new Color(255, 255, 255));
+		m_body.setBackground(IMS.getInstance().getTheme().getMainColor());
 		m_body.setPreferredSize(new Dimension(WIDTH, (HEIGHT-HEADER_HEIGHT)));
 		
 		// create an anonymous class to set the cells as not editable

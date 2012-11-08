@@ -40,7 +40,7 @@ public class ConfigManagePanel extends JPanel implements Observer
 	private RemoveUserPanel m_removeUser;
 	private ConfigSQLPanel m_sqlConfig;
 	private ExportPanel m_exportPanel;
-	
+	private JPanel m_nullPanel;
 	private int m_currentPanel = NULL;
 	/**
 	 * Create the panel.
@@ -68,7 +68,8 @@ public class ConfigManagePanel extends JPanel implements Observer
 		m_removeUser = new RemoveUserPanel(m_controller);
 		m_sqlConfig = new ConfigSQLPanel(m_controller);
 		m_exportPanel = new ExportPanel(m_controller);
-		
+		m_nullPanel = new JPanel();
+		m_nullPanel.setBackground(IMS.getInstance().getTheme().getSecondaryColor());
 		
 	}
 
@@ -104,7 +105,7 @@ public class ConfigManagePanel extends JPanel implements Observer
 				break;
 			default:
 				m_currentPanel = NULL;
-				m_splitPane.setRightComponent(new JPanel());
+				m_splitPane.setRightComponent(m_nullPanel);
 				break;
 		}
 		
@@ -156,6 +157,16 @@ public class ConfigManagePanel extends JPanel implements Observer
 		return m_exportPanel.getExporterSelection();
 	}
 	
+	public boolean isDialogCheckSelected()
+	{
+		return m_generalSettings.getDialogCBSelection();
+	}
+	
+	public boolean isNotifyCheckSelected()
+	{
+		return m_generalSettings.getNotifyUserSelection();
+	}
+	
 	@Override
 	public void update(Observable o, Object arg)
 	{
@@ -163,5 +174,7 @@ public class ConfigManagePanel extends JPanel implements Observer
 		m_addUser.setUser(IMS.getInstance().getVolatileUser());
 		m_removeUser.setRemoveList(IMS.getInstance().getRemoveUserList());
 		m_sqlConfig.setSQLParams(IMS.getInstance().getDatabaseAdaptor().getDatabaseConfig());
+		m_generalSettings.setDialogCheckBox(IMS.getInstance().showDialogs());
+		m_generalSettings.setNotifyCheckBox(IMS.getInstance().showNotifyOfServerMode());
 	}
 }
