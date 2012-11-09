@@ -173,6 +173,11 @@ public class AddUserPanel extends JPanel
 
 	}
 	
+	public void updateColor()
+	{
+		setBackground(IMS.getInstance().getTheme().getSecondaryColor());
+	}
+	
 	public void setEditMode()
 	{
 		m_searchField.setVisible(true);

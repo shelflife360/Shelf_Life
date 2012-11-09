@@ -53,6 +53,7 @@ public class ReceiptInfoPanel extends JPanel
 		m_btnSell.addActionListener(m_controller.getListener("receipt_sell"));
 		
 		JButton btnPrint = new JButton("Print Receipt");
+		btnPrint.addActionListener(m_controller.getListener("receipt_print"));
 		
 		JButton btnCancel = new JButton("Clear");
 		btnCancel.addActionListener(m_controller.getListener("receipt_cancel"));
@@ -135,6 +136,11 @@ public class ReceiptInfoPanel extends JPanel
 			
 			((DefaultTableModel)m_receiptList.getModel()).addRow(strings);
 		}
+	}
+	
+	public void updateColor()
+	{
+		setBackground(IMS.getInstance().getTheme().getSecondaryColor());
 	}
 	
 	public void clearReceipt()

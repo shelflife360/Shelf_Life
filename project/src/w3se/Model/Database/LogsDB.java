@@ -77,6 +77,8 @@ public class LogsDB implements Database<LogItem, ArrayList<LogItem>>
 	
 	public void add(LogItem log) throws SQLException
 	{
+		log.setDesc(log.getDesc().replace("'", "''"));
+		
 		m_statement = m_connection.createStatement();
 		m_statement.execute("INSERT INTO Logs VALUES ("+log.getID()+", NOW(), "+log.getAction()+",'"+log.getDesc()+"'); COMMIT");	
 	}
@@ -109,7 +111,12 @@ public class LogsDB implements Database<LogItem, ArrayList<LogItem>>
 	public void remove(LogItem log) throws Exception
 	{
 		m_statement = m_connection.createStatement();
-		m_statement.execute("DELETE FROM Logs WHERE L_id = "+log.getID()+";");
+		
+		if (log.getAction() == LogItem.ALL)
+			m_statement.execute("DELETE FROM Logs; COMMIT");
+		
+		else
+			m_statement.execute("DELETE FROM Logs WHERE L_id = "+log.getID()+"; COMMIT");
 	}
 
 	

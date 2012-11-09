@@ -3,8 +3,12 @@ package w3se.Model;
 
 import java.awt.Color;
 import java.io.BufferedInputStream;
+import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.StringReader;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -24,6 +28,7 @@ import w3se.Model.Base.Book;
 import w3se.Model.Base.BookGenres;
 import w3se.Model.Base.LogItem;
 import w3se.Model.Base.LogItemFactory;
+import w3se.Model.Base.Receipt;
 import w3se.Model.Base.States;
 import w3se.Model.Base.Theme;
 import w3se.Model.Base.User;
@@ -52,6 +57,7 @@ public class IMS extends Observable implements Observer
 	private boolean m_showDialogs = true;
 	private boolean m_showNotifySMode = true;
 	private Theme m_theme;
+	private Receipt m_receipt;
 	
 	/**
 	 * constructor
@@ -68,6 +74,12 @@ public class IMS extends Observable implements Observer
 			JOptionPane.showMessageDialog(null, "Running in "+ m_config.getValue("ServerMode")+ " mode.", "Mode of Operation", JOptionPane.INFORMATION_MESSAGE);
 		
 		m_theme = new Theme(new Color(Integer.parseInt(m_config.getValue("MainColor"))), new Color(Integer.parseInt(m_config.getValue("SecColor"))));
+		
+		m_receipt = new Receipt();
+		m_receipt.setStoreName("Random Book Store");
+		m_receipt.setStorePhoneNumber("(540)-555-5555");
+		m_receipt.setMessageToRecipient("Thank you come again");
+		m_receipt.setSlogan("Yeah we got books what about it?");
 		
 		m_genres.mergeFromFile(m_config.getValue("GenreListLoc"));
 		m_scheduler.addObserver(this);
@@ -485,6 +497,14 @@ public class IMS extends Observable implements Observer
 	}
 	
 	/**
+	 * method to print the receipt of from the sold book list
+	 */
+	public void printReceipt()
+	{
+		m_receipt.printReceipt(m_soldBookList);
+	}
+	
+	/**
 	 * method to add a user to the dispose list of the system
 	 * @param user
 	 */
@@ -619,6 +639,20 @@ public class IMS extends Observable implements Observer
 		return items;
 	}
 	
+	public void removeLogs()
+	{
+		m_dbAdaptor.setState(DatabaseAdaptor.LOGS_DB);
+		LogItem item = new LogItem();
+		item.setAction(LogItem.ALL);
+		try
+		{
+			m_dbAdaptor.remove(item);
+		} 
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+	}
 	/**
 	 * set the exporter for the system
 	 * @param exporter

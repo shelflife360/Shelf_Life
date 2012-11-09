@@ -106,6 +106,9 @@ public class BookSearchPanel extends JPanel implements Observer
 		m_mainPanel.setSearchResults(list);
 		m_mainPanel.setGenres(IMS.getInstance().getGenres().toStringArray());
 		//m_mainPanel.setPrevViewedList(IMS.getInstance().getPrevViewedList());
+		
+		m_mainPanel.updateColor();
+		m_infoPanel.updateColor();
 	}
 	
 }

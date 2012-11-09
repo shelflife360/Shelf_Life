@@ -216,6 +216,11 @@ public class BookInfoPanel extends JPanel
 		}
 	}
 
+	public void updateColor()
+	{
+		setBackground(IMS.getInstance().getTheme().getSecondaryColor());
+	}
+	
 	public String getTitle()
 	{
 		return m_titleField.getText();

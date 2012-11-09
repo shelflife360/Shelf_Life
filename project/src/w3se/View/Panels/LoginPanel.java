@@ -98,6 +98,7 @@ public class LoginPanel extends JPanel implements Observer
 	@Override
 	public void update(Observable o, Object arg)
 	{
+		setBackground(IMS.getInstance().getTheme().getMainColor());
 		States state = IMS.getInstance().getLoginState();
 		m_parent.changeState(state);
 	}

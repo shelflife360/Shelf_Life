@@ -102,6 +102,7 @@ public class LogViewController extends AbstractController
 								{
 									public void run()
 									{
+										m_model.removeLogs();
 										m_view.setSearchResults(new ArrayList<LogItem>());
 										m_view.clearLists();
 									}

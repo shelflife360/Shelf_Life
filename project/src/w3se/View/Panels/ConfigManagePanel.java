@@ -35,6 +35,7 @@ public class ConfigManagePanel extends JPanel implements Observer
 	private MainView m_parent = null;
 	private Controller m_controller = null;
 	private JSplitPane m_splitPane;
+	private ConfigSubPanel m_mainPanel;
 	private GeneralSettingsPanel m_generalSettings;
 	private AddUserPanel m_addUser;
 	private RemoveUserPanel m_removeUser;
@@ -56,11 +57,14 @@ public class ConfigManagePanel extends JPanel implements Observer
 		m_splitPane.setEnabled(true);
 		add(m_splitPane, BorderLayout.CENTER);
 			
-		ConfigSubPanel mainPanel = new ConfigSubPanel(this, m_controller);
-			
-		m_splitPane.setLeftComponent(mainPanel);
-		m_splitPane.setRightComponent(new JPanel());
+		m_mainPanel = new ConfigSubPanel(this, m_controller);
+		m_nullPanel = new JPanel();
+		m_nullPanel.setBackground(IMS.getInstance().getTheme().getSecondaryColor());
+		
+		m_splitPane.setLeftComponent(m_mainPanel);
+		m_splitPane.setRightComponent(m_nullPanel);
 		m_controller.registerView(this);
+	
 		IMS.getInstance().addView(this);
 		
 		m_generalSettings = new GeneralSettingsPanel(m_controller);
@@ -171,10 +175,17 @@ public class ConfigManagePanel extends JPanel implements Observer
 	public void update(Observable o, Object arg)
 	{
 		clear();
+		
 		m_addUser.setUser(IMS.getInstance().getVolatileUser());
 		m_removeUser.setRemoveList(IMS.getInstance().getRemoveUserList());
 		m_sqlConfig.setSQLParams(IMS.getInstance().getDatabaseAdaptor().getDatabaseConfig());
 		m_generalSettings.setDialogCheckBox(IMS.getInstance().showDialogs());
 		m_generalSettings.setNotifyCheckBox(IMS.getInstance().showNotifyOfServerMode());
+		
+		m_mainPanel.updateColor();
+		m_addUser.updateColor();
+		m_removeUser.updateColor();
+		m_sqlConfig.updateColor();
+		m_generalSettings.updateColor();
 	}
 }

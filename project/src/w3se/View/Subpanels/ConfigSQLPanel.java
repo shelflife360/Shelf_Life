@@ -148,6 +148,11 @@ public class ConfigSQLPanel extends JPanel
 		setLayout(groupLayout);
 	}
 	
+	public void updateColor()
+	{
+		setBackground(IMS.getInstance().getTheme().getSecondaryColor());
+	}
+	
 	public String[] getSQLParams()
 	{
 		String[] params = new String[PARAM_SIZE];

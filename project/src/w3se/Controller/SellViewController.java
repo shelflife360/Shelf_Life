@@ -150,6 +150,24 @@ public class SellViewController extends AbstractController
 								}));
 					}
 				});
+		
+		addListener("receipt_print", new
+				ListenerAdaptor()
+				{
+					public void actionPerformed(ActionEvent e)
+					{
+						m_model.getTaskManager().addTask(new Task(User.WORKER, new 
+								Runnable()
+								{
+									public void run()
+									{
+										m_model.printReceipt();
+										m_model.setListOfSoldBooks(new ArrayList<Book>());
+										m_view.toggleSellButton(true);
+									}
+								}));
+					}
+				});
 	}
 
 	

@@ -51,7 +51,7 @@ public class LogManagePanel extends JPanel implements Observer
 		m_controller.registerView(this);
 				
 		setBackground(IMS.getInstance().getTheme().getMainColor());
-		this.setBounds(0, 0, 940, 500);
+		setBounds(0, 0, 940, 500);
 		JLabel lblSearchBy = new JLabel("Search By : ");
 		
 		JButton btnSearch = new JButton("Search");
@@ -74,7 +74,7 @@ public class LogManagePanel extends JPanel implements Observer
 				
 				JScrollPane resultScroll = new JScrollPane(m_logList);
 		
-		JButton btnClearAll = new JButton("Clear All");
+		JButton btnClearAll = new JButton("Remove All Logs");
 		btnClearAll.addActionListener(m_controller.getListener("clear"));
 		
 		m_lblLogo = new JLabel();
@@ -185,6 +185,7 @@ public class LogManagePanel extends JPanel implements Observer
 	@Override
 	public void update(Observable arg0, Object arg1)
 	{
+		setBackground(IMS.getInstance().getTheme().getMainColor());
 		//ArrayList<LogItem> items = IMS.getInstance().getLogs(LogItem.ALL);
 	}
 }

@@ -171,6 +171,11 @@ public class ConfigSubPanel extends JPanel
 		
 	}
 	
+	public void updateColor()
+	{
+		setBackground(IMS.getInstance().getTheme().getMainColor());
+	}
+	
 	private void toggleButtons(JToggleButton[] buttons, int unchangedIndex)
 	{
 		for (int i = 0; i < buttons.length; i++)

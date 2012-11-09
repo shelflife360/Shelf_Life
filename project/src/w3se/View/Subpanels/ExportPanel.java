@@ -101,6 +101,11 @@ public class ExportPanel extends JPanel
 
 	}
 	
+	public void updateColor()
+	{
+		setBackground(IMS.getInstance().getTheme().getSecondaryColor());
+	}
+	
 	public int getExporterSelection()
 	{
 		return m_exportType.getSelectedIndex();

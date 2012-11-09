@@ -78,9 +78,11 @@ public class SellManagePanel extends JPanel implements Observer
 		m_mainPanel.clearSearchText();
 		m_mainPanel.clearLists();
 		m_mainPanel.setSearchResults(list);
+		m_mainPanel.updateColor();
 		
 		m_infoPanel.clearReceipt();
 		m_infoPanel.setReceiptList(soldList);
+		m_infoPanel.updateColor();
 		
 		double total = 0.0;
 		for (int i = 0; i < soldList.size(); i++)

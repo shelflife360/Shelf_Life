@@ -136,6 +136,7 @@ public class DatabaseAdaptor implements Database
 				break;
 			
 			case LOGS_DB:
+				m_logsDB.remove((LogItem)obj);
 				break;
 		}
 	}

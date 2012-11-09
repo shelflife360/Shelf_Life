@@ -10,12 +10,14 @@ import w3se.View.MainView;
 import java.awt.Color;
 import java.util.Observable;
 import java.util.Observer;
+import javax.swing.SpringLayout;
 
 @SuppressWarnings("serial")
 public class LogoutPanel extends JPanel implements Observer
 {
-	Controller m_controller = null;
-	MainView m_parent = null;
+	private Controller m_controller = null;
+	private MainView m_parent = null;
+	private JButton m_btnLogout;
 	/**
 	 * Create the panel.
 	 */
@@ -25,18 +27,23 @@ public class LogoutPanel extends JPanel implements Observer
 		m_parent = mainView;
 		
 		setBackground(IMS.getInstance().getTheme().getMainColor());
-		setLayout(new BorderLayout(0, 0));
-		
-		JButton btnLogout = new JButton("Logout");
-		btnLogout.addActionListener(m_controller.getListener("logout"));
-		
-		add(btnLogout, BorderLayout.CENTER);
+		setBounds(0, 0, 940, 500);
+		m_btnLogout = new JButton("Logout");
+		m_btnLogout.addActionListener(m_controller.getListener("logout"));
+		SpringLayout springLayout = new SpringLayout();
+		springLayout.putConstraint(SpringLayout.NORTH, m_btnLogout, 203, SpringLayout.NORTH, this);
+		springLayout.putConstraint(SpringLayout.WEST, m_btnLogout, 356, SpringLayout.WEST, this);
+		springLayout.putConstraint(SpringLayout.SOUTH, m_btnLogout, -109, SpringLayout.SOUTH, this);
+		springLayout.putConstraint(SpringLayout.EAST, m_btnLogout, -314, SpringLayout.EAST, this);
+		setLayout(springLayout);
+		add(m_btnLogout);
 	}
 
 	public void update(Observable o, Object arg)
 	{
 		States state = (States)arg;
 		m_parent.changeState(state);
+		setBackground(IMS.getInstance().getTheme().getMainColor());
 	}
 	
 

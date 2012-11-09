@@ -87,6 +87,11 @@ public class GeneralSettingsPanel extends JPanel
 		setLayout(groupLayout);	
 	}
 	
+	public void updateColor()
+	{
+		setBackground(IMS.getInstance().getTheme().getSecondaryColor());
+	}
+	
 	public void setDialogCheckBox(boolean value)
 	{
 		chcDisplayErrorDialogs.setSelected(value);

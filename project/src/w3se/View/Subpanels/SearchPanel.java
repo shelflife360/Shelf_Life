@@ -247,6 +247,12 @@ public class SearchPanel extends JPanel
 		m_body.setLayout(gl_m_body);
 	}
 	
+	public void updateColor()
+	{
+		m_body.setBackground(IMS.getInstance().getTheme().getMainColor());
+		m_header.setBackground(IMS.getInstance().getTheme().getSecondaryColor());
+	}
+	
 	/**
 	 * method to return the text in the search field
 	 * @return
