@@ -8,6 +8,7 @@ import java.util.Date;
 
 import javax.swing.JColorChooser;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -145,8 +146,16 @@ public class ConfigViewController extends AbstractController
 								{
 									for (int i = 0; i < m_model.getRemoveUserList().size(); i++)
 									{
-										m_model.addLog(LogItemFactory.createLogItem(LogItem.USER, m_model.getRemoveUserList().get(i).getUsername()+" removed from the database."));
-										m_model.removeUserFromDB(m_model.getRemoveUserList().get(i));
+										int result = JOptionPane.showConfirmDialog(null, "Remove users from the system?", "Remove Users From Database", JOptionPane.YES_NO_OPTION);
+										
+										if (result == JOptionPane.YES_OPTION)
+										{
+											m_model.addLog(LogItemFactory.createLogItem(LogItem.USER, m_model.getRemoveUserList().get(i).getUsername()+" removed from the database."));
+											User user = m_model.getRemoveUserList().get(i);
+											m_model.addLog(LogItemFactory.createLogItem(LogItem.USER, user.getUsername()+" removed from the system."));
+											m_model.removeUserFromDB(user);
+										}
+										
 									}
 									m_model.clearRemoveUserList();
 								}

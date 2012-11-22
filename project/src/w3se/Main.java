@@ -1,6 +1,8 @@
 package w3se;
 
 import java.awt.EventQueue;
+import java.io.File;
+
 import w3se.Controller.ControllerFactory;
 import w3se.Model.IMS;
 import w3se.View.MainView;
@@ -14,7 +16,7 @@ public class Main
 	 */
 	public static void main(String[] args) throws Exception
 	{	
-		SplashScreen splash = new SplashScreen("W3SE.jpg");
+		SplashScreen splash = new SplashScreen(new File("resources/W3SE.jpg").getAbsolutePath());
 		splash.run();
 		
 		EventQueue.invokeLater(new Runnable()

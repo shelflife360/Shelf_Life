@@ -97,14 +97,19 @@ public class LogViewController extends AbstractController
 				{
 					public void actionPerformed(ActionEvent e)
 					{
-						m_model.getTaskManager().addTask(new Task(User.GENERAL, new 
+						m_model.getTaskManager().addTask(new Task(User.MANAGER, new 
 								Runnable()
 								{
 									public void run()
 									{
-										m_model.removeLogs();
-										m_view.setSearchResults(new ArrayList<LogItem>());
-										m_view.clearLists();
+										int result = JOptionPane.showConfirmDialog(null, "Remove all log entries?", "Remove Log Entries From Database", JOptionPane.YES_NO_OPTION);
+										
+										if (result == JOptionPane.YES_OPTION)
+										{
+											m_model.removeLogs();
+											m_view.setSearchResults(new ArrayList<LogItem>());
+											m_view.clearLists();
+										}
 									}
 								}));
 					}

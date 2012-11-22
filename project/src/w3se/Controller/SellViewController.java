@@ -46,7 +46,10 @@ public class SellViewController extends AbstractController
 										term[0] = BookDB.KEYWORD;
 										term[1] = search;
 										m_model.findBook(term);						// find the book
-										m_model.addToSoldList(m_model.getCurrentBook());// then add it to the sold list
+										ArrayList<Book> books = m_model.getListOfFoundBooks();
+										
+										if (books.size() > 0)
+											m_model.addToSoldList(books.get(0));	// then add it to the sold list
 									}
 								}));
 					}

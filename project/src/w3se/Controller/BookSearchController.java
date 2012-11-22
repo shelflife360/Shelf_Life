@@ -5,6 +5,8 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Date;
 
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.event.ChangeEvent;
 
@@ -42,9 +44,18 @@ public class BookSearchController extends AbstractController
 									public void run()
 									{
 										String[] term = new String[2];
-										term[0] = BookDB.KEYWORD;
+										
+										if (m_view.getState() == BookSearchPanel.GENERAL_SEARCH)
+											term[0] = BookDB.KEYWORD;
+										else
+											term[0] = BookDB.ONLINE;
+										
 										term[1] = search;
 										m_model.findBook(term);
+										ArrayList<Book> books = m_model.getListOfFoundBooks();
+										
+										if (books.size() > 0)
+											m_model.setCurrentBook(books.get(0));
 									}
 								}));
 					}
@@ -157,6 +168,27 @@ public class BookSearchController extends AbstractController
 								}));
 					}
 				});
+		
+		addListener("remove_book", new
+				ListenerAdaptor()
+				{
+					public void actionPerformed(ActionEvent e)
+					{
+						m_model.getTaskManager().addTask(new Task(User.WORKER, new 
+								Runnable()
+								{
+									public void run()
+									{
+										Book book = m_view.getBook();
+										int result = JOptionPane.showConfirmDialog(null, "Remove book "+book.getTitle()+"?", "Remove Book From Database", JOptionPane.YES_NO_OPTION);
+										
+										if (result == JOptionPane.YES_OPTION)
+											m_model.removeBookFromDB(book);
+									}
+								}));
+					}
+				});
+		
 	}
 
 

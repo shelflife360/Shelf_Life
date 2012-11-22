@@ -27,9 +27,12 @@ import w3se.Model.Configurations;
 import w3se.Model.IMS;
 import w3se.Model.Base.Book;
 import w3se.Model.Base.LogItem;
+import w3se.Model.Database.LogsDB;
 import w3se.View.ShelfLifeIcon;
 
 import javax.swing.JComboBox;
+
+import com.mysql.jdbc.log.Log;
 
 @SuppressWarnings("serial")
 public class LogManagePanel extends JPanel implements Observer
@@ -89,34 +92,49 @@ public class LogManagePanel extends JPanel implements Observer
 		m_searchField = new JTextField();
 		m_searchField.setColumns(10);
 		
+		JButton btnClearList = new JButton("Clear List");
+		btnClearList.addActionListener(new 
+				ActionListener()
+				{
+					public void actionPerformed(ActionEvent e)
+					{
+						while(((DefaultTableModel)m_logList.getModel()).getRowCount() > 0)
+						{
+							((DefaultTableModel)m_logList.getModel()).removeRow(0);
+						}
+					}
+				});
+		
 		GroupLayout groupLayout = new GroupLayout(this);
 		groupLayout.setHorizontalGroup(
-			groupLayout.createParallelGroup(Alignment.TRAILING)
+			groupLayout.createParallelGroup(Alignment.LEADING)
+				.addGroup(groupLayout.createSequentialGroup()
+					.addComponent(m_lblLogo)
+					.addPreferredGap(ComponentPlacement.RELATED, 322, Short.MAX_VALUE)
+					.addComponent(btnClearList)
+					.addGap(36)
+					.addComponent(btnClearAll)
+					.addGap(169))
 				.addGroup(groupLayout.createSequentialGroup()
 					.addContainerGap()
 					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addGroup(Alignment.TRAILING, groupLayout.createSequentialGroup()
-							.addComponent(resultScroll, GroupLayout.PREFERRED_SIZE, 884, GroupLayout.PREFERRED_SIZE)
-							.addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+						.addGroup(groupLayout.createSequentialGroup()
+							.addComponent(resultScroll, GroupLayout.PREFERRED_SIZE, 947, GroupLayout.PREFERRED_SIZE)
+							.addContainerGap())
 						.addGroup(groupLayout.createSequentialGroup()
 							.addComponent(lblSearchBy)
 							.addPreferredGap(ComponentPlacement.RELATED)
 							.addComponent(m_cbSearchBy, GroupLayout.PREFERRED_SIZE, 189, GroupLayout.PREFERRED_SIZE)
 							.addPreferredGap(ComponentPlacement.UNRELATED)
-							.addComponent(m_searchField, GroupLayout.DEFAULT_SIZE, 152, Short.MAX_VALUE)
+							.addComponent(m_searchField, GroupLayout.DEFAULT_SIZE, 83, Short.MAX_VALUE)
 							.addGap(18)
 							.addComponent(lblOrderBy)
 							.addGap(18)
 							.addComponent(m_cbOrderBy, GroupLayout.PREFERRED_SIZE, 198, GroupLayout.PREFERRED_SIZE)
 							.addGap(46)
 							.addComponent(btnSearch)
-							.addGap(34)))
-					.addComponent(btnShowAllLogs))
-				.addGroup(groupLayout.createSequentialGroup()
-					.addComponent(m_lblLogo)
-					.addPreferredGap(ComponentPlacement.RELATED, 595, Short.MAX_VALUE)
-					.addComponent(btnClearAll)
-					.addGap(169))
+							.addGap(34)
+							.addComponent(btnShowAllLogs))))
 		);
 		groupLayout.setVerticalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
@@ -132,13 +150,14 @@ public class LogManagePanel extends JPanel implements Observer
 						.addComponent(m_searchField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
 					.addGap(18)
 					.addComponent(resultScroll, GroupLayout.PREFERRED_SIZE, 384, GroupLayout.PREFERRED_SIZE)
+					.addPreferredGap(ComponentPlacement.RELATED)
 					.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
 						.addGroup(groupLayout.createSequentialGroup()
-							.addPreferredGap(ComponentPlacement.UNRELATED)
-							.addComponent(btnClearAll)
-							.addContainerGap(29, Short.MAX_VALUE))
+							.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+								.addComponent(btnClearAll)
+								.addComponent(btnClearList))
+							.addContainerGap(35, Short.MAX_VALUE))
 						.addGroup(groupLayout.createSequentialGroup()
-							.addPreferredGap(ComponentPlacement.RELATED)
 							.addComponent(m_lblLogo)
 							.addGap(19))))
 		);
@@ -152,8 +171,20 @@ public class LogManagePanel extends JPanel implements Observer
 		for (int i = 0; i < list.size(); i++)
 		{
 			LogItem log = list.get(i);
+			String action = "";
 			
-			String[] strings = new String[] {""+log.getID(),log.getTimeStampString(),""+log.getAction(),log.getDesc()};
+			if (log.getAction() == LogItem.INVENTORY)
+				action = "INVENTORY";
+			else if (log.getAction() == LogItem.LOGIN)
+				action = "LOGIN";
+			else if (log.getAction() == LogItem.SALES)
+				action = "SALES";
+			else if (log.getAction() == LogItem.SYSTEM)
+				action = "SYSTEM";
+			else
+				action = "USER";
+			
+			String[] strings = new String[] {""+log.getID(),log.getTimeStampString(), action,log.getDesc()};
 			
 			((DefaultTableModel)m_logList.getModel()).addRow(strings);
 		}
@@ -174,7 +205,28 @@ public class LogManagePanel extends JPanel implements Observer
 	
 	public String getSearchTerm()
 	{
-		return m_searchField.getText();
+		// I ran out of time and this is a quick fix
+		String str;
+		str = m_searchField.getText();
+		
+		if (m_cbSearchBy.getSelectedIndex() == 1)  // gotta love magic numbers (hint: it is ACTION)
+		{
+			str = str.toUpperCase();
+			
+			if (str.contains("INVENTORY"))
+				str = ""+LogItem.INVENTORY;
+			else if (str.contains("SYSTEM"))
+				str = ""+LogItem.SYSTEM;
+			else if (str.contains("USER"))
+				str = ""+LogItem.USER;
+			else if (str.contains("LOGIN"))
+				str = ""+LogItem.LOGIN;
+			else if (str.contains("SALES"))
+				str = ""+LogItem.SALES;
+			
+		}
+		
+		return str;
 	}
 	
 	public int getOrderByIndex()

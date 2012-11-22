@@ -37,6 +37,7 @@ public class SellManagePanel extends JPanel implements Observer
 		
 		splitPane.setLeftComponent(m_mainPanel);
 		splitPane.setRightComponent(m_infoPanel);
+		splitPane.setEnabled(false);
 		IMS.getInstance().addView(this);
 	}
 	

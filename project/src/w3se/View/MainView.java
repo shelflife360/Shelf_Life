@@ -48,7 +48,8 @@ public class MainView extends JFrame implements Observer
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1080, 630);
-		setTitle("ShelfLife *-Alpha-*");
+		setTitle("ShelfLife *-Beta-*");
+		setResizable(false);
 		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
 		setLocation(d.width/2-getSize().width/2, d.height/2-getSize().height/2);
 		contentPane = new JPanel();

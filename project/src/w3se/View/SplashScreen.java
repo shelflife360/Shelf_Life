@@ -40,6 +40,7 @@ public class SplashScreen extends JFrame
 	private void init(String filename)
 	{
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setUndecorated(true);
 		setBounds(100, 100, 450, 450);
 		// make it appear at the center of the screen
 		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();

@@ -64,9 +64,10 @@ public class IMS extends Observable implements Observer
 	 */
 	private IMS()
 	{
-		
-		
-		m_config = Configurations.getConfigFromFile("config");
+		//Package resources = new Package(new File(Configurations.RESOURCES_S).getAbsolutePath());
+		//resources.unpack();
+		//zipFolder()
+		m_config = Configurations.getConfigFromFile(new File("resources/config").getAbsolutePath());
 		m_showDialogs = Boolean.parseBoolean(m_config.getValue("ErrorDialog"));
 		m_showNotifySMode = Boolean.parseBoolean(m_config.getValue("NotifyOfSMode"));
 		
@@ -81,7 +82,7 @@ public class IMS extends Observable implements Observer
 		m_receipt.setMessageToRecipient("Thank you come again");
 		m_receipt.setSlogan("Yeah we got books what about it?");
 		
-		m_genres.mergeFromFile(m_config.getValue("GenreListLoc"));
+		m_genres.mergeFromFile(new File(m_config.getValue("GenreListLoc")).getAbsolutePath());
 		m_scheduler.addObserver(this);
 		m_dbAdaptor = new DatabaseAdaptor(m_config.getValue("ServerMode"), m_config);
 	}
@@ -292,41 +293,39 @@ public class IMS extends Observable implements Observer
 			m_dbAdaptor.retrieve(searchTerm);
 			m_foundBookList = (ArrayList<Book>)m_dbAdaptor.getResult();
 			
-			if (m_foundBookList.size() > 0)
+			if (searchTerm[0] == BookDB.ONLINE && m_foundBookList.size() <= 0)
 			{
-				setCurrentBook(m_foundBookList.get(0));
-				
-			}
-			else if (m_currentUser.getPrivilege() > User.GENERAL)
-			{
-				m_scheduler.addTask(new Task(User.WORKER, new 
-						Runnable()
-						{	
-							public void run()
-							{
-								m_dbAdaptor.setState(DatabaseAdaptor.ONLINE_DB);
-								try
+				if (m_currentUser.getPrivilege() > User.GENERAL)
+				{
+					m_scheduler.addTask(new Task(User.WORKER, new 
+							Runnable()
+							{	
+								public void run()
 								{
-									m_dbAdaptor.retrieve(searchTerm[1]);
-									m_foundBookList = (ArrayList<Book>)m_dbAdaptor.getResult();
-									if (m_foundBookList.size() > 0)
-										m_currentBook = m_foundBookList.get(0);
-								} 
-								catch (Exception e)
-								{
-									if (m_showDialogs)
-										JOptionPane.showMessageDialog(null, e.getMessage(), "Book not found.", JOptionPane.ERROR_MESSAGE);
-									addLog(LogItemFactory.createLogItem(LogItem.INVENTORY, "Unable to find book."));
+									m_dbAdaptor.setState(DatabaseAdaptor.ONLINE_DB);
+									try
+									{
+										m_dbAdaptor.retrieve(searchTerm[1]);
+										m_foundBookList = (ArrayList<Book>)m_dbAdaptor.getResult();
+										if (m_foundBookList.size() > 0)
+											m_currentBook = m_foundBookList.get(0);
+									} 
+									catch (Exception e)
+									{
+										if (m_showDialogs)
+											JOptionPane.showMessageDialog(null, e.getMessage(), "Book not found.", JOptionPane.ERROR_MESSAGE);
+										
+										addLog(LogItemFactory.createLogItem(LogItem.INVENTORY, "Unable to find book."));
+									}
+									
 								}
-								
-							}
-						}));
+							}));
+				}
 			}
-			else
+			if (m_foundBookList.size() <= 0)
 			{
 				if (m_showDialogs)
 					JOptionPane.showMessageDialog(null, "Book not in inventory.", "Book not found.", JOptionPane.ERROR_MESSAGE);
-				
 				addLog(LogItemFactory.createLogItem(LogItem.INVENTORY, "Unable to find book."));
 		
 			}
@@ -339,6 +338,47 @@ public class IMS extends Observable implements Observer
 		}
 	}
 	
+	public void findBookOnline(final String isbn)
+	{
+		if (m_currentUser.getPrivilege() > User.GENERAL)
+		{
+			m_scheduler.addTask(new Task(User.WORKER, new 
+					Runnable()
+					{	
+						public void run()
+						{
+							m_dbAdaptor.setState(DatabaseAdaptor.ONLINE_DB);
+							try
+							{
+								m_dbAdaptor.retrieve(isbn);
+								m_foundBookList = (ArrayList<Book>)m_dbAdaptor.getResult();
+								if (m_foundBookList.size() > 0)
+									m_currentBook = m_foundBookList.get(0);
+							} 
+							catch (Exception e)
+							{
+								if (m_showDialogs)
+									JOptionPane.showMessageDialog(null, e.getMessage(), "Book not found.", JOptionPane.ERROR_MESSAGE);
+								
+								addLog(LogItemFactory.createLogItem(LogItem.INVENTORY, "Unable to find book."));
+							}
+							
+						}
+					}));
+		}
+	}
+	
+	public void removeBookFromDB(Book book)
+	{
+		try
+		{
+			m_dbAdaptor.remove(book);
+		} catch (Exception e)
+		{
+			if (m_showDialogs)
+				JOptionPane.showMessageDialog(null, "Book removal error", "Error", JOptionPane.ERROR_MESSAGE);
+		}
+	}
 	/**
 	 * method to get the list of found books from the system (found books are the result of findBook(String[] searchTerm)
 	 * @return ArrayList<Book> - list of found books from the system
@@ -699,7 +739,6 @@ public class IMS extends Observable implements Observer
 				list = new ArrayList();
 				break;
 		}
-		
 		
 		try
 		{

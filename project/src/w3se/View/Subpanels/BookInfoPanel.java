@@ -100,8 +100,11 @@ public class BookInfoPanel extends JPanel
 		
 		JButton btnAccept = new JButton("Accept");
 		
+		JButton btnRemove = new JButton("Remove");
+		
 		btnClear.addActionListener(m_controller.getListener("info_clear"));
 		btnAccept.addActionListener(m_controller.getListener("info_accept"));
+		btnRemove.addActionListener(m_controller.getListener("remove_book"));
 		
 		GroupLayout gl_infoPanel = new GroupLayout(this);
 		gl_infoPanel.setHorizontalGroup(
@@ -148,7 +151,9 @@ public class BookInfoPanel extends JPanel
 								.addGroup(gl_infoPanel.createSequentialGroup()
 									.addComponent(btnClear)
 									.addGap(36)
-									.addComponent(btnAccept))
+									.addComponent(btnAccept)
+									.addGap(36)
+									.addComponent(btnRemove))
 								.addComponent(m_descTextPane, GroupLayout.DEFAULT_SIZE, 344, Short.MAX_VALUE))))
 					.addContainerGap())
 				.addGroup(gl_infoPanel.createSequentialGroup()
@@ -202,7 +207,8 @@ public class BookInfoPanel extends JPanel
 					.addPreferredGap(ComponentPlacement.RELATED, 33, Short.MAX_VALUE)
 					.addGroup(gl_infoPanel.createParallelGroup(Alignment.BASELINE)
 						.addComponent(btnClear)
-						.addComponent(btnAccept))
+						.addComponent(btnAccept)
+						.addComponent(btnRemove))
 					.addGap(16))
 		);
 		setLayout(gl_infoPanel);
@@ -213,6 +219,8 @@ public class BookInfoPanel extends JPanel
 			btnAccept.setEnabled(false);
 			btnClear.setVisible(false);
 			btnAccept.setVisible(false);
+			btnRemove.setEnabled(false);
+			btnRemove.setVisible(false);
 		}
 	}
 

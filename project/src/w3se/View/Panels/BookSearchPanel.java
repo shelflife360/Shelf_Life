@@ -20,8 +20,12 @@ public class BookSearchPanel extends JPanel implements Observer
 {
 	public static final int WIDTH = 1020;
 	public static final int HEIGHT = 500;
+	public static final int GENERAL_SEARCH = 0;
+	public static final int ADD_EDIT_SEARCH = 1;
+	
 	private SearchPanel m_mainPanel;
 	private BookInfoPanel m_infoPanel;
+	private int m_state = GENERAL_SEARCH;
 	
 	/**
 	 * Create the panel.
@@ -30,10 +34,15 @@ public class BookSearchPanel extends JPanel implements Observer
 	{
 		controller.registerView(this);
 		
+		if (editable == false)
+			m_state = GENERAL_SEARCH;
+		else
+			m_state = ADD_EDIT_SEARCH;
+		
 		setPreferredSize(new Dimension(WIDTH, HEIGHT));
 		setLayout(new BorderLayout());
 		JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-		splitPane.setEnabled(true);
+		splitPane.setEnabled(false);
 		add(splitPane, BorderLayout.CENTER);
 		
 		m_mainPanel = new SearchPanel(headerType, controller);
@@ -77,6 +86,11 @@ public class BookSearchPanel extends JPanel implements Observer
 		book.setDescription(m_infoPanel.getDesc());
 		book.setQuantity(m_infoPanel.getQuantity());
 		return book;
+	}
+	
+	public int getState()
+	{
+		return m_state;
 	}
 	
 	public String getGenre()

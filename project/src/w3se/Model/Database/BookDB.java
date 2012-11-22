@@ -22,6 +22,7 @@ public class BookDB implements Database<Book, ArrayList<Book>>
 	private Connection m_connection = null;
 	public static final String KEYWORD = "keyword";
 	public static final String BROWSE = "browse";
+	public static final String ONLINE = "keyword";
 	
 	
 	public BookDB(Configurations config)

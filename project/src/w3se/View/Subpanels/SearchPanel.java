@@ -33,7 +33,7 @@ public class SearchPanel extends JPanel
 	 */
 	public static final int WIDTH = 540;
 	public static final int HEIGHT = 500;
-	public static final int HEADER_HEIGHT = 50;
+	public static final int HEADER_HEIGHT = 80;
 	public static final int KEYWORD_HEADER = 0;
 	public static final int BROWSE_HEADER = 1;
 	public static final int ORDER_PRICE_ASCEND = 0;
@@ -108,6 +108,7 @@ public class SearchPanel extends JPanel
 			JLabel lblGenres =  new JLabel("Genres");
 			JLabel lblOrder = new JLabel("Order");
 			m_cbGenres.setSize(70, 10);
+			
 			searchBtn.addActionListener(m_controller.getListener("browse_search"));
 			m_cbOrder.setModel(new DefaultComboBoxModel(new String[] {"Price Ascending", "Price Descending", "Title","Author", "Publisher"}));
 			GroupLayout gl_m_header = new GroupLayout(m_header);

@@ -63,6 +63,7 @@ public class ConfigManagePanel extends JPanel implements Observer
 		
 		m_splitPane.setLeftComponent(m_mainPanel);
 		m_splitPane.setRightComponent(m_nullPanel);
+		m_splitPane.setEnabled(false);
 		m_controller.registerView(this);
 	
 		IMS.getInstance().addView(this);
