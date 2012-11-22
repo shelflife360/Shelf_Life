@@ -10,9 +10,12 @@ import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringReader;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Formatter;
 import java.util.Observable;
 import java.util.Observer;
 import javax.swing.JOptionPane;
@@ -36,6 +39,7 @@ import w3se.Model.Database.BookDB;
 import w3se.Model.Database.DatabaseAdaptor;
 import w3se.Model.Database.LogsDB;
 import w3se.Model.Database.UsersDB;
+import w3se.View.SplashScreen;
 
 public class IMS extends Observable implements Observer
 {
@@ -58,30 +62,67 @@ public class IMS extends Observable implements Observer
 	private boolean m_showNotifySMode = true;
 	private Theme m_theme;
 	private Receipt m_receipt;
+	private Package m_resources;
 	
 	/**
 	 * constructor
 	 */
 	private IMS()
 	{
-		//Package resources = new Package(new File(Configurations.RESOURCES_S).getAbsolutePath());
-		//resources.unpack();
-		//zipFolder()
-		m_config = Configurations.getConfigFromFile(new File("resources/config").getAbsolutePath());
+	}
+	
+	private void setResourcePKGKey()
+	{
+		String hash = null;
+		String key = getClass().getCanonicalName()+getClass().getModifiers();
+		try
+		{
+			MessageDigest md = MessageDigest.getInstance("SHA-256");
+			md.update(key.getBytes());
+			
+			byte hashData[] = md.digest();
+			
+			Formatter formatter = new Formatter();
+			
+			for (int i = 0; i < hashData.length; i++)
+			{
+				formatter.format("%02x", hashData[i]);
+			}
+			
+			hash = formatter.toString();
+		} catch (NoSuchAlgorithmException e)
+		{
+			System.out.println("Password hashing failed");
+		}	
+		
+		m_resources.setKey(hash);
+	}
+	
+	public void init()
+	{
+		// unpack the resources first and foremost 
+		m_resources = new Package(Configurations.RESOURCES_S, Configurations.RESOURCES_D, "");
+		setResourcePKGKey();
+		m_resources.unpack();
+
+		SplashScreen splash = new SplashScreen(new File(Configurations.W3SE_LOGO).getAbsolutePath());
+		splash.run();
+
+		m_config = Configurations.getConfigFromFile(new File(Configurations.CONFIG_LOC).getAbsolutePath());
 		m_showDialogs = Boolean.parseBoolean(m_config.getValue("ErrorDialog"));
 		m_showNotifySMode = Boolean.parseBoolean(m_config.getValue("NotifyOfSMode"));
-		
+
 		if (m_showNotifySMode)
 			JOptionPane.showMessageDialog(null, "Running in "+ m_config.getValue("ServerMode")+ " mode.", "Mode of Operation", JOptionPane.INFORMATION_MESSAGE);
-		
+
 		m_theme = new Theme(new Color(Integer.parseInt(m_config.getValue("MainColor"))), new Color(Integer.parseInt(m_config.getValue("SecColor"))));
-		
+
 		m_receipt = new Receipt();
 		m_receipt.setStoreName("Random Book Store");
 		m_receipt.setStorePhoneNumber("(540)-555-5555");
 		m_receipt.setMessageToRecipient("Thank you come again");
 		m_receipt.setSlogan("Yeah we got books what about it?");
-		
+
 		m_genres.mergeFromFile(new File(m_config.getValue("GenreListLoc")).getAbsolutePath());
 		m_scheduler.addObserver(this);
 		m_dbAdaptor = new DatabaseAdaptor(m_config.getValue("ServerMode"), m_config);
@@ -191,6 +232,8 @@ public class IMS extends Observable implements Observer
 		m_dbAdaptor.close();
 		m_genres.writeToFile();
 		m_config.writeToFile();
+		m_resources.pack();
+		m_resources.close();
 	}
 	
 	/**

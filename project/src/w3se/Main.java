@@ -4,7 +4,9 @@ import java.awt.EventQueue;
 import java.io.File;
 
 import w3se.Controller.ControllerFactory;
+import w3se.Model.Configurations;
 import w3se.Model.IMS;
+import w3se.Model.Package;
 import w3se.View.MainView;
 import w3se.View.SplashScreen;
 
@@ -16,8 +18,7 @@ public class Main
 	 */
 	public static void main(String[] args) throws Exception
 	{	
-		SplashScreen splash = new SplashScreen(new File("resources/W3SE.jpg").getAbsolutePath());
-		splash.run();
+		IMS.getInstance().init();	// initialize first to unpack the resources and setup the environment
 		
 		EventQueue.invokeLater(new Runnable()
 		{
@@ -26,9 +27,7 @@ public class Main
 				try
 				{
 					MainView frame = new MainView();
-					
 					frame.setVisible(true);
-					
 				} 
 				catch (Exception e)
 				{

@@ -26,11 +26,12 @@ import org.xml.sax.InputSource;
 
 public class Configurations
 {
-	public static final String SL_ICON = "resources/icon.jpg";
-	public static final String SL_LOGO = "resources/logo.jpg";
-	public static final String W3SE_LOGO = "resources/w3se.jpg";
-	public static final String RESOURCES_D = "resources.zip";
-	public static final String RESOURCES_S = "resources";
+	public static final String SL_ICON = "tmp/icon.jpg";
+	public static final String SL_LOGO = "tmp/logo.jpg";
+	public static final String W3SE_LOGO = "tmp/w3se.jpg";
+	public static final String RESOURCES_D = "tmp";
+	public static final String RESOURCES_S = "resources.slr";
+	public static final String CONFIG_LOC = "tmp/config";
 	private LinkedHashMap<String, String> m_docMap = new LinkedHashMap<String, String>();
 	private static String m_filename;
 	
@@ -133,7 +134,7 @@ public class Configurations
 			Transformer transformer = transformerFactory.newTransformer();
 			
 			DOMSource source = new DOMSource(doc);
-			StreamResult result = new StreamResult(new File("config"));
+			StreamResult result = new StreamResult(new File(m_filename));
 			
 			transformer.transform(source, result);
 			
