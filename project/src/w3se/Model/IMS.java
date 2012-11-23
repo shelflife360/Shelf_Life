@@ -98,6 +98,18 @@ public class IMS extends Observable implements Observer
 		m_resources.setKey(hash);
 	}
 	
+	public void fixResource(int type)
+	{
+		// unpack the resources first and foremost 
+		m_resources = new Package(Configurations.RESOURCES_S, Configurations.RESOURCES_D, "");
+		setResourcePKGKey();
+		
+		if (type == 0)
+			m_resources.unpack();
+		
+		else
+			m_resources.pack();
+	}
 	public void init()
 	{
 		// unpack the resources first and foremost 
@@ -118,10 +130,10 @@ public class IMS extends Observable implements Observer
 		m_theme = new Theme(new Color(Integer.parseInt(m_config.getValue("MainColor"))), new Color(Integer.parseInt(m_config.getValue("SecColor"))));
 
 		m_receipt = new Receipt();
-		m_receipt.setStoreName("Random Book Store");
-		m_receipt.setStorePhoneNumber("(540)-555-5555");
-		m_receipt.setMessageToRecipient("Thank you come again");
-		m_receipt.setSlogan("Yeah we got books what about it?");
+		m_receipt.setStoreName(m_config.getValue("BusinessName"));
+		m_receipt.setStorePhoneNumber(m_config.getValue("BusinessPhoneNumber"));
+		m_receipt.setMessageToRecipient(m_config.getValue("BusinessMessage"));
+		m_receipt.setSlogan(m_config.getValue("BusinessSlogan"));
 
 		m_genres.mergeFromFile(new File(m_config.getValue("GenreListLoc")).getAbsolutePath());
 		m_scheduler.addObserver(this);
@@ -542,6 +554,15 @@ public class IMS extends Observable implements Observer
 		return m_prevViewedList;
 	}*/
 	
+	public void setReceipt(Receipt receipt)
+	{
+		m_receipt = receipt;
+	}
+	
+	public Receipt getReceipt()
+	{
+		return m_receipt;
+	}
 	
 	/**
 	 * method to merge the genres from a book with the main genres list of the system

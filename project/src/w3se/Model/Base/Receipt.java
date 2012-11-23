@@ -70,6 +70,26 @@ public class Receipt
 		m_slogan = slogan;
 	}
 	
+	public String getStoreName()
+	{
+		return m_name;
+	}
+	
+	public String getStorePhoneNumber()
+	{
+		return m_phoneNumber;
+	}
+	
+	public String getMessageToRecipient()
+	{
+		return m_message;
+	}
+	
+	public String getSlogan()
+	{
+		return m_slogan;
+	}
+	
 	public void printReceipt(ArrayList<Book> list)
 	{	
 		m_books = list;

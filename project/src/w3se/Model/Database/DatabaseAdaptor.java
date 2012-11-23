@@ -38,11 +38,11 @@ public class DatabaseAdaptor implements Database
 		{
 			m_serverState = SERVER;
 			String[] serverProperties = new String[6];
-			serverProperties[0] = "file:resources/UsersDB";
+			serverProperties[0] = "file:tmp/UsersDB";
 			serverProperties[1] = "UsersDB";
-			serverProperties[2] = "file:resources/BooksDB";
+			serverProperties[2] = "file:tmp/BooksDB";
 			serverProperties[3] = "BooksDB";
-			serverProperties[4] = "file:resources/LogsDB";
+			serverProperties[4] = "file:tmp/LogsDB";
 			serverProperties[5] = "LogsDB";
 			
 			m_server = new DBServer(serverProperties, 9001);

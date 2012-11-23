@@ -10,6 +10,7 @@ import javax.swing.JSplitPane;
 
 import w3se.Controller.Controller;
 import w3se.Model.IMS;
+import w3se.Model.Base.Receipt;
 import w3se.Model.Base.User;
 import w3se.View.MainView;
 import w3se.View.Subpanels.AddUserPanel;
@@ -172,6 +173,10 @@ public class ConfigManagePanel extends JPanel implements Observer
 		return m_generalSettings.getNotifyUserSelection();
 	}
 	
+	public Receipt getReceipt()
+	{
+		return m_generalSettings.getReceiptTemplate();
+	}
 	@Override
 	public void update(Observable o, Object arg)
 	{
@@ -188,5 +193,6 @@ public class ConfigManagePanel extends JPanel implements Observer
 		m_removeUser.updateColor();
 		m_sqlConfig.updateColor();
 		m_generalSettings.updateColor();
+		m_generalSettings.updateReceipt(IMS.getInstance().getReceipt());
 	}
 }

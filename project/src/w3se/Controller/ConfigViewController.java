@@ -21,6 +21,7 @@ import w3se.Model.PlainTextExporter;
 import w3se.Model.Task;
 import w3se.Model.Base.LogItem;
 import w3se.Model.Base.LogItemFactory;
+import w3se.Model.Base.Receipt;
 import w3se.Model.Base.Theme;
 import w3se.Model.Base.User;
 import w3se.Model.Database.DatabaseAdaptor;
@@ -348,6 +349,27 @@ public class ConfigViewController extends AbstractController
 					}
 				});
 		
+		addListener("accept_receipt_changes", new
+				ListenerAdaptor()
+				{
+					public void actionPerformed(ActionEvent e)
+					{
+						m_model.getTaskManager().addTask(new Task(User.MANAGER, new 
+							Runnable()
+							{
+								public void run()
+								{
+									Receipt r = m_view.getReceipt();
+									m_model.setReceipt(r);
+									m_model.getConfigurations().setNewConfiguration("BusinessName", r.getStoreName());
+									m_model.getConfigurations().setNewConfiguration("BusinessPhoneNumber", r.getStorePhoneNumber());
+									m_model.getConfigurations().setNewConfiguration("BusinessMessage", r.getMessageToRecipient());
+									m_model.getConfigurations().setNewConfiguration("BusinessSlogan", r.getSlogan());
+								}
+								
+							}));
+					}
+				});
 	}
 
 	@Override

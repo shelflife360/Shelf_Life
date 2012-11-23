@@ -18,6 +18,8 @@ public class Main
 	 */
 	public static void main(String[] args) throws Exception
 	{	
+		//IMS.getInstance().fixResource(1);
+		//System.exit(0);
 		IMS.getInstance().init();	// initialize first to unpack the resources and setup the environment
 		
 		EventQueue.invokeLater(new Runnable()
