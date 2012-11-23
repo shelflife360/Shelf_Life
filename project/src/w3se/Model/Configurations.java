@@ -29,6 +29,7 @@ public class Configurations
 	public static final String SL_ICON = "tmp/icon.jpg";
 	public static final String SL_LOGO = "tmp/logo.jpg";
 	public static final String W3SE_LOGO = "tmp/w3se.jpg";
+	public static final String SUPER_SECRET = "tmp/pac.wav";
 	public static final String RESOURCES_D = "tmp";
 	public static final String RESOURCES_S = "resources.slr";
 	public static final String CONFIG_LOC = "tmp/config";

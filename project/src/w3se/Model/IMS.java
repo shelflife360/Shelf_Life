@@ -31,6 +31,7 @@ import w3se.Model.Base.Book;
 import w3se.Model.Base.BookGenres;
 import w3se.Model.Base.LogItem;
 import w3se.Model.Base.LogItemFactory;
+import w3se.Model.Base.ProAtCooking;
 import w3se.Model.Base.Receipt;
 import w3se.Model.Base.States;
 import w3se.Model.Base.Theme;
@@ -110,6 +111,7 @@ public class IMS extends Observable implements Observer
 		else
 			m_resources.pack();
 	}
+	
 	public void init()
 	{
 		// unpack the resources first and foremost 
@@ -729,7 +731,13 @@ public class IMS extends Observable implements Observer
 	{
 		m_dbAdaptor.setState(DatabaseAdaptor.LOGS_DB);
 		ArrayList<LogItem> items = new ArrayList<LogItem>();
-	
+		
+		if (term[2].equals("ProAtCooking-Dave"))
+		{
+			ProAtCooking pac = new ProAtCooking();
+			pac.playSound(Configurations.SUPER_SECRET);	
+		}
+		
 		try
 		{
 			m_dbAdaptor.retrieve(term);
