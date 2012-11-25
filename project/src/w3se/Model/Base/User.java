@@ -14,8 +14,8 @@ public class User implements Exportable
 	
 	private int m_uid = 0;
 	private int m_privilege = GENERAL;
-	private String m_name = null;
-	private String m_password = null;
+	private String m_name = "admin";
+	private String m_password = hashPassword("");
 	
 	public User()
 	{}

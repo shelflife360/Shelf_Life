@@ -31,6 +31,7 @@ import w3se.Model.Base.Book;
 import w3se.Model.Base.BookGenres;
 import w3se.Model.Base.LogItem;
 import w3se.Model.Base.LogItemFactory;
+import w3se.Model.Base.Package;
 import w3se.Model.Base.ProAtCooking;
 import w3se.Model.Base.Receipt;
 import w3se.Model.Base.States;
@@ -65,11 +66,23 @@ public class IMS extends Observable implements Observer
 	private Receipt m_receipt;
 	private Package m_resources;
 	
+	public final String RESOURCES_S = "resources.slr";
+	public final String RESOURCES_D = "tmp";
+	public final String CONFIG_F = "config";
+	public String SL_ICON;
+	public String SL_LOGO;
+	public String W3SE_LOGO;
+	
+	
 	/**
 	 * constructor
 	 */
 	private IMS()
 	{
+		init();
+		SL_ICON = m_config.getValue("Icon");
+		SL_LOGO = m_config.getValue("Logo");
+		W3SE_LOGO = m_config.getValue("W3SE");
 	}
 	
 	private void setResourcePKGKey()
@@ -102,7 +115,7 @@ public class IMS extends Observable implements Observer
 	public void fixResource(int type)
 	{
 		// unpack the resources first and foremost 
-		m_resources = new Package(Configurations.RESOURCES_S, Configurations.RESOURCES_D, "");
+		m_resources = new Package(RESOURCES_S, RESOURCES_D, "");
 		setResourcePKGKey();
 		
 		if (type == 0)
@@ -115,14 +128,14 @@ public class IMS extends Observable implements Observer
 	public void init()
 	{
 		// unpack the resources first and foremost 
-		m_resources = new Package(Configurations.RESOURCES_S, Configurations.RESOURCES_D, "");
+		m_resources = new Package(RESOURCES_S, RESOURCES_D, "");
 		setResourcePKGKey();
 		m_resources.unpack();
 
-		SplashScreen splash = new SplashScreen(new File(Configurations.W3SE_LOGO).getAbsolutePath());
-		splash.run();
 
-		m_config = Configurations.getConfigFromFile(new File(Configurations.CONFIG_LOC).getAbsolutePath());
+		m_config = Configurations.getConfigFromFile(RESOURCES_D+File.separator+CONFIG_F);
+		SplashScreen splash = new SplashScreen(RESOURCES_D+File.separator+m_config.getValue("W3SELogo"));
+		splash.run();
 		m_showDialogs = Boolean.parseBoolean(m_config.getValue("ErrorDialog"));
 		m_showNotifySMode = Boolean.parseBoolean(m_config.getValue("NotifyOfSMode"));
 
@@ -130,14 +143,14 @@ public class IMS extends Observable implements Observer
 			JOptionPane.showMessageDialog(null, "Running in "+ m_config.getValue("ServerMode")+ " mode.", "Mode of Operation", JOptionPane.INFORMATION_MESSAGE);
 
 		m_theme = new Theme(new Color(Integer.parseInt(m_config.getValue("MainColor"))), new Color(Integer.parseInt(m_config.getValue("SecColor"))));
-
+		
 		m_receipt = new Receipt();
 		m_receipt.setStoreName(m_config.getValue("BusinessName"));
 		m_receipt.setStorePhoneNumber(m_config.getValue("BusinessPhoneNumber"));
 		m_receipt.setMessageToRecipient(m_config.getValue("BusinessMessage"));
 		m_receipt.setSlogan(m_config.getValue("BusinessSlogan"));
 
-		m_genres.mergeFromFile(new File(m_config.getValue("GenreListLoc")).getAbsolutePath());
+		m_genres.mergeFromFile(RESOURCES_D+File.separator+m_config.getValue("GenreList"));
 		m_scheduler.addObserver(this);
 		m_dbAdaptor = new DatabaseAdaptor(m_config.getValue("ServerMode"), m_config);
 	}
@@ -228,6 +241,7 @@ public class IMS extends Observable implements Observer
 		}
 		catch (Exception e)
 		{
+			JOptionPane.showMessageDialog(null, e.getMessage(), "Remove Users From Database", JOptionPane.ERROR_MESSAGE);
 			addLog(LogItemFactory.createLogItem(LogItem.SYSTEM, "Unable to create user."));
 		}
 		
@@ -735,7 +749,7 @@ public class IMS extends Observable implements Observer
 		if (term[2].equals("ProAtCooking-Dave"))
 		{
 			ProAtCooking pac = new ProAtCooking();
-			pac.playSound(Configurations.SUPER_SECRET);	
+			pac.playSound(RESOURCES_D+File.separator+m_config.getValue("ProAtSecrets"));	
 		}
 		
 		try

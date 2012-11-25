@@ -1,5 +1,6 @@
 package w3se.Model.Database;
 
+import java.io.File;
 import java.sql.SQLException;
 
 import javax.swing.JOptionPane;
@@ -38,11 +39,11 @@ public class DatabaseAdaptor implements Database
 		{
 			m_serverState = SERVER;
 			String[] serverProperties = new String[6];
-			serverProperties[0] = "file:tmp/UsersDB";
+			serverProperties[0] = "file:tmp"+File.separator+"UsersDB";
 			serverProperties[1] = "UsersDB";
-			serverProperties[2] = "file:tmp/BooksDB";
+			serverProperties[2] = "file:tmp"+File.separator+"BooksDB";
 			serverProperties[3] = "BooksDB";
-			serverProperties[4] = "file:tmp/LogsDB";
+			serverProperties[4] = "file:tmp"+File.separator+"LogsDB";
 			serverProperties[5] = "LogsDB";
 			
 			m_server = new DBServer(serverProperties, 9001);

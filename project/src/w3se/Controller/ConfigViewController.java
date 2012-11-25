@@ -145,11 +145,10 @@ public class ConfigViewController extends AbstractController
 							{
 								public void run()
 								{
-									for (int i = 0; i < m_model.getRemoveUserList().size(); i++)
+									int result = JOptionPane.showConfirmDialog(null, "Remove users from the system?", "Remove Users From Database", JOptionPane.YES_NO_OPTION);
+									if (result == JOptionPane.YES_OPTION)
 									{
-										int result = JOptionPane.showConfirmDialog(null, "Remove users from the system?", "Remove Users From Database", JOptionPane.YES_NO_OPTION);
-										
-										if (result == JOptionPane.YES_OPTION)
+										for (int i = 0; i < m_model.getRemoveUserList().size(); i++)
 										{
 											m_model.addLog(LogItemFactory.createLogItem(LogItem.USER, m_model.getRemoveUserList().get(i).getUsername()+" removed from the database."));
 											User user = m_model.getRemoveUserList().get(i);

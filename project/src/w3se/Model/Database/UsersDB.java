@@ -20,6 +20,8 @@ public class UsersDB implements Database<User, ArrayList<User>>
 	private Connection m_connection = null;
 	public static final String U_ID = "U_id";
 	public static final String USERNAME = "Username";
+	public static final String ADD = "add";
+	public static final String EDIT = "edit";
 	public static final String ALL = "";
 	
 	public UsersDB(Configurations config)
@@ -71,15 +73,27 @@ public class UsersDB implements Database<User, ArrayList<User>>
 		return list;	
 	}
 	
-	public void add(User user) throws SQLException
+	public void add(User user) throws Exception
 	{
+		if (user.getUsername() == null || user.getUsername() == "" || user.getPassword() == null || user.getPassword() == "")
+			throw new Exception("Error username/password was blank");
+			
 		try
 		{
+			retrieve(new String[]{USERNAME, "admin"});
+			if (m_resultSet.next() && user.getPrivilege() < User.MANAGER)
+			{
+				throw new Exception("Error you must create a new manager user first");
+			}
+			else
+			{
+				remove(new User(0, User.MANAGER, "admin","admin"));	// remove the default user
+			}
 			retrieve(new String[]{USERNAME, user.getUsername()});
 		} 
 		catch (Exception e)
 		{
-			e.printStackTrace();
+			throw e;
 		}
 		
 		if (!m_resultSet.next())

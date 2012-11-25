@@ -182,7 +182,7 @@ public class SearchPanel extends JPanel
 		
 		
 		m_lblLogo = new JLabel();
-		m_lblLogo.setIcon(new ShelfLifeIcon(Configurations.SL_ICON));
+		m_lblLogo.setIcon(new ShelfLifeIcon());
 		
 		JButton btnClearResults = new JButton("Clear Results");
 		btnClearResults.addActionListener(m_controller.getListener("results_clear"));

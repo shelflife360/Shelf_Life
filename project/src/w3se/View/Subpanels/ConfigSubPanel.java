@@ -165,7 +165,7 @@ public class ConfigSubPanel extends JPanel
 				});
 
 		JLabel lblIcon = new JLabel("");
-		lblIcon.setIcon(new ShelfLifeIcon(Configurations.SL_ICON));
+		lblIcon.setIcon(new ShelfLifeIcon());
 		lblIcon.setBounds(30, 409, 167, 64);
 		add(lblIcon);
 		

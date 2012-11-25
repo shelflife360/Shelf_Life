@@ -111,6 +111,8 @@ public class Receipt
 			e1.printStackTrace();
 		}
 		
+		m_cursor = 40;
+		
 	}
 	
 	private void createHeader()

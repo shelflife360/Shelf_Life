@@ -1,4 +1,4 @@
-package w3se.Model;
+package w3se.Model.Base;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -231,11 +231,11 @@ public class Package
 			String filename = folder.list()[i];
 			if (path.equals(""))
 			{
-				addFileToZip(folder.getName(), srcFolder + "/" + filename, zstream);
+				addFileToZip(folder.getName(), srcFolder + File.separator + filename, zstream);
 			}
 			else
 			{
-				addFileToZip(path+"/"+folder.getName(), srcFolder+"/"+filename, zstream);
+				addFileToZip(path+"/"+folder.getName(), srcFolder+File.separator+filename, zstream);
 			}
 		}
 	}
@@ -252,7 +252,7 @@ public class Package
 			byte[] buff = new byte[BUFFER_SIZE];
 			int len;
 			FileInputStream in = new FileInputStream(src);
-			zstream.putNextEntry(new ZipEntry(path+"/"+folder.getName()));
+			zstream.putNextEntry(new ZipEntry(path+File.separator+folder.getName()));
 			while ((len = in.read(buff)) > 0)
 			{
 				zstream.write(buff, 0, len);

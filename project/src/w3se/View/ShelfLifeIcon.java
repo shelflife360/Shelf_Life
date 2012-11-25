@@ -10,17 +10,19 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.Icon;
 
+import w3se.Model.IMS;
+
 public class ShelfLifeIcon implements Icon
 {
 	private static final int HEIGHT = 64;
 	private static final int WIDTH = 167;
 	private BufferedImage m_img = null;
 	
-	public ShelfLifeIcon(String filename)
+	public ShelfLifeIcon()
 	{
 		try
 		{
-			m_img = ImageIO.read(new File(filename));
+			m_img = ImageIO.read(new File(IMS.getInstance().RESOURCES_D+File.separator+IMS.getInstance().SL_ICON));
 		} 
 		catch (IOException e)									// error
 		{

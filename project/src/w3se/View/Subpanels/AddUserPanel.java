@@ -224,7 +224,8 @@ public class AddUserPanel extends JPanel
 	
 	public User getUser()
 	{
-		m_user.setUsername(m_usernameField.getText());
+		if (!m_usernameField.getText().equals(""))
+			m_user.setUsername(m_usernameField.getText());
 		if (!m_passwordField.getText().equals(""))
 			m_user.setPassword(m_passwordField.getText());
 		m_user.setPrivilege(m_privileges.getSelectedIndex());

@@ -81,7 +81,7 @@ public class LogManagePanel extends JPanel implements Observer
 		btnClearAll.addActionListener(m_controller.getListener("clear"));
 		
 		m_lblLogo = new JLabel();
-		m_lblLogo.setIcon(new ShelfLifeIcon(Configurations.SL_ICON));
+		m_lblLogo.setIcon(new ShelfLifeIcon());
 		
 		m_cbSearchBy = new JComboBox(new String[] {"Time", "Action", "ID"});
 		

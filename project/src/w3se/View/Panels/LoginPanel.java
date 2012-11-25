@@ -11,6 +11,7 @@ import w3se.Controller.Controller;
 import w3se.Model.Configurations;
 import w3se.Model.IMS;
 import w3se.Model.Base.States;
+import w3se.Model.Base.User;
 import w3se.View.MainView;
 import w3se.View.ShelfLifeIcon;
 
@@ -70,7 +71,7 @@ public class LoginPanel extends JPanel implements Observer
 		add(btnLogin);
 		
 		JLabel lblIcon = new JLabel("");
-		lblIcon.setIcon(new ShelfLifeIcon(Configurations.SL_ICON));
+		lblIcon.setIcon(new ShelfLifeIcon());
 		lblIcon.setBounds(75, 409, 167, 64);
 		add(lblIcon);
 	}
@@ -95,6 +96,17 @@ public class LoginPanel extends JPanel implements Observer
 		return m_passwordField.getText();
 	}
 	
+	public User getUser()
+	{
+		User user = new User();
+		
+		if (!m_userNameField.getText().equals(""))
+			user.setUsername(m_userNameField.getText());
+		if (!m_passwordField.getText().equals(""))
+			user.setPassword(m_passwordField.getText());
+		
+		return user;
+	}
 	@Override
 	public void update(Observable o, Object arg)
 	{

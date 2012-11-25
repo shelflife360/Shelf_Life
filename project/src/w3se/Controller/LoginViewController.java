@@ -37,7 +37,7 @@ public class LoginViewController extends AbstractController
 								{
 									public void run()
 									{
-										m_model.setUser(new User(-1, User.GENERAL, m_view.getUsername(), m_view.getPassword()));
+										m_model.setUser(m_view.getUser());
 										try
 										{
 											m_model.addLog(LogItemFactory.createLogItem(LogItem.LOGIN, m_view.getUsername()+" logged onto the system."));
