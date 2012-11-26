@@ -194,5 +194,6 @@ public class ConfigManagePanel extends JPanel implements Observer
 		m_sqlConfig.updateColor();
 		m_generalSettings.updateColor();
 		m_generalSettings.updateReceipt(IMS.getInstance().getReceipt());
+		m_mainPanel.updateButtons();
 	}
 }

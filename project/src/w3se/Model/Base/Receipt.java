@@ -1,6 +1,7 @@
 package w3se.Model.Base;
 
 import java.awt.Color;
+import java.awt.Desktop;
 import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsDevice;
@@ -9,6 +10,7 @@ import java.awt.Transparency;
 import java.awt.image.BufferedImage;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.NumberFormat;
@@ -17,6 +19,15 @@ import java.util.Date;
 import java.util.Locale;
 
 import javax.imageio.ImageIO;
+import javax.print.Doc;
+import javax.print.DocFlavor;
+import javax.print.DocPrintJob;
+import javax.print.PrintService;
+import javax.print.PrintServiceLookup;
+import javax.print.SimpleDoc;
+import javax.print.attribute.HashPrintRequestAttributeSet;
+import javax.print.attribute.PrintRequestAttributeSet;
+import javax.print.attribute.standard.Copies;
 
 import w3se.Model.Exportable;
 
@@ -90,7 +101,7 @@ public class Receipt
 		return m_slogan;
 	}
 	
-	public void printReceipt(ArrayList<Book> list)
+	public void printReceipt(ArrayList<Book> list) throws Exception
 	{	
 		m_books = list;
 		
@@ -111,8 +122,25 @@ public class Receipt
 			e1.printStackTrace();
 		}
 		
-		m_cursor = 40;
+		File file = new File("receipt.png");
 		
+		if (Desktop.isDesktopSupported())
+		{
+			Desktop.getDesktop().print(file);
+		}
+		
+		/*PrintRequestAttributeSet printReqAttSet = new HashPrintRequestAttributeSet();
+		printReqAttSet.add(new Copies(1));
+		PrintService pss[] = PrintServiceLookup.lookupPrintServices(DocFlavor.INPUT_STREAM.PNG, null);
+		if (pss.length == 0)
+			throw new Exception("Error printing receipt");
+		PrintService printServ = pss[0];
+		DocPrintJob printJob = printServ.createPrintJob();
+		FileInputStream fin = new FileInputStream("receipt.png");
+		Doc doc = new SimpleDoc(fin, DocFlavor.INPUT_STREAM.PNG, null);
+		printJob.print(doc, printReqAttSet);
+		fin.close();*/
+		m_cursor = 40;
 	}
 	
 	private void createHeader()

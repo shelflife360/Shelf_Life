@@ -162,6 +162,8 @@ public class GeneralSettingsPanel extends JPanel
 					.addContainerGap(15, Short.MAX_VALUE))
 		);
 		setLayout(groupLayout);	
+		
+		
 	}
 	
 	public void updateColor()

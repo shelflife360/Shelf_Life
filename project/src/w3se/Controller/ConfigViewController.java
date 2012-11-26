@@ -57,8 +57,9 @@ public class ConfigViewController extends AbstractController
 								{
 									public void run()
 									{
-										m_model.createUser(m_view.getUser());
-										m_model.setVolatileUser(new User());
+										if (m_model.createUser(m_view.getUser()))
+											IMS.getInstance().getConfigurations().setNewConfiguration("MultiUser", "true");
+										m_model.setVolatileUser(new User());			// clear the system's working user
 										m_model.addLog(LogItemFactory.createLogItem(LogItem.USER, m_view.getUser().getUsername()+" added to the database."));
 									}
 								}));

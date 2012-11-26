@@ -241,11 +241,11 @@ public class IMS extends Observable implements Observer
 		}
 		catch (Exception e)
 		{
-			JOptionPane.showMessageDialog(null, e.getMessage(), "Remove Users From Database", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, e.getMessage(), "Add user to the system", JOptionPane.ERROR_MESSAGE);
 			addLog(LogItemFactory.createLogItem(LogItem.SYSTEM, "Unable to create user."));
+			return false;
 		}
-		
-		return false;
+		return true;
 	}
 	
 	/**
@@ -621,7 +621,16 @@ public class IMS extends Observable implements Observer
 	 */
 	public void printReceipt()
 	{
-		m_receipt.printReceipt(m_soldBookList);
+		try
+		{
+			m_receipt.printReceipt(m_soldBookList);
+		}
+		catch (Exception e)
+		{
+			addLog(LogItemFactory.createLogItem(LogItem.SYSTEM, "Error printing receipt"));
+			if (m_showDialogs)
+				JOptionPane.showMessageDialog(null, "Printing receipt error", "Error", JOptionPane.ERROR_MESSAGE);
+		}
 	}
 	
 	/**

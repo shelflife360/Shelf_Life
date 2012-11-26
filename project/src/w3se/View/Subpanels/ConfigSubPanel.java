@@ -27,7 +27,7 @@ public class ConfigSubPanel extends JPanel
 	public static final int HEIGHT = 500;
 	private ConfigManagePanel m_parent = null;
 	private Controller m_controller = null;
-	
+	private JToggleButton[] buttons;
 	/**
 	 * Create the panel.
 	 */
@@ -41,7 +41,7 @@ public class ConfigSubPanel extends JPanel
 		setBorder(new EtchedBorder());
 		setLayout(null);
 		
-		final JToggleButton[] buttons = new JToggleButton[6];
+		buttons = new JToggleButton[6];
 		
 		buttons[0] = new JToggleButton("General Settings");
 		buttons[0].setBounds(137, 63, 161, 29);
@@ -51,9 +51,11 @@ public class ConfigSubPanel extends JPanel
 		
 		buttons[2] = new JToggleButton("Edit User");
 		buttons[2].setBounds(137, 177, 161, 29);
+		buttons[2].setEnabled(false);
 		
 		buttons[3]  = new JToggleButton("Remove User");
 		buttons[3].setBounds(137, 242, 161, 29);
+		buttons[3].setEnabled(false);
 		
 		buttons[4] = new JToggleButton("SQL Configurations");
 		buttons[4].setBounds(137, 301, 161, 29);
@@ -169,11 +171,20 @@ public class ConfigSubPanel extends JPanel
 		lblIcon.setBounds(30, 409, 167, 64);
 		add(lblIcon);
 		
+		
 	}
 	
 	public void updateColor()
 	{
 		setBackground(IMS.getInstance().getTheme().getMainColor());
+	}
+	
+	public void updateButtons()
+	{
+		boolean b = Boolean.parseBoolean(IMS.getInstance().getConfigurations().getValue("MultiUser"));
+		
+		buttons[2].setEnabled(b);
+		buttons[3].setEnabled(b);
 	}
 	
 	private void toggleButtons(JToggleButton[] buttons, int unchangedIndex)
@@ -184,5 +195,4 @@ public class ConfigSubPanel extends JPanel
 				buttons[i].setSelected(false);
 		}
 	}
-	
 }
