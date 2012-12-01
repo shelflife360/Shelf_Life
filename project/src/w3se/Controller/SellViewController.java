@@ -3,10 +3,7 @@ package w3se.Controller;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-import java.util.Date;
-
 import javax.swing.JTable;
-
 import w3se.Model.IMS;
 import w3se.Model.Task;
 import w3se.Model.Base.Book;
@@ -14,23 +11,43 @@ import w3se.Model.Base.LogItem;
 import w3se.Model.Base.LogItemFactory;
 import w3se.Model.Base.User;
 import w3se.Model.Database.BookDB;
-import w3se.Model.Database.DatabaseAdaptor;
 import w3se.View.Panels.SellManagePanel;
 
+/**
+ * 
+ * Class  : SellViewController.java
+ * Author : Larry "Bucky" Kittinger
+ * Date   : Dec 1, 2012
+ * Desc   : Class to define listeners for the sell book view
+ */
 public class SellViewController extends AbstractController
 {
+	public static final String SEARCH_BY_TERM = "search_by_term";
+	public static final String CLEAR_RESULTS = "clear_results";
+	public static final String RESULTS_LIST_CLICK = "results_list_click";
+	public static final String RECEIPT_LIST_CLICK = "receipt_list_click";
+	public static final String RECEIPT_SELL = "receipt_sell";
+	public static final String RECEIPT_CANCEL = "receipt_cancel";
+	public static final String RECEIPT_PRINT = "receipt_print";
+	
 	private IMS m_model = null;
 	private SellManagePanel m_view = null;
 	
+	/**
+	 * constructor
+	 * @param model - main model of the system (IMS)
+	 */
 	public SellViewController(IMS model)
 	{
 		m_model = model;
 		propagateMap();
 	}
 	
+	// fill the map with listener-key pairs
 	protected void propagateMap()
 	{
-		addListener("search_term", new
+		// listener for keyword search
+		addListener(SEARCH_BY_TERM, new
 				ListenerAdaptor()
 				{
 					public void actionPerformed(ActionEvent e)
@@ -55,7 +72,8 @@ public class SellViewController extends AbstractController
 					}
 				});
 		
-		addListener("results_clear", new
+		// listener to clear the results list
+		addListener(CLEAR_RESULTS, new
 				ListenerAdaptor()
 				{
 					public void actionPerformed(ActionEvent e)
@@ -73,7 +91,8 @@ public class SellViewController extends AbstractController
 				});
 		
 		
-		addListener("results_list", new
+		// listener to watch for a results list item being clicked
+		addListener(RESULTS_LIST_CLICK, new
 				ListenerAdaptor()
 				{
 					public void mouseClicked(MouseEvent e)
@@ -93,7 +112,8 @@ public class SellViewController extends AbstractController
 					}
 				});
 		
-		addListener("receipt_list", new
+		// listener to add books to the receipt
+		addListener(RECEIPT_LIST_CLICK, new
 				ListenerAdaptor()
 				{
 					public void mouseClicked(MouseEvent e)
@@ -112,7 +132,8 @@ public class SellViewController extends AbstractController
 					}
 				});
 		
-		addListener("receipt_cancel", new
+		// listener to purge the receipt
+		addListener(RECEIPT_CANCEL, new
 				ListenerAdaptor()
 				{
 					public void actionPerformed(ActionEvent e)
@@ -130,8 +151,8 @@ public class SellViewController extends AbstractController
 					
 				});
 		
-				
-		addListener("receipt_sell", new
+		// listener to finalize the sell 		
+		addListener(RECEIPT_SELL, new
 				ListenerAdaptor()
 				{
 					public void actionPerformed(ActionEvent e)
@@ -154,7 +175,8 @@ public class SellViewController extends AbstractController
 					}
 				});
 		
-		addListener("receipt_print", new
+		// listener to print the receipt
+		addListener(RECEIPT_PRINT, new
 				ListenerAdaptor()
 				{
 					public void actionPerformed(ActionEvent e)

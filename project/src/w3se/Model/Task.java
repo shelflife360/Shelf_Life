@@ -3,7 +3,13 @@ package w3se.Model;
 import w3se.Model.Base.User;
 
 
-
+/**
+ * 
+ * Class  : Task.java
+ * Author : Larry "Bucky" Kittinger
+ * Date   : Dec 1, 2012
+ * Desc   : Class to carry a task to be executed
+ */
 public class Task implements Comparable<Task>
 {
 	private int m_privilege = User.GENERAL;

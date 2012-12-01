@@ -6,24 +6,46 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-
-import javax.swing.JOptionPane;
-
 import w3se.Model.Configurations;
-import w3se.Model.IMS;
 import w3se.Model.Base.User;
 
+/**
+ * 
+ * Class  : UsersDB.java
+ * Author : Larry "Bucky" Kittinger
+ * Date   : Dec 1, 2012
+ * Desc   : Class to manage access to the users database
+ */
 public class UsersDB implements Database<User, ArrayList<User>>
 {
 	private Statement m_statement = null;
 	private ResultSet m_resultSet = null;
 	private Connection m_connection = null;
+	/**
+	 * UsersDB Type - search by U_ID
+	 */
 	public static final String U_ID = "U_id";
+	/**
+	 * UsersDB Type - search by user name
+	 */
 	public static final String USERNAME = "Username";
+	/**
+	 * UsersDB Type - Add a user
+	 */
 	public static final String ADD = "add";
+	/**
+	 * UsersDB Type - Edit a user
+	 */
 	public static final String EDIT = "edit";
+	/**
+	 * UsersDB Type - Only applicable in searches
+	 */
 	public static final String ALL = "";
 	
+	/**
+	 * constructor
+	 * @param config - system configurations
+	 */
 	public UsersDB(Configurations config)
 	{
 		try
@@ -77,18 +99,26 @@ public class UsersDB implements Database<User, ArrayList<User>>
 	{
 		if (user.getUsername() == null || user.getUsername() == "" || user.getPassword() == null || user.getPassword() == "")
 			throw new Exception("Error username/password was blank");
-			
+		
+		if (user.getUsername().equals("admin"))
+			throw new Exception("Error username 'admin' is not permitted");
+		
 		try
 		{
+			// see if the default user is still in the system
 			retrieve(new String[]{USERNAME, "admin"});
-			if (m_resultSet.next() && user.getPrivilege() < User.MANAGER)
+			
+			// if the default user is still in the system
+			if (m_resultSet.next())
 			{
-				throw new Exception("Error you must create a new manager user first");
+				// if you're creating a user that is a manager remove the default user
+				if (user.getPrivilege() == User.MANAGER)
+					remove(new User(0, User.MANAGER, "admin",""));	// remove the default user
+				// if it was found and the user to be made's privilege is too low
+				else
+					throw new Exception("Error you must create a new manager user first");
 			}
-			else
-			{
-				remove(new User(0, User.MANAGER, "admin","admin"));	// remove the default user
-			}
+			
 			retrieve(new String[]{USERNAME, user.getUsername()});
 		} 
 		catch (Exception e)
@@ -138,7 +168,7 @@ public class UsersDB implements Database<User, ArrayList<User>>
 	public void remove(User obj) throws Exception
 	{
 		m_statement = m_connection.createStatement();
-		m_statement.execute("DELETE FROM Users WHERE U_id ="+obj.getUID()+";");
+		m_statement.execute("DELETE FROM Users WHERE Username ='"+obj.getUsername()+"'; COMMIT");
 	}
 	
 }

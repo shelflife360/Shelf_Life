@@ -12,6 +12,13 @@ import java.awt.event.WindowListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+/**
+ * 
+ * Class  : ListenerAdaptor.java
+ * Author : Larry "Bucky" Kittinger
+ * Date   : Nov 26, 2012
+ * Desc   : Adaptor class to bind ActionListener, ItemListener, ChangeListener, WindowListener, and MouseListener to a single concrete class
+ */
 public class ListenerAdaptor implements ActionListener, ItemListener, ChangeListener, WindowListener, MouseListener
 {
 

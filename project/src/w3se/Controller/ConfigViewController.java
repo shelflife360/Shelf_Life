@@ -4,18 +4,13 @@ import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-import java.util.Date;
-
 import javax.swing.JColorChooser;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.filechooser.FileNameExtensionFilter;
-
 import w3se.Model.Configurations;
 import w3se.Model.ExcelExporter;
-import w3se.Model.Exportable;
 import w3se.Model.IMS;
 import w3se.Model.PlainTextExporter;
 import w3se.Model.Task;
@@ -28,14 +23,37 @@ import w3se.Model.Database.DatabaseAdaptor;
 import w3se.View.Panels.ConfigManagePanel;
 import w3se.View.Subpanels.ExportPanel;
 
+/**
+ * 
+ * Class  : ConfigViewController.java
+ * Author : Larry "Bucky" Kittinger
+ * Date   : Nov 26, 2012
+ * Desc   : Class to implement controllers for ConfigView
+ */
 public class ConfigViewController extends AbstractController
 {
+	public static final String ADD_USER = "config_add_user";
+	public static final String USER_SEARCH = "config_user_search";
+	public static final String REMOVE_USER_SEARCH = "config_remove_user_search";
+	public static final String REMOVE_USER_DELETE = "config_remove_user_remove";
+	public static final String REMOVE_USER_CLEAR = "config_remove_user_clear";
+	public static final String REMOVE_USER_ACCEPT = "config_remove_user_accept";
+	public static final String SQL_CONFIG_ACCEPT = "config_sql_accept";
+	public static final String EXPORT_BOOKS = "books_export";
+	public static final String EXPORT_USERS = "users_export";
+	public static final String EXPORT_LOGS = "logs_export";
+	public static final String ERROR_DIALOG_TOGGLE = "dialog_toggle";
+	public static final String SERVER_MODE_NOTIFY_TOGGLE = "notify_smode_toggle";
+	public static final String SELECT_MAIN_COLOR = "select_main_color";
+	public static final String SELECT_SEC_COLOR = "select_secondary_color";
+	public static final String ACCEPT_RECEIPT_CHANGES = "accept_receipt_changes";
+	
 	private IMS m_model = null;
 	private ConfigManagePanel m_view = null;
-	private boolean m_runOnce = false;
+	
 	/**
 	 * constructor
-	 * @param model 
+	 * @param model - main model of the software (IMS)
 	 */
 	public ConfigViewController(IMS model)
 	{
@@ -43,10 +61,11 @@ public class ConfigViewController extends AbstractController
 		propagateMap();
 	}
 	
+	// fill the map with listener-key pairs
 	protected void propagateMap()
 	{
-		// add the call back for the login button event
-		addListener("config_add_user", new 
+		//listener for adding a user
+		addListener(ADD_USER, new 
 				ListenerAdaptor()
 				{
 					public void actionPerformed(ActionEvent e)
@@ -66,7 +85,8 @@ public class ConfigViewController extends AbstractController
 					}
 				});
 		
-		addListener("config_user_search", new
+		// listener for searching for a user
+		addListener(USER_SEARCH, new
 				ListenerAdaptor()
 				{
 					public void actionPerformed(ActionEvent e)
@@ -83,7 +103,8 @@ public class ConfigViewController extends AbstractController
 					}
 				});
 		
-		addListener("config_remove_user_search", new
+		// listener for searching for a user for removal
+		addListener(REMOVE_USER_SEARCH, new
 				ListenerAdaptor()
 				{
 					public void actionPerformed(ActionEvent e)
@@ -101,7 +122,8 @@ public class ConfigViewController extends AbstractController
 					}
 				});
 		
-		addListener("config_remove_user_remove", new
+		// listener for removing a user from the remove user list
+		addListener(REMOVE_USER_DELETE, new
 				ListenerAdaptor()
 				{
 					public void mouseClicked(MouseEvent e)
@@ -120,7 +142,8 @@ public class ConfigViewController extends AbstractController
 					}
 				});
 		
-		addListener("config_remove_user_clear", new
+		// listener for clearing the remove user list
+		addListener(REMOVE_USER_CLEAR, new
 				ListenerAdaptor()
 				{
 					public void actionPerformed(ActionEvent e)
@@ -136,7 +159,8 @@ public class ConfigViewController extends AbstractController
 					}
 				});
 		
-		addListener("config_remove_user_accept", new
+		// listener for removing a user from the system
+		addListener(REMOVE_USER_ACCEPT, new
 				ListenerAdaptor()
 				{
 					public void actionPerformed(ActionEvent e)
@@ -164,7 +188,8 @@ public class ConfigViewController extends AbstractController
 					}
 				});
 		
-		addListener("config_sql_accept", new
+		// listener for accepting sql config changes
+		addListener(SQL_CONFIG_ACCEPT, new
 				ListenerAdaptor()
 				{
 					public void actionPerformed(ActionEvent e)
@@ -186,7 +211,8 @@ public class ConfigViewController extends AbstractController
 					}
 				});
 		
-		addListener("books_export", new
+		// listener for exporting the books database
+		addListener(EXPORT_BOOKS, new
 				ListenerAdaptor()
 				{
 					public void actionPerformed(ActionEvent e)
@@ -215,7 +241,8 @@ public class ConfigViewController extends AbstractController
 					}
 				});
 		
-		addListener("users_export", new
+		// listener for exporting the users database
+		addListener(EXPORT_USERS, new
 				ListenerAdaptor()
 				{
 					public void actionPerformed(ActionEvent e)
@@ -244,7 +271,8 @@ public class ConfigViewController extends AbstractController
 					}
 				});
 		
-		addListener("logs_export", new
+		// listener for exporting the logs database
+		addListener(EXPORT_LOGS, new
 				ListenerAdaptor()
 				{
 					public void actionPerformed(ActionEvent e)
@@ -273,7 +301,8 @@ public class ConfigViewController extends AbstractController
 					}
 				});
 		
-		addListener("dialog_toggle", new
+		// listener for dialogs on or off
+		addListener(ERROR_DIALOG_TOGGLE, new
 				ListenerAdaptor()
 				{
 					public void actionPerformed(ActionEvent e)
@@ -291,7 +320,8 @@ public class ConfigViewController extends AbstractController
 					}
 				});
 		
-		addListener("notify_smode_toggle", new
+		// listener for server mode notification on or off
+		addListener(SERVER_MODE_NOTIFY_TOGGLE, new
 				ListenerAdaptor()
 				{
 					public void actionPerformed(ActionEvent e)
@@ -309,7 +339,8 @@ public class ConfigViewController extends AbstractController
 					}
 				});
 		
-		addListener("select_main_color", new
+		// listener for selecting main color of windows
+		addListener(SELECT_MAIN_COLOR, new
 				ListenerAdaptor()
 				{
 					public void actionPerformed(ActionEvent e)
@@ -329,7 +360,8 @@ public class ConfigViewController extends AbstractController
 					}
 				});
 		
-		addListener("select_secondary_color", new
+		// listener for selecting the secondary color of the windows
+		addListener(SELECT_SEC_COLOR, new
 				ListenerAdaptor()
 				{
 					public void actionPerformed(ActionEvent e)
@@ -349,7 +381,8 @@ public class ConfigViewController extends AbstractController
 					}
 				});
 		
-		addListener("accept_receipt_changes", new
+		// listener for accepting the receipt changes
+		addListener(ACCEPT_RECEIPT_CHANGES, new
 				ListenerAdaptor()
 				{
 					public void actionPerformed(ActionEvent e)

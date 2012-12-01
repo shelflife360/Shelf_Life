@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JPanel;
 
+import w3se.Controller.ConfigViewController;
 import w3se.Controller.Controller;
 import w3se.Model.IMS;
 
@@ -17,6 +18,13 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 
+/**
+ * 
+ * Class  : ConfigSQLPanel.java
+ * Author : Larry "Bucky" Kittinger
+ * Date   : Dec 1, 2012
+ * Desc   : Panle to display sql configurations
+ */
 @SuppressWarnings("serial")
 public class ConfigSQLPanel extends JPanel
 {
@@ -66,7 +74,7 @@ public class ConfigSQLPanel extends JPanel
 		m_cbMode = new JComboBox(new String[] {"SERVER","CLIENT"});
 		
 		JButton btnAcceptChanges = new JButton("Accept Changes");
-		btnAcceptChanges.addActionListener(m_controller.getListener("config_sql_accept"));
+		btnAcceptChanges.addActionListener(m_controller.getListener(ConfigViewController.SQL_CONFIG_ACCEPT));
 		
 		JButton btnCancel = new JButton("Revert To Defaults");
 		btnCancel.addActionListener(new
@@ -148,11 +156,18 @@ public class ConfigSQLPanel extends JPanel
 		setLayout(groupLayout);
 	}
 	
+	/**
+	 * method to update the color of the panel
+	 */
 	public void updateColor()
 	{
 		setBackground(IMS.getInstance().getTheme().getSecondaryColor());
 	}
 	
+	/**
+	 * method to get the sql configurations
+	 * @return
+	 */
 	public String[] getSQLParams()
 	{
 		String[] params = new String[PARAM_SIZE];
@@ -174,6 +189,10 @@ public class ConfigSQLPanel extends JPanel
 		return params;
 	}
 	
+	/**
+	 * method to set the sql configurations
+	 * @param params
+	 */
 	public void setSQLParams(String[] params)
 	{
 		if (params[0].equals("org.hsqldb.jdbcDriver"))

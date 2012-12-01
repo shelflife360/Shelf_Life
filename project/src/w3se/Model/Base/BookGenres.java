@@ -10,21 +10,33 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.StringTokenizer;
-
 import w3se.Model.FileTokenizer;
 
+/**
+ * 
+ * Class  : BookGenres.java
+ * Author : Larry "Bucky" Kittinger
+ * Date   : Dec 1, 2012
+ * Desc   : Class to hold and manage book genres
+ */
 public class BookGenres
 {
 	private LinkedHashMap<String, String> m_genreList = null;
 	private String m_filename = null;
+	
+	/**
+	 * default constructor
+	 */
 	public BookGenres()
 	{
 		m_genreList = new LinkedHashMap<String, String>();
 	}
 	
 	/**
-	 * merge genres from a file
+	 * Merges genres from a file
+	 *
 	 * @param filename
+	 * @see mergeFromFile
 	 */
 	public void mergeFromFile(String filename)
 	{
@@ -43,8 +55,10 @@ public class BookGenres
 	}
 	
 	/**
-	 * merge genres from a book
+	 * Merges genres from a book
+	 *
 	 * @param book
+	 * @see mergeFromBook
 	 */
 	public void mergeFromBook(Book book)
 	{
@@ -64,9 +78,11 @@ public class BookGenres
 	}
 	
 	/**
-	 * fix the genre of a book (replace with uppercase versions of what was typed)
+	 * Fixes the genre of a book (replace with uppercase versions of what was typed)
+	 *
 	 * @param book - book to have genres altered
 	 * @param genres - list of genres
+	 * @see fixGenres
 	 */
 	private void fixGenres(Book book, ArrayList<String> genres)
 	{
@@ -83,26 +99,56 @@ public class BookGenres
 		book.setGenres(strBuilder.toString());
 	}
 	
+	/**
+	 * Adds a genre to the genre list
+	 *
+	 * @param genre The genre to be added to the genre list
+	 * @see addGenre 
+	 */
 	public void addGenre(String genre)
 	{
 		m_genreList.put(genre, genre);
 	}
 	
+	/**
+	 * Returns the requested genre
+	 *
+	 * @param genre The genre that is requested
+	 * @see getGenre 
+	 */
 	public String getGenre(String genre)
 	{
 		return m_genreList.get(genre);
 	}
 	
+	/**
+	 * Removes a genre from the genre list
+	 *
+	 * @param genre The genre to be removed
+	 * @see removeGenre 
+	 */
 	public void removeGenre(String genre)
 	{
 		m_genreList.remove(genre);
 	}
 	
+	/**
+	 * Returns the size of the genre list
+	 *
+	 * @return The current size of the genre list 
+	 * @see getSize  
+	 */
 	public int getSize()
 	{
 		return m_genreList.size();
 	}
 	
+	/**
+	 * Converts the list of genres into an array of strings
+	 *
+	 * @return The converted list of genre strings
+	 * @see toStringArray 
+	 */
 	public String[] toStringArray()
 	{
 		String[] genres = new String[m_genreList.size()];
@@ -118,6 +164,11 @@ public class BookGenres
 		return genres;
 	}
 	
+	/**
+	 * This method writes information to a file
+	 *
+	 * @see writeToFile 
+	 */
 	public void writeToFile()
 	{
 		File file = new File(m_filename);

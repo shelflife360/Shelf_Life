@@ -6,12 +6,17 @@ import java.io.IOException;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
-import javax.sound.sampled.UnsupportedAudioFileException;
 
+/**
+ * 
+ * Class  : ProAtCooking.java
+ * Author : Larry "Bucky" Kittinger
+ * Date   : Dec 1, 2012
+ * Desc   : Class to show off the incredible technical capabilities of ShelfLife, this class utilizes next gen 3D graphics and 7.1 surround sound
+ */
 public class ProAtCooking
 {
 	private final int BUFFER_SIZE = 128000;
@@ -21,8 +26,9 @@ public class ProAtCooking
     private SourceDataLine sourceLine;
 
     /**
+     * Plays a sound (specifically, the ProAtCooking theme song, our testament to awesomeness. 
      * 
-     * @param filename the name of the file that is going to be played
+	 * @param filename the name of the file that is going to be played
      *
      */
     public void playSound(String filename){

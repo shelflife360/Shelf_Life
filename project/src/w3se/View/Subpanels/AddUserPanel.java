@@ -12,12 +12,21 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.JPasswordField;
 import javax.swing.JComboBox;
 import javax.swing.JButton;
+
+import w3se.Controller.ConfigViewController;
 import w3se.Controller.Controller;
 import w3se.Model.IMS;
 import w3se.Model.Base.User;
 import w3se.Model.Database.UsersDB;
 import javax.swing.DefaultComboBoxModel;
 
+/**
+ * 
+ * Class  : AddUserPanel.java
+ * Author : Larry "Bucky" Kittinger
+ * Date   : Dec 1, 2012
+ * Desc   : Panel for adding users
+ */
 @SuppressWarnings("serial")
 public class AddUserPanel extends JPanel
 {
@@ -85,9 +94,9 @@ public class AddUserPanel extends JPanel
 		m_searchField = new JTextField();
 		m_searchField.setColumns(10);
 		
-		m_searchField.addActionListener(m_controller.getListener("config_user_search"));
-		btnAddUser.addActionListener(m_controller.getListener("config_add_user"));
-		m_btnSearch.addActionListener(m_controller.getListener("config_user_search"));
+		m_searchField.addActionListener(m_controller.getListener(ConfigViewController.USER_SEARCH));
+		btnAddUser.addActionListener(m_controller.getListener(ConfigViewController.ADD_USER));
+		m_btnSearch.addActionListener(m_controller.getListener(ConfigViewController.USER_SEARCH));
 		
 		m_cbSearchBy = new JComboBox();
 		m_cbSearchBy.setModel(new DefaultComboBoxModel(new String[] {"Search by Username", "Search by User ID"}));
@@ -173,11 +182,17 @@ public class AddUserPanel extends JPanel
 
 	}
 	
+	/**
+	 * method for updating the color of the panel
+	 */
 	public void updateColor()
 	{
 		setBackground(IMS.getInstance().getTheme().getSecondaryColor());
 	}
 	
+	/**
+	 * method to set to edit user mode
+	 */
 	public void setEditMode()
 	{
 		m_searchField.setVisible(true);
@@ -187,6 +202,9 @@ public class AddUserPanel extends JPanel
 		m_state = EDIT;
 	}
 	
+	/**
+	 * method to set to add user mode
+	 */
 	public void setAddMode()
 	{
 		m_searchField.setVisible(false);
@@ -196,11 +214,19 @@ public class AddUserPanel extends JPanel
 		m_state = ADD;
 	}
 	
+	/**
+	 * method to get the search term form the panel
+	 * @return
+	 */
 	public String getSearchTerm()
 	{
 		return m_searchField.getText();
 	}
 	
+	/**
+	 * method to get the selected search by from the panel
+	 * @return
+	 */
 	public String getSearchBy()
 	{
 		if (m_cbSearchBy.getSelectedIndex() == 0)
@@ -208,6 +234,11 @@ public class AddUserPanel extends JPanel
 		else
 			return UsersDB.U_ID;
 	}
+	
+	/**
+	 * method to set the current working user for editing
+	 * @param user
+	 */
 	public void setUser(User user)
 	{
 		m_user = user;
@@ -217,11 +248,19 @@ public class AddUserPanel extends JPanel
 		m_uidField.setText(""+user.getUID());
 	}
 	
+	/**
+	 * method to get the state of the panel
+	 * @return
+	 */
 	public int getState()
 	{
 		return m_state;
 	}
 	
+	/**
+	 * method to get the current edited user
+	 * @return
+	 */
 	public User getUser()
 	{
 		if (!m_usernameField.getText().equals(""))
@@ -234,6 +273,9 @@ public class AddUserPanel extends JPanel
 		return m_user;
 	}
 	
+	/**
+	 * method to clear the panel
+	 */
 	public void clear()
 	{
 		m_searchField.setText("");

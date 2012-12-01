@@ -3,23 +3,25 @@ package w3se.View.Panels;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
 import javax.swing.JPasswordField;
 import javax.swing.JButton;
 import w3se.Controller.Controller;
-import w3se.Model.Configurations;
+import w3se.Controller.LoginViewController;
 import w3se.Model.IMS;
 import w3se.Model.Base.States;
 import w3se.Model.Base.User;
 import w3se.View.MainView;
 import w3se.View.ShelfLifeIcon;
-
-import java.awt.Color;
 import java.util.Observable;
 import java.util.Observer;
-import javax.swing.LayoutStyle.ComponentPlacement;
 
+/**
+ * 
+ * Class  : LoginPanel.java
+ * Author : Larry "Bucky" Kittinger
+ * Date   : Dec 1, 2012
+ * Desc   : Panel for logging in to the system
+ */
 @SuppressWarnings("serial")
 public class LoginPanel extends JPanel implements Observer
 {
@@ -59,8 +61,8 @@ public class LoginPanel extends JPanel implements Observer
 		btnLogin.setBounds(540, 269, 79, 29);
 		
 		
-		btnLogin.addActionListener(m_controller.getListener("login"));
-		m_passwordField.addActionListener(m_controller.getListener("login"));
+		btnLogin.addActionListener(m_controller.getListener(LoginViewController.LOGIN));
+		m_passwordField.addActionListener(m_controller.getListener(LoginViewController.LOGIN));
 		m_controller.registerView(this);
 		IMS.getInstance().addView(this);
 		setLayout(null);
@@ -76,26 +78,46 @@ public class LoginPanel extends JPanel implements Observer
 		add(lblIcon);
 	}
 
+	/**
+	 * method to set the username to the panel
+	 * @param name
+	 */
 	public void setUserName(String name)
 	{
 		m_userNameField.setText(name);
 	}
 	
+	/**
+	 * method to set the password to the panel
+	 * @param pass
+	 */
 	public void setPassword(String pass)
 	{
 		m_passwordField.setText(pass);
 	}
 	
+	/**
+	 * method to get the username from the panel
+	 * @return
+	 */
 	public String getUsername()
 	{
 		return m_userNameField.getText();
 	}
 	
+	/**
+	 * method to get the password from the panel
+	 * @return
+	 */
 	public String getPassword()
 	{
 		return m_passwordField.getText();
 	}
 	
+	/**
+	 * method to get the login attempt user of the panel
+	 * @return
+	 */
 	public User getUser()
 	{
 		User user = new User();
@@ -107,6 +129,7 @@ public class LoginPanel extends JPanel implements Observer
 		
 		return user;
 	}
+	
 	@Override
 	public void update(Observable o, Object arg)
 	{

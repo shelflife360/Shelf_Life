@@ -2,10 +2,23 @@ package w3se.Model.Base;
 
 import java.util.UUID;
 
-
-
+/**
+ * 
+ * Class  : LogItemFactory.java
+ * Author : Larry "Bucky" Kittinger
+ * Date   : Dec 1, 2012
+ * Desc   : Class to produce log entries with unique IDs and current timestamp
+ */
 public class LogItemFactory
 {
+	/**
+	 * Creates a log item to be stored and view by a manager at a later date.
+	 *
+	 * @param action
+	 * @param desc
+	 * @return A created log item
+	 * @see createLogItem
+	 */
 	public static LogItem createLogItem(int action, String desc)
 	{
 		LogItem item = new LogItem();

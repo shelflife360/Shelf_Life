@@ -1,14 +1,12 @@
 package w3se.View.Subpanels;
 
-import java.awt.Color;
 import java.awt.Dimension;
-
 import javax.swing.JPanel;
 
+import w3se.Controller.ConfigViewController;
 import w3se.Controller.Controller;
 import w3se.Model.IMS;
 import w3se.Model.Base.Receipt;
-
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JLabel;
@@ -17,6 +15,14 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.JButton;
 import javax.swing.JTextField;
 
+/**
+ * 
+ * Class  : GeneralSettingsPanel.java
+ * Author : Larry "Bucky" Kittinger
+ * Date   : Dec 1, 2012
+ * Desc   : Panel to hold general settings of the system
+ */
+@SuppressWarnings("serial")
 public class GeneralSettingsPanel extends JPanel
 {
 
@@ -42,15 +48,15 @@ public class GeneralSettingsPanel extends JPanel
 		JLabel lblGeneralSettings = new JLabel("General Settings");
 		
 		chcDisplayErrorDialogs = new JCheckBox("Display Error Dialogs");
-		chcDisplayErrorDialogs.addActionListener(m_controller.getListener("dialog_toggle"));
+		chcDisplayErrorDialogs.addActionListener(m_controller.getListener(ConfigViewController.ERROR_DIALOG_TOGGLE));
 		chckbxNotify = new JCheckBox("Notify when in server or client mode");
-		chckbxNotify.addActionListener(m_controller.getListener("notify_smode_toggle"));
+		chckbxNotify.addActionListener(m_controller.getListener(ConfigViewController.SERVER_MODE_NOTIFY_TOGGLE));
 		
 		JButton btnSelectMainColor = new JButton("Select Main Color");
-		btnSelectMainColor.addActionListener(m_controller.getListener("select_main_color"));
+		btnSelectMainColor.addActionListener(m_controller.getListener(ConfigViewController.SELECT_MAIN_COLOR));
 		
 		JButton btnSelectSecondaryColor = new JButton("Select Secondary Color");
-		btnSelectSecondaryColor.addActionListener(m_controller.getListener("select_secondary_color"));
+		btnSelectSecondaryColor.addActionListener(m_controller.getListener(ConfigViewController.SELECT_SEC_COLOR));
 		
 		JLabel lblLookAndFeel = new JLabel("Look and Feel");
 		
@@ -77,7 +83,7 @@ public class GeneralSettingsPanel extends JPanel
 		JLabel lblSlogan = new JLabel("Slogan :");
 		
 		JButton btnAcceptChanges = new JButton("Accept Changes To Receipt");
-		btnAcceptChanges.addActionListener(m_controller.getListener("accept_receipt_changes"));
+		btnAcceptChanges.addActionListener(m_controller.getListener(ConfigViewController.ACCEPT_RECEIPT_CHANGES));
 		
 		GroupLayout groupLayout = new GroupLayout(this);
 		groupLayout.setHorizontalGroup(
@@ -166,31 +172,54 @@ public class GeneralSettingsPanel extends JPanel
 		
 	}
 	
+	/**
+	 * method to update the color of the panel
+	 */
 	public void updateColor()
 	{
 		setBackground(IMS.getInstance().getTheme().getSecondaryColor());
 	}
 	
+	/**
+	 * method to set the show error dialog checkbox
+	 * @param value
+	 */
 	public void setDialogCheckBox(boolean value)
 	{
 		chcDisplayErrorDialogs.setSelected(value);
 	}
 	
+	/**
+	 * method to see if the error dialog checkbox is selected
+	 * @return
+	 */
 	public boolean getDialogCBSelection()
 	{
 		return chcDisplayErrorDialogs.isSelected();
 	}
 	
+	/**
+	 * method the set the server mode notify checkbox
+	 * @param value
+	 */
 	public void setNotifyCheckBox(boolean value)
 	{
 		chckbxNotify.setSelected(value);
 	}
 	
+	/**
+	 * method to see if the server mode notify checkbox is set
+	 * @return
+	 */
 	public boolean getNotifyUserSelection()
 	{
 		return chckbxNotify.isSelected();
 	}
 	
+	/**
+	 * method to get the receipt parameters
+	 * @return
+	 */
 	public Receipt getReceiptTemplate()
 	{
 		Receipt receipt = new Receipt();
@@ -202,6 +231,10 @@ public class GeneralSettingsPanel extends JPanel
 		return receipt;
 	}
 	
+	/**
+	 * method to set the receipt parameters
+	 * @param rec
+	 */
 	public void updateReceipt(Receipt rec)
 	{
 		m_txtBusinessName.setText(rec.getStoreName());

@@ -20,6 +20,13 @@ import w3se.View.Subpanels.ExportPanel;
 import w3se.View.Subpanels.GeneralSettingsPanel;
 import w3se.View.Subpanels.RemoveUserPanel;
 
+/**
+ * 
+ * Class  : ConfigManagePanel.java
+ * Author : Larry "Bucky" Kittinger
+ * Date   : Dec 1, 2012
+ * Desc   : Panel for managing configurations
+ */
 @SuppressWarnings("serial")
 public class ConfigManagePanel extends JPanel implements Observer
 {
@@ -44,6 +51,7 @@ public class ConfigManagePanel extends JPanel implements Observer
 	private ExportPanel m_exportPanel;
 	private JPanel m_nullPanel;
 	private int m_currentPanel = NULL;
+
 	/**
 	 * Create the panel.
 	 */
@@ -79,6 +87,10 @@ public class ConfigManagePanel extends JPanel implements Observer
 		
 	}
 
+	/**
+	 * method to set the info panel (right panel) dynamically
+	 * @param panel
+	 */
 	public void setInfoPanel(int panel)
 	{
 		switch (panel)
@@ -117,6 +129,10 @@ public class ConfigManagePanel extends JPanel implements Observer
 		
 	}
 	
+	/**
+	 * method to get the search term for user editing or removal
+	 * @return
+	 */
 	public String getSearchTerm()
 	{
 		if (m_currentPanel == USER_EDIT)
@@ -127,6 +143,10 @@ public class ConfigManagePanel extends JPanel implements Observer
 			return "";
 	}
 	
+	/**
+	 * method to get the selected search by field for editing and removing users
+	 * @return
+	 */
 	public String getSearchBy()
 	{
 		if (m_currentPanel == USER_EDIT)
@@ -137,46 +157,78 @@ public class ConfigManagePanel extends JPanel implements Observer
 			return "";
 	}
 	
+	/**
+	 * method to set the current user for editing
+	 * @param user
+	 */
 	public void setUser(User user)
 	{
 		m_addUser.setUser(user);
 	}
 	
+	/**
+	 * method to get the current user from editing
+	 * @return
+	 */
 	public User getUser()
 	{
 		return m_addUser.getUser();
 	}
 
+	/**
+	 * method to clear user editing and removing fields
+	 */
 	public void clear()
 	{
 		m_addUser.clear();
 		m_removeUser.clearList();
 	}
 	
+	/**
+	 * method to get the sql configurations
+	 * @return
+	 */
 	public String[] getSQLParams()
 	{
 		return m_sqlConfig.getSQLParams();
 	}
 	
+	/**
+	 * method to get the selected export type
+	 * @return
+	 */
 	public int getExportType()
 	{
 		return m_exportPanel.getExporterSelection();
 	}
 	
+	/**
+	 * method to see if the set error dialog checkbox is set
+	 * @return
+	 */
 	public boolean isDialogCheckSelected()
 	{
 		return m_generalSettings.getDialogCBSelection();
 	}
 	
+	/**
+	 * method to see if the set server mode notification checkbox is set
+	 * @return
+	 */
 	public boolean isNotifyCheckSelected()
 	{
 		return m_generalSettings.getNotifyUserSelection();
 	}
 	
+	/**
+	 * method to get the receipt parameters after accepting changes
+	 * @return
+	 */
 	public Receipt getReceipt()
 	{
 		return m_generalSettings.getReceiptTemplate();
 	}
+	
 	@Override
 	public void update(Observable o, Object arg)
 	{

@@ -13,6 +13,13 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
 
+/**
+ * 
+ * Class  : SplashScreen.java
+ * Author : Larry "Bucky" Kittinger
+ * Date   : Dec 1, 2012
+ * Desc   : Class to encapsulate the splash screen
+ */
 @SuppressWarnings("serial")
 public class SplashScreen extends JFrame
 {
@@ -29,6 +36,9 @@ public class SplashScreen extends JFrame
 		init(filename);
 	}
 	
+	/**
+	 * method to display the splash screen for 2 seconds
+	 */
 	public void run()
 	{
 		long startTime = System.currentTimeMillis();
@@ -37,6 +47,10 @@ public class SplashScreen extends JFrame
 		dispose();
 	}
 	
+	/**
+	 * method to initialize the splash screen
+	 * @param filename
+	 */
 	private void init(String filename)
 	{
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

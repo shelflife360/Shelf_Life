@@ -6,19 +6,44 @@ import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
 
+/**
+ * 
+ * Class  : FileTokenizer.java
+ * Author : Larry "Bucky" Kittinger
+ * Date   : Dec 1, 2012
+ * Desc   : Class to tokenize a file of comma delimited strings
+ */
 public class FileTokenizer
 {
-	private String m_readFile = null;
+	/**
+	 * tokenize and turn to all upper case
+	 */
 	public static final int UPPER_CASE = 0;
+	/**
+	 * tokenize and turn to all lower case
+	 */
 	public static final int LOWER_CASE = 1;
+	/**
+	 * tokenize but leave the case untouched
+	 */
 	public static final int UNTOUCHED = 2;
-	private int m_tokenType = UPPER_CASE;
 	
+	private int m_tokenType = UPPER_CASE;
+	private String m_readFile = null;
+	
+	/**
+	 * constructor
+	 * @param tokenType - the caseness of the tokens
+	 */
 	public FileTokenizer(int tokenType)
 	{
 		m_tokenType = tokenType;
 	}
 	
+	/**
+	 * method to read from a file
+	 * @param filename
+	 */
 	public void readFile(String filename)
 	{
 		try
@@ -44,6 +69,11 @@ public class FileTokenizer
 		} 
 	}
 	
+	/**
+	 * method to tokenize a read in file
+	 * @pre must run readFile(String filename) first
+	 * @return - ArrayList<String> tokenized strings
+	 */
 	public ArrayList<String> tokenize()
 	{
 		StringTokenizer tokenizer = new StringTokenizer(m_readFile, ",");

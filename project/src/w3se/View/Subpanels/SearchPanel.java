@@ -1,6 +1,5 @@
 package w3se.View.Subpanels;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import javax.swing.DefaultComboBoxModel;
@@ -19,12 +18,20 @@ import java.util.ArrayList;
 import javax.swing.JComboBox;
 import javax.swing.border.EtchedBorder;
 import javax.swing.table.DefaultTableModel;
+
+import w3se.Controller.BookSearchController;
 import w3se.Controller.Controller;
-import w3se.Model.Configurations;
 import w3se.Model.IMS;
 import w3se.Model.Base.Book;
 import w3se.View.ShelfLifeIcon;
 
+/**
+ * 
+ * Class  : SearchPanel.java
+ * Author : Larry "Bucky" Kittinger
+ * Date   : Dec 1, 2012
+ * Desc   : Panel for searching for a book
+ */
 @SuppressWarnings("serial")
 public class SearchPanel extends JPanel
 {
@@ -80,6 +87,10 @@ public class SearchPanel extends JPanel
 		
 	}
 	
+	/**
+	 * method to create the top of the panel
+	 * @param headerType
+	 */
 	private void createHeader(int headerType)
 	{
 		m_header = new JPanel();
@@ -100,8 +111,8 @@ public class SearchPanel extends JPanel
 			m_header.add(m_searchField);
 			m_header.add(searchBtn);
 			
-			searchBtn.addActionListener(m_controller.getListener("search_term"));
-			m_searchField.addActionListener(m_controller.getListener("search_term"));
+			searchBtn.addActionListener(m_controller.getListener(BookSearchController.SEARCH_BY_TERM));
+			m_searchField.addActionListener(m_controller.getListener(BookSearchController.SEARCH_BY_TERM));
 		}
 		else if (headerType == BROWSE_HEADER)
 		{
@@ -109,7 +120,7 @@ public class SearchPanel extends JPanel
 			JLabel lblOrder = new JLabel("Order");
 			m_cbGenres.setSize(70, 10);
 			
-			searchBtn.addActionListener(m_controller.getListener("browse_search"));
+			searchBtn.addActionListener(m_controller.getListener(BookSearchController.SEARCH_BY_BROWSE));
 			m_cbOrder.setModel(new DefaultComboBoxModel(new String[] {"Price Ascending", "Price Descending", "Title","Author", "Publisher"}));
 			GroupLayout gl_m_header = new GroupLayout(m_header);
 			gl_m_header.setHorizontalGroup(
@@ -146,6 +157,9 @@ public class SearchPanel extends JPanel
 		}
 	}
 	
+	/**
+	 * method to create the body of the panel
+	 */
 	@SuppressWarnings("serial")
 	private void createBody()
 	{
@@ -166,7 +180,7 @@ public class SearchPanel extends JPanel
 		m_resultsList.setBorder(new EtchedBorder());
 		JScrollPane resultScroll = new JScrollPane(m_resultsList);
 		
-		m_resultsList.addMouseListener(m_controller.getListener("results_list"));
+		m_resultsList.addMouseListener(m_controller.getListener(BookSearchController.RESULTS_LIST_CLICK));
 	
 		m_prevViewedList = new JTable(tableModel);
 		m_prevViewedList.setBorder(new EtchedBorder());
@@ -185,7 +199,7 @@ public class SearchPanel extends JPanel
 		m_lblLogo.setIcon(new ShelfLifeIcon());
 		
 		JButton btnClearResults = new JButton("Clear Results");
-		btnClearResults.addActionListener(m_controller.getListener("results_clear"));
+		btnClearResults.addActionListener(m_controller.getListener(BookSearchController.CLEAR_RESULTS));
 		JButton btnClearRecentlyViewed = new JButton("Clear Recently Viewed");
 		btnClearRecentlyViewed.addActionListener(m_controller.getListener("recently_clear"));
 		
@@ -248,11 +262,15 @@ public class SearchPanel extends JPanel
 		m_body.setLayout(gl_m_body);
 	}
 	
+	/**
+	 * method to update the color of the panel
+	 */
 	public void updateColor()
 	{
 		m_body.setBackground(IMS.getInstance().getTheme().getMainColor());
 		m_header.setBackground(IMS.getInstance().getTheme().getSecondaryColor());
 	}
+	
 	
 	/**
 	 * method to return the text in the search field
@@ -272,6 +290,10 @@ public class SearchPanel extends JPanel
 			m_searchField.setText("");
 	}
 	
+	/**
+	 * method to set the search results list
+	 * @param list
+	 */
 	public void setSearchResults(ArrayList<Book> list)
 	{
 		for (int i = 0; i < list.size(); i++)
@@ -285,6 +307,10 @@ public class SearchPanel extends JPanel
 		}
 	}
 	
+	/**
+	 * @ignore
+	 * @param list
+	 */
 	public void setPrevViewedList(ArrayList<Book> list)
 	{
 		for (int i = 0; i < list.size(); i++)
@@ -298,6 +324,9 @@ public class SearchPanel extends JPanel
 		}
 	}
 	
+	/**
+	 * method to clear the results list
+	 */
 	public void clearLists()
 	{
 		while(((DefaultTableModel)m_resultsList.getModel()).getRowCount() > 0)
@@ -311,18 +340,30 @@ public class SearchPanel extends JPanel
 		}
 	}
 	
+	/**
+	 * method to set the genres
+	 * @param genres
+	 */
 	public void setGenres(String[] genres)
 	{	
 		m_cbGenres.setModel(new DefaultComboBoxModel(genres));
 		m_cbGenres.setSelectedIndex(m_genreSelection);
 	}
 	
+	/**
+	 * method to get the selected genre
+	 * @return
+	 */
 	public String getSelectedGenre()
 	{
 		m_genreSelection = m_cbGenres.getSelectedIndex();
 		return (String)m_cbGenres.getModel().getSelectedItem();
 	}
 	
+	/**
+	 * method to get the selected search order
+	 * @return
+	 */
 	public int getSelectedOrder()
 	{
 		return m_cbOrder.getSelectedIndex();

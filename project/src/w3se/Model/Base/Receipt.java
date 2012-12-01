@@ -8,29 +8,21 @@ import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Transparency;
 import java.awt.image.BufferedImage;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
-
 import javax.imageio.ImageIO;
-import javax.print.Doc;
-import javax.print.DocFlavor;
-import javax.print.DocPrintJob;
-import javax.print.PrintService;
-import javax.print.PrintServiceLookup;
-import javax.print.SimpleDoc;
-import javax.print.attribute.HashPrintRequestAttributeSet;
-import javax.print.attribute.PrintRequestAttributeSet;
-import javax.print.attribute.standard.Copies;
 
-import w3se.Model.Exportable;
-
+/**
+ * 
+ * Class  : Receipt.java
+ * Author : Larry "Bucky" Kittinger
+ * Date   : Dec 1, 2012
+ * Desc   : Class to hold information of and manage the receipt of the system
+ */
 public class Receipt
 {
 	private String m_name;
@@ -46,6 +38,9 @@ public class Receipt
 	private static final int HEIGHT = 840;
 	private int m_offset = 0;
 	
+	/** 
+	 * constructor
+	 */
 	public Receipt()
 	{
 		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
@@ -61,46 +56,100 @@ public class Receipt
 		m_offset = (int)m_graphics.getFontMetrics().getHeight() + 10;
 	}
 	
+	/**
+	 * Sets the name of the store that will apprear on a receipt
+	 *
+	 * @param name The name of the store that will appear on a receipt
+	 * @see setStoreName    
+	 */
 	public void setStoreName(String name)
 	{
 		m_name = name;
 	}
 	
+	/**
+	 * Sets the phone number of the business
+	 *
+	 * @param number The store phone number
+	 * @see setStorePhoneNumber    
+	 */
 	public void setStorePhoneNumber(String number)
 	{
 		m_phoneNumber = number;
 	}
 	
+	/**
+	 * Sets the message for the customer that is printed on the receipts
+	 *
+	 * @param message The message to the customer
+	 * @see setMessageToRecipient    
+	 */
 	public void setMessageToRecipient(String message)
 	{
 		m_message = message;
 	}
 	
+	/**
+	 * Sets the desired slogan for the store
+	 *
+	 * @param slogan The slogan for the store 
+	 * @see setSlogan    
+	 */
 	public void setSlogan(String slogan)
 	{
 		m_slogan = slogan;
 	}
 	
+	/**
+	 * Returns the store/library name
+	 *
+	 * @return The store/library name
+	 * @see getStoreName    
+	 */
 	public String getStoreName()
 	{
 		return m_name;
 	}
 	
+	/**
+	 * Returns the store/library phone number
+	 *
+	 * @return The store/library phone number
+	 * @see getStorePhoneNumber    
+	 */
 	public String getStorePhoneNumber()
 	{
 		return m_phoneNumber;
 	}
 	
+	/**
+	 * Returns the personalized message set by the software owner
+	 *
+	 * @return The personalized message set by the software owner
+	 * @see getMessageToRecipient    
+	 */
 	public String getMessageToRecipient()
 	{
 		return m_message;
 	}
 	
+	/**
+	 * Returns the slogan of the bookstore/library 
+	 *
+	 * @return The slogan of the bookstore/library
+	 * @see getSlogan     
+	 */
 	public String getSlogan()
 	{
 		return m_slogan;
 	}
 	
+	/**
+	 * Prints a customer transaction receipt
+	 *
+	 * @param list The list of books that is printed on a receipt 
+	 * @see printReceipt    
+	 */
 	public void printReceipt(ArrayList<Book> list) throws Exception
 	{	
 		m_books = list;
@@ -116,10 +165,9 @@ public class Receipt
 		try
 		{
 			ImageIO.write(m_image, "png", output);
-		} catch (IOException e1)
+		} catch (IOException e)
 		{
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			e.printStackTrace();
 		}
 		
 		File file = new File("receipt.png");
@@ -129,20 +177,14 @@ public class Receipt
 			Desktop.getDesktop().print(file);
 		}
 		
-		/*PrintRequestAttributeSet printReqAttSet = new HashPrintRequestAttributeSet();
-		printReqAttSet.add(new Copies(1));
-		PrintService pss[] = PrintServiceLookup.lookupPrintServices(DocFlavor.INPUT_STREAM.PNG, null);
-		if (pss.length == 0)
-			throw new Exception("Error printing receipt");
-		PrintService printServ = pss[0];
-		DocPrintJob printJob = printServ.createPrintJob();
-		FileInputStream fin = new FileInputStream("receipt.png");
-		Doc doc = new SimpleDoc(fin, DocFlavor.INPUT_STREAM.PNG, null);
-		printJob.print(doc, printReqAttSet);
-		fin.close();*/
 		m_cursor = 40;
 	}
 	
+	/**
+	 * Creates the header of the receipt
+	 *
+	 * @see createHeader    
+	 */
 	private void createHeader()
 	{
 		drawStringCenterAligned(m_name, 0, m_cursor, Color.BLACK);
@@ -153,6 +195,11 @@ public class Receipt
 		m_cursor += m_offset;
 	}
 	
+	/**
+	 * Creates the body of the receipt
+	 *
+	 * @see createBody    
+	 */
 	private void createBody()
 	{
 		m_cursor += m_offset + 30;
@@ -180,6 +227,11 @@ public class Receipt
 		m_cursor += m_offset + 20;
 	}
 	
+	/**
+	 * Creates the footer for the receipt
+	 *
+	 * @see createFooter    
+	 */
 	private void createFooter()
 	{
 		drawStringCenterAligned(m_message, 0, m_cursor, Color.BLACK);
@@ -188,6 +240,15 @@ public class Receipt
 		m_cursor += m_offset;
 	}
 	
+	/**
+	 * Draws a line on the receipt
+	 *
+	 * @param str
+	 * @param startX
+	 * @param startY
+	 * @param color
+	 * @see drawStringCenterAligned    
+	 */
 	private void drawStringCenterAligned(String str, int startX, int startY, Color color)
 	{
 		m_graphics.setColor(color);
@@ -196,6 +257,12 @@ public class Receipt
 	    m_graphics.drawString(str, start - startX, startY);
 	}
 	
+	/**
+	 * 
+	 *
+	 * @param color
+	 * @see fillImage
+	 */
 	private void fillImage(Color color)
 	{
 		m_graphics.setColor(color);

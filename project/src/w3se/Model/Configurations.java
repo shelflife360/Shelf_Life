@@ -5,40 +5,42 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.StringReader;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
+/**
+ * 
+ * Class  : Configurations.java
+ * Author : Larry "Bucky" Kittinger
+ * Date   : Dec 1, 2012
+ * Desc   : Class to hold and manage the configurations of the system
+ */
 public class Configurations
 {
-	/*public final String SL_ICON;
-	public final String SL_LOGO;
-	public final String W3SE_LOGO;
-	public final String SUPER_SECRET;
-	public final String RESOURCES_D = "tmp";
-	public final String RESOURCES_S = "resources.slr";
-	public final String CONFIG_LOC;*/
 	private LinkedHashMap<String, String> m_docMap = new LinkedHashMap<String, String>();
 	private static String m_filename;
 	
 	private Configurations()
 	{}
 	
+	/**
+	 * method to obtain the configurations from a file
+	 * @param filename - filename of the configuration file
+	 * @return - Configurations instance
+	 */
 	public static Configurations getConfigFromFile(String filename)
 	{
 		m_filename = filename;
@@ -71,12 +73,21 @@ public class Configurations
 		return null;
 	}
 	
+	/**
+	 * method to set a new configuration to the Configurations object or edit an old configuration
+	 * @param key - the name to look up
+	 * @param value - the value to be associated with the key
+	 */
 	public void setNewConfiguration(String key, String value)
 	{
 		m_docMap.put(key, value);
 	}
 	
-	public void parseConfigFile(String readFile)
+	/**
+	 * method to parse the config file
+	 * @param readFile
+	 */
+	private void parseConfigFile(String readFile)
 	{
 		try
 		{
@@ -108,6 +119,27 @@ public class Configurations
 		}
 	}
 	
+	/**
+	 * method to set the filename to write to 
+	 * @param filename - String
+	 */
+	public void setFilename(String filename)
+	{
+		m_filename = filename;
+	}
+	
+	/**
+	 * method to get the filename of the Configuration's object
+	 * @return - String filename
+	 */
+	public String getFilename()
+	{
+		return m_filename;
+	}
+	
+	/**
+	 * method to write the contents of the Configurations object to the configurations file specified in the getConfigFromFile method or set filename method
+	 */
 	public void writeToFile()
 	{
 		try
@@ -146,6 +178,11 @@ public class Configurations
 		}
 	}
 	
+	/**
+	 * method to get a value from a key/name
+	 * @param name - key associated with the value
+	 * @return - String value
+	 */
 	public String getValue(String name)
 	{
 		return m_docMap.get(name);

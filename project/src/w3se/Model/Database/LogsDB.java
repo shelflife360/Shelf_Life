@@ -6,13 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-
-import javax.swing.JOptionPane;
-
 import w3se.Model.Configurations;
-import w3se.Model.IMS;
 import w3se.Model.Base.LogItem;
-import w3se.Model.Base.LogItemFactory;
 
 public class LogsDB implements Database<LogItem, ArrayList<LogItem>>
 {

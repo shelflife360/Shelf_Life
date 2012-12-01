@@ -12,6 +12,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.JTabbedPane;
 import w3se.Controller.Controller;
 import w3se.Controller.ControllerFactory;
+import w3se.Controller.MainViewController;
 import w3se.Model.IMS;
 import w3se.Model.Base.States;
 import w3se.View.Panels.BookSearchPanel;
@@ -22,6 +23,13 @@ import w3se.View.Panels.LogoutPanel;
 import w3se.View.Panels.SellManagePanel;
 import w3se.View.Subpanels.SearchPanel;
 
+/**
+ * 
+ * Class  : MainView.java
+ * Author : Larry "Bucky" Kittinger
+ * Date   : Dec 1, 2012
+ * Desc   : Class to serve as the main window of the program
+ */
 @SuppressWarnings("serial")
 public class MainView extends JFrame implements Observer
 {
@@ -48,7 +56,7 @@ public class MainView extends JFrame implements Observer
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1080, 630);
-		setTitle("ShelfLife *-Beta-*");
+		setTitle("ShelfLife Version 1.0");
 		setResizable(false);
 		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
 		setLocation(d.width/2-getSize().width/2, d.height/2-getSize().height/2);
@@ -59,7 +67,7 @@ public class MainView extends JFrame implements Observer
 		
 		m_controller = m_conFac.createController(ControllerFactory.MAIN_VIEW);
 		m_controller.registerView(this);
-		addWindowListener(m_controller.getListener("exit_system"));
+		addWindowListener(m_controller.getListener(MainViewController.WINDOW_CLOSE));
 		
 		m_topLevelPane = new JTabbedPane(JTabbedPane.TOP);
 		

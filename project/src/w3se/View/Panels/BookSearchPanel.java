@@ -15,6 +15,13 @@ import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 
+/**
+ * 
+ * Class  : BookSearchPanel.java
+ * Author : Larry "Bucky" Kittinger
+ * Date   : Dec 1, 2012
+ * Desc   : Panel to manage the book searches
+ */
 @SuppressWarnings("serial")
 public class BookSearchPanel extends JPanel implements Observer
 {
@@ -73,6 +80,10 @@ public class BookSearchPanel extends JPanel implements Observer
 		return m_mainPanel.getSearchText();
 	}
 
+	/**
+	 * method to get the from the book info panel
+	 * @return
+	 */
 	public Book getBook()
 	{
 		Book book = new Book();
@@ -88,16 +99,28 @@ public class BookSearchPanel extends JPanel implements Observer
 		return book;
 	}
 	
+	/**
+	 * method to get the current state of the panel
+	 * @return
+	 */
 	public int getState()
 	{
 		return m_state;
 	}
 	
+	/**
+	 * method to get the selected genre for searching
+	 * @return
+	 */
 	public String getGenre()
 	{
 		return m_mainPanel.getSelectedGenre();
 	}
 	
+	/**
+	 * method to get the selected sort order
+	 * @return
+	 */
 	public int getOrder()
 	{
 		return m_mainPanel.getSelectedOrder();

@@ -3,37 +3,33 @@ package w3se.View.Panels;
 import javax.swing.JPanel;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
-import java.awt.Color;
-import java.awt.List;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
-
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.JButton;
-import javax.swing.JList;
 import javax.swing.border.EtchedBorder;
-import javax.swing.border.LineBorder;
 import javax.swing.table.DefaultTableModel;
-
 import w3se.Controller.Controller;
-import w3se.Model.Configurations;
+import w3se.Controller.LogViewController;
 import w3se.Model.IMS;
-import w3se.Model.Base.Book;
 import w3se.Model.Base.LogItem;
-import w3se.Model.Database.LogsDB;
 import w3se.View.ShelfLifeIcon;
-
 import javax.swing.JComboBox;
 
-import com.mysql.jdbc.log.Log;
-
+/**
+ * 
+ * Class  : LogManagePanel.java
+ * Author : Larry "Bucky" Kittinger
+ * Date   : Dec 1, 2012
+ * Desc   : Panel for managing log entries
+ */
 @SuppressWarnings("serial")
 public class LogManagePanel extends JPanel implements Observer
 {
@@ -56,12 +52,11 @@ public class LogManagePanel extends JPanel implements Observer
 		setBackground(IMS.getInstance().getTheme().getMainColor());
 		setBounds(0, 0, 940, 500);
 		JLabel lblSearchBy = new JLabel("Search By : ");
-		
 		JButton btnSearch = new JButton("Search");
-		btnSearch.addActionListener(m_controller.getListener("search_by"));
+		btnSearch.addActionListener(m_controller.getListener(LogViewController.SEARCH_BY_TERM));
 		
 		JButton btnShowAllLogs = new JButton("Show All Logs");
-		btnShowAllLogs.addActionListener(m_controller.getListener("search_all"));
+		btnShowAllLogs.addActionListener(m_controller.getListener(LogViewController.SEARCH_ALL_LOGS));
 				
 		// create an anonymous class to set the cells as not editable
 			DefaultTableModel tableModel = new DefaultTableModel(new String[] {"ID","Time", "Action", "Description"}, 0)
@@ -78,7 +73,7 @@ public class LogManagePanel extends JPanel implements Observer
 				JScrollPane resultScroll = new JScrollPane(m_logList);
 		
 		JButton btnClearAll = new JButton("Remove All Logs");
-		btnClearAll.addActionListener(m_controller.getListener("clear"));
+		btnClearAll.addActionListener(m_controller.getListener(LogViewController.REMOVE_LOGS));
 		
 		m_lblLogo = new JLabel();
 		m_lblLogo.setIcon(new ShelfLifeIcon());
@@ -166,6 +161,10 @@ public class LogManagePanel extends JPanel implements Observer
 		IMS.getInstance().addView(this);
 	}
 
+	/**
+	 * method to set the search results
+	 * @param list
+	 */
 	public void setSearchResults(ArrayList<LogItem> list)
 	{
 		for (int i = 0; i < list.size(); i++)
@@ -190,6 +189,9 @@ public class LogManagePanel extends JPanel implements Observer
 		}
 	}
 	
+	/**
+	 * method to clear the results list
+	 */
 	public void clearLists()
 	{
 		while(((DefaultTableModel)m_logList.getModel()).getRowCount() > 0)
@@ -198,11 +200,19 @@ public class LogManagePanel extends JPanel implements Observer
 		}
 	}
 	
+	/**
+	 * method to get the selected search by
+	 * @return
+	 */
 	public int getSearchByIndex()
 	{
 		return m_cbSearchBy.getSelectedIndex();
 	}
 	
+	/**
+	 * method to get the search term from the panel
+	 * @return
+	 */
 	public String getSearchTerm()
 	{
 		// I ran out of time and this is a quick fix
@@ -229,6 +239,10 @@ public class LogManagePanel extends JPanel implements Observer
 		return str;
 	}
 	
+	/**
+	 * method to get the selected order by from the panel
+	 * @return
+	 */
 	public int getOrderByIndex()
 	{
 		return m_cbOrderBy.getSelectedIndex();

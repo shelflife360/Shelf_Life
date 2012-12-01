@@ -2,15 +2,23 @@ package w3se.Model.Database;
 
 import org.hsqldb.server.Server;
 
+/**
+ * 
+ * Class  : DBServer.java
+ * Author : Larry "Bucky" Kittinger
+ * Date   : Dec 1, 2012
+ * Desc   : Class to manage the hsql server
+ */
 public class DBServer
 {
-	String[] m_properties = null;
-	Server m_server = new Server();
+	private String[] m_properties = null;
+	private Server m_server = new Server();
 	
 	/**
 	 * constructor
 	 * @param properties - array of strings, format(databaseFilePath, databaseName) example ("file:database/UsersDB", "UsersDB")
 	 * @param port - server port
+	 * @precondition system must be running in SERVER mode
 	 */
 	public DBServer(String[] properties, int port)
 	{
@@ -31,16 +39,25 @@ public class DBServer
 		
 	}
 	
+	/**
+	 * method to start the server
+	 */
 	public void start()
 	{
 		m_server.start();
 	}
 	
+	/**
+	 * method to stop the server
+	 */
 	public void stop()
 	{
 		m_server.stop();
 	}
 	
+	/**
+	 * method to shutdown the server
+	 */
 	public void shutdown()
 	{
 		m_server.shutdown();

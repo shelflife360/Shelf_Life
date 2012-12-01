@@ -6,15 +6,17 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-
-import javax.swing.JOptionPane;
-
 import w3se.Model.Configurations;
-import w3se.Model.IMS;
 import w3se.Model.Base.Book;
 import w3se.View.Subpanels.SearchPanel;
 
-
+/**
+ * 
+ * Class  : BookDB.java
+ * Author : Larry "Bucky" Kittinger
+ * Date   : Dec 1, 2012
+ * Desc   : Class to manage the books database
+ */
 public class BookDB implements Database<Book, ArrayList<Book>>
 {
 	private Statement m_statement = null;

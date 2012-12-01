@@ -2,24 +2,44 @@ package w3se.Model.Database;
 
 import java.io.File;
 import java.sql.SQLException;
-
-import javax.swing.JOptionPane;
-
 import w3se.Model.Configurations;
-import w3se.Model.IMS;
 import w3se.Model.Base.Book;
 import w3se.Model.Base.LogItem;
-import w3se.Model.Base.LogItemFactory;
 import w3se.Model.Base.User;
 
+/**
+ * 
+ * Class  : DatabaseAdaptor.java
+ * Author : Larry "Bucky" Kittinger
+ * Date   : Dec 1, 2012
+ * Desc   : Class to manage the databases of the system
+ */
 @SuppressWarnings("rawtypes")
 public class DatabaseAdaptor implements Database
 {
+	/**
+	 * DatabaseAdaptor State - Books Database
+	 */
 	public static final int BOOK_DB = 1;
+	/**
+	 * DatabaseAdaptor State - Online Books Database
+	 */
 	public static final int ONLINE_DB = 2;
+	/**
+	 * DatabaseAdaptor State - Users Database
+	 */
 	public static final int USERS_DB = 4;
+	/**
+	 * DatabaseAdaptor State - Logs Database
+	 */
 	public static final int LOGS_DB = 16;
+	/**
+	 * DatabaseAdaptor State - Server Mode
+	 */
 	public static final int SERVER = 0;
+	/**
+	 * DatabaseAdaptor State - Client Mode
+	 */
 	public static final int CLIENT = 1;
 	
 	private Object m_returnObj = null;
@@ -33,6 +53,11 @@ public class DatabaseAdaptor implements Database
 	private DBServer m_server = null;
 	private Configurations m_config;
 	
+	/**
+	 * constructor
+	 * @param serverState - SERVER or CLIENT mode
+	 * @param config - system configurations
+	 */
 	public DatabaseAdaptor(String serverState, Configurations config)
 	{
 		if (serverState.equals("SERVER"))
@@ -62,10 +87,19 @@ public class DatabaseAdaptor implements Database
 		m_config = config;
 	}
 	
+	/**
+	 * method to get the state of the database adaptor
+	 * @return - current state
+	 */
 	public static int getState()
 	{
 		return m_state;
 	}
+	
+	/**
+	 * method to set the state of the database adaptor
+	 * @param state - current state
+	 */
 	public void setState(int state)
 	{
 		m_state = state;
@@ -181,7 +215,10 @@ public class DatabaseAdaptor implements Database
 		
 	}
 	
-	
+	/**
+	 * method to get the database's configuration
+	 * @return - array of strings
+	 */
 	public String[] getDatabaseConfig()
 	{
 		String[] config = new String[5];

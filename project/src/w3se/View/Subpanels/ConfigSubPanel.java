@@ -1,25 +1,24 @@
 package w3se.View.Subpanels;
 
 import javax.swing.JPanel;
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
-import javax.swing.JButton;
 import javax.swing.JToggleButton;
-
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.border.EtchedBorder;
-
 import w3se.Controller.Controller;
-import w3se.Model.Configurations;
 import w3se.Model.IMS;
 import w3se.View.ShelfLifeIcon;
 import w3se.View.Panels.ConfigManagePanel;
 import javax.swing.JLabel;
 
+/**
+ * 
+ * Class  : ConfigSubPanel.java
+ * Author : Larry "Bucky" Kittinger
+ * Date   : Dec 1, 2012
+ * Desc   : Panel to manage other config views
+ */
 @SuppressWarnings("serial")
 public class ConfigSubPanel extends JPanel
 {
@@ -174,11 +173,17 @@ public class ConfigSubPanel extends JPanel
 		
 	}
 	
+	/**
+	 * method to update the color of the panel
+	 */
 	public void updateColor()
 	{
 		setBackground(IMS.getInstance().getTheme().getMainColor());
 	}
 	
+	/**
+	 * method to update the buttons of the panel
+	 */
 	public void updateButtons()
 	{
 		boolean b = Boolean.parseBoolean(IMS.getInstance().getConfigurations().getValue("MultiUser"));
@@ -187,6 +192,11 @@ public class ConfigSubPanel extends JPanel
 		buttons[3].setEnabled(b);
 	}
 	
+	/**
+	 * method to toggle a selected button
+	 * @param buttons
+	 * @param unchangedIndex
+	 */
 	private void toggleButtons(JToggleButton[] buttons, int unchangedIndex)
 	{
 		for (int i = 0; i < buttons.length; i++)

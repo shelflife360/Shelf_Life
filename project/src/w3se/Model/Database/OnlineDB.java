@@ -19,25 +19,36 @@ import org.xml.sax.InputSource;
 
 import w3se.Model.Base.Book;
 
+/**
+ * 
+ * Class  : OnlineDB.java
+ * Author : Larry "Bucky" Kittinger
+ * Date   : Dec 1, 2012
+ * Desc   : Class to manage access to isbn.com
+ */
 @SuppressWarnings("rawtypes")
 public class OnlineDB implements Database
 {
 	private HttpURLConnection connection = null;
 	private BufferedReader buffReader = null;
-	StringBuilder strBuilder = null;
-	String line = null;
-	String userIsbn = null;
-	Scanner scanner = new Scanner(System.in);
-	URL serverAddress = null;
+	private StringBuilder strBuilder = null;
+	private String line = null;
+	private String userIsbn = null;
+	private Scanner scanner = new Scanner(System.in);
+	private URL serverAddress = null;
+	
+	/**
+	 * default constructor
+	 */
 	public OnlineDB()
 	{
 		
 	}
 	
 	/**
-	 * 
-	 * @param isbn
-	 * @return
+	 * method to create a full formed url with API key and search term inserted
+	 * @param isbn - search term
+	 * @return - full formed url
 	 */
 	private String createFullformedURL(String isbn)
 	{
@@ -49,9 +60,9 @@ public class OnlineDB implements Database
 	}
 	
 	/**
-	 * 
-	 * @param response
-	 * @return
+	 * method to parse the XML response from isbndb
+	 * @param response - XML response
+	 * @return - ArrayList of books
 	 */
 	private ArrayList<Book> parseResponse(String response)
 	{
@@ -100,7 +111,7 @@ public class OnlineDB implements Database
 	}
 	
 	/**
-	 * 
+	 * method to get the attribute of an XML element
 	 * @param attribute
 	 * @param element
 	 * @return
@@ -111,7 +122,7 @@ public class OnlineDB implements Database
 	}
 	
 	/**
-	 * 
+	 * method to get the tag value from a tag
 	 * @param tag
 	 * @param element
 	 * @return
@@ -126,6 +137,7 @@ public class OnlineDB implements Database
 		else
 			return "";
 	}
+	
 	
 	public void retrieve(Object term) throws Exception
 	{

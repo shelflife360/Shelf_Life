@@ -1,7 +1,6 @@
 package w3se.Controller;
 
 import java.awt.event.WindowEvent;
-import java.util.Date;
 import javax.swing.event.ChangeEvent;
 import w3se.Model.IMS;
 import w3se.Model.Task;
@@ -10,19 +9,35 @@ import w3se.Model.Base.LogItemFactory;
 import w3se.Model.Base.User;
 import w3se.View.MainView;
 
+/**
+ * 
+ * Class  : MainViewController.java
+ * Author : Larry "Bucky" Kittinger
+ * Date   : Dec 1, 2012
+ * Desc   : Class to define the listeners for the main view
+ */
 public class MainViewController extends AbstractController
 {
+	public static final String WINDOW_CLOSE = "exit_system";
+	public static final String TAB_CHANGED = "tab_changed";
+	
 	private IMS m_model = null;
 	private MainView m_view = null;
 	
+	/**
+	 * constructor
+	 * @param model - main model of the system (IMS)
+	 */
 	public MainViewController(IMS model)
 	{
 		m_model = model;
 		propagateMap();
 	}
 	
+	// fill the map with listener-key pairs
 	protected void propagateMap()
 	{
+		// listener to watch for the system to close
 		addListener("exit_system", new 
 				ListenerAdaptor()
 				{

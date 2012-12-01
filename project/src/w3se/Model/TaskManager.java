@@ -6,11 +6,20 @@ import java.util.Queue;
 
 import w3se.Model.Base.User;
 
-
+/**
+ * 
+ * Class  : TaskManager.java
+ * Author : Larry "Bucky" Kittinger
+ * Date   : Dec 1, 2012
+ * Desc   : Class to execute and manage tasks
+ */
 public class TaskManager extends Observable
 {
 	private Queue<Task> m_taskQueue = new PriorityQueue<Task>();
 	
+	/**
+	 * default constructor
+	 */
 	public TaskManager()
 	{
 	}

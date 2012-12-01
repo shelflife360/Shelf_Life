@@ -12,11 +12,20 @@ import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
+
+import w3se.Controller.BookSearchController;
 import w3se.Controller.Controller;
 import w3se.Model.IMS;
 
 import javax.swing.JButton;
 
+/**
+ * 
+ * Class  : BookInfoPanel.java
+ * Author : Larry "Bucky" Kittinger
+ * Date   : Dec 1, 2012
+ * Desc   : Panel for displaying book information
+ */
 @SuppressWarnings("serial")
 public class BookInfoPanel extends JPanel
 {
@@ -102,9 +111,9 @@ public class BookInfoPanel extends JPanel
 		
 		JButton btnRemove = new JButton("Remove");
 		
-		btnClear.addActionListener(m_controller.getListener("info_clear"));
-		btnAccept.addActionListener(m_controller.getListener("info_accept"));
-		btnRemove.addActionListener(m_controller.getListener("remove_book"));
+		btnClear.addActionListener(m_controller.getListener(BookSearchController.CLEAR_BOOK_INFO));
+		btnAccept.addActionListener(m_controller.getListener(BookSearchController.ACCEPT_BOOK_INFO));
+		btnRemove.addActionListener(m_controller.getListener(BookSearchController.REMOVE_BOOK));
 		
 		GroupLayout gl_infoPanel = new GroupLayout(this);
 		gl_infoPanel.setHorizontalGroup(
@@ -224,86 +233,153 @@ public class BookInfoPanel extends JPanel
 		}
 	}
 
+	/** 
+	 * method to update the color of the panel
+	 */
 	public void updateColor()
 	{
 		setBackground(IMS.getInstance().getTheme().getSecondaryColor());
 	}
 	
+	/**
+	 * method to get the title of the book 
+	 * @return
+	 */
 	public String getTitle()
 	{
 		return m_titleField.getText();
 	}
 
+	/**
+	 * method to set the title of the book
+	 * @param str
+	 */
 	public void setTitle(String str)
 	{
 		m_titleField.setText(str);
 	}
 
+	/**
+	 * method to get the isbn
+	 * @return
+	 */
 	public String getISBN()
 	{
 		return m_ISBNField.getText();
 	}
 
+	/**
+	 * method to set the isbn
+	 * @param str
+	 */
 	public void setISBN(String str)
 	{
 		m_ISBNField.setText(str);
 	}
 
+	/**
+	 * method to get the price of the book
+	 * @return
+	 */
 	public String getPrice()
 	{
 		return m_priceField.getText();
 	}
 
+	/**
+	 * method to set the price of the book
+	 * @param str
+	 */
 	public void setPrice(String str)
 	{
 		m_priceField.setText(str);
 	}
 
+	/**
+	 * method to get the author
+	 * @return
+	 */
 	public String getAuthor()
 	{
 		return m_authorField.getText();
 	}
 
+	/**
+	 * method to set the author
+	 * @param str
+	 */
 	public void setAuthor(String str)
 	{
 		m_authorField.setText(str);
 	}
 
+	/**
+	 * method to get the publisher
+	 * @return
+	 */
 	public String getPublisher()
 	{
 		return m_publisherField.getText();
 	}
 
+	/**
+	 * method to set the publisher
+	 * @param str
+	 */
 	public void setPublisher(String str)
 	{
 		m_publisherField.setText(str);
 	}
 
+	/**
+	 * method to get the description of the book
+	 * @return
+	 */
 	public String getDesc()
 	{
 		return m_descTextPane.getText();
 	}
 
+	/**
+	 * method to set the description of the book
+	 * @param str
+	 */
 	public void setDesc(String str)
 	{
 		m_descTextPane.setText(str);
 	}
 
+	/**
+	 * method to get the genres of the book
+	 * @return
+	 */
 	public String getGenreList()
 	{
 		return m_genreList.getText();
 	}
 
+	/**
+	 * method to set the genres of the book
+	 * @param genreList
+	 */
 	public void setGenreList(String genreList)
 	{
 		m_genreList.setText(genreList);
 	}
 	
+	/**
+	 * method to get the quantity of the book
+	 * @return
+	 */
 	public int getQuantity()
 	{
 		return (Integer)m_quantity.getValue();
 	}
 	
+	/**
+	 * method to set the quantity of the book
+	 * @param value
+	 */
 	public void setQuantity(int value)
 	{
 		m_quantity.setValue(value);

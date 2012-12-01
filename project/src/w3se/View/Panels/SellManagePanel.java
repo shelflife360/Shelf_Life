@@ -12,12 +12,20 @@ import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 
+/**
+ * 
+ * Class  : SellManagePanel.java
+ * Author : Larry "Bucky" Kittinger
+ * Date   : Dec 1, 2012
+ * Desc   : Panel for managing the sell of books
+ */
 @SuppressWarnings("serial")
 public class SellManagePanel extends JPanel implements Observer
 {
 	private Controller m_controller;
 	private SearchPanel m_mainPanel;
 	private ReceiptInfoPanel m_infoPanel;
+	
 	/**
 	 * Create the panel.
 	 */
@@ -60,12 +68,18 @@ public class SellManagePanel extends JPanel implements Observer
 		return m_mainPanel.getSearchText();
 	}
 
-	
+	/**
+	 * method to clear the receipt
+	 */
 	public void clearReceipt()
 	{
 		m_infoPanel.clearReceipt();
 	}
 	
+	/**
+	 * method to toggle the sell button 
+	 * @param isEnabled
+	 */
 	public void toggleSellButton(boolean isEnabled)
 	{
 		m_infoPanel.toggleSellButton(isEnabled);

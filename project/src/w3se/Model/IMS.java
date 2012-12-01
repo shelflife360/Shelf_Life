@@ -2,31 +2,14 @@ package w3se.Model;
 
 
 import java.awt.Color;
-import java.io.BufferedInputStream;
-import java.io.BufferedWriter;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.StringReader;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Formatter;
 import java.util.Observable;
 import java.util.Observer;
 import javax.swing.JOptionPane;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
-
 import w3se.Model.Base.Book;
 import w3se.Model.Base.BookGenres;
 import w3se.Model.Base.LogItem;
@@ -43,6 +26,13 @@ import w3se.Model.Database.LogsDB;
 import w3se.Model.Database.UsersDB;
 import w3se.View.SplashScreen;
 
+/**
+ * 
+ * Class  : IMS.java
+ * Author : Larry "Bucky" Kittinger
+ * Date   : Dec 1, 2012
+ * Desc   : Class to serve as the main model, the Inventory Management System
+ */
 public class IMS extends Observable implements Observer
 {
 	private static IMS m_instance = null;
@@ -66,52 +56,117 @@ public class IMS extends Observable implements Observer
 	private Receipt m_receipt;
 	private Package m_resources;
 	
+	/**
+	 * source location of the resource file
+	 */
 	public final String RESOURCES_S = "resources.slr";
+	
+	/**
+	 * destination location for the unpacked resource file
+	 */
 	public final String RESOURCES_D = "tmp";
+	
+	/**
+	 * configuration file's filename
+	 */
 	public final String CONFIG_F = "config";
+	
+	/**
+	 * ShelfLife's icon image filename
+	 */
 	public String SL_ICON;
+	
+	/**
+	 * ShelfLife's logo image filename
+	 */
 	public String SL_LOGO;
+	
+	/**
+	 * We Three Software Engineers logo image filename
+	 */
 	public String W3SE_LOGO;
 	
 	
 	/**
 	 * constructor
+	 * @exclude 
+	 * @param fixPackage - debugging purposed whether to fix the package
+	 * @param fixType - debugging fix type (0 - unpack, 1 - pack)
 	 */
-	private IMS()
+	private IMS(boolean fixPackage, int fixType)
 	{
+		// debugging purposes only
+		if (fixPackage)
+		{
+			fixResource(fixType);
+			System.exit(0);
+		}
+		
 		init();
 		SL_ICON = m_config.getValue("Icon");
 		SL_LOGO = m_config.getValue("Logo");
 		W3SE_LOGO = m_config.getValue("W3SE");
 	}
 	
+	/**
+	 * constructor
+	 */
+	private IMS()
+	{
+		// initialize the system
+		init();
+		// set global variables for image locations
+		SL_ICON = m_config.getValue("Icon");
+		SL_LOGO = m_config.getValue("Logo");
+		W3SE_LOGO = m_config.getValue("W3SE");
+	}
+	
+	/**
+	 * method to set the resource package key
+	 */
 	private void setResourcePKGKey()
 	{
+		// create a container string
 		String hash = null;
+		
+		// get a half hearted attempt at not hardcoding a key key
 		String key = getClass().getCanonicalName()+getClass().getModifiers();
+		// try to create the hash
 		try
 		{
+			// create a new hash with SHA-256
 			MessageDigest md = MessageDigest.getInstance("SHA-256");
 			md.update(key.getBytes());
 			
+			// get the hash
 			byte hashData[] = md.digest();
 			
+			// create a new formatter to format the hash
 			Formatter formatter = new Formatter();
 			
+			// format the hash
 			for (int i = 0; i < hashData.length; i++)
 			{
 				formatter.format("%02x", hashData[i]);
 			}
 			
+			// set the hash value in the container string
 			hash = formatter.toString();
-		} catch (NoSuchAlgorithmException e)
+		} 
+		catch (NoSuchAlgorithmException e)
 		{
 			System.out.println("Password hashing failed");
 		}	
 		
+		// set the key for the resources
 		m_resources.setKey(hash);
 	}
 	
+	/**
+	 * method to fix the package file (debug purposes)
+	 * @exclude 
+	 * @param type
+	 */
 	public void fixResource(int type)
 	{
 		// unpack the resources first and foremost 
@@ -125,6 +180,9 @@ public class IMS extends Observable implements Observer
 			m_resources.pack();
 	}
 	
+	/**
+	 * method to initialize the system and setup the environment
+	 */
 	public void init()
 	{
 		// unpack the resources first and foremost 
@@ -132,44 +190,69 @@ public class IMS extends Observable implements Observer
 		setResourcePKGKey();
 		m_resources.unpack();
 
-
+		// get the system configurations 
 		m_config = Configurations.getConfigFromFile(RESOURCES_D+File.separator+CONFIG_F);
+		
+		// create a new splash screen
 		SplashScreen splash = new SplashScreen(RESOURCES_D+File.separator+m_config.getValue("W3SELogo"));
 		splash.run();
+		
+		// set the configurations to IMS
 		m_showDialogs = Boolean.parseBoolean(m_config.getValue("ErrorDialog"));
 		m_showNotifySMode = Boolean.parseBoolean(m_config.getValue("NotifyOfSMode"));
 
 		if (m_showNotifySMode)
 			JOptionPane.showMessageDialog(null, "Running in "+ m_config.getValue("ServerMode")+ " mode.", "Mode of Operation", JOptionPane.INFORMATION_MESSAGE);
 
+		// get the theme from the configurations
 		m_theme = new Theme(new Color(Integer.parseInt(m_config.getValue("MainColor"))), new Color(Integer.parseInt(m_config.getValue("SecColor"))));
 		
+		// create a new receipt object and set it's values
 		m_receipt = new Receipt();
 		m_receipt.setStoreName(m_config.getValue("BusinessName"));
 		m_receipt.setStorePhoneNumber(m_config.getValue("BusinessPhoneNumber"));
 		m_receipt.setMessageToRecipient(m_config.getValue("BusinessMessage"));
 		m_receipt.setSlogan(m_config.getValue("BusinessSlogan"));
 
+		// get the genre list from a file
 		m_genres.mergeFromFile(RESOURCES_D+File.separator+m_config.getValue("GenreList"));
+		
+		// register this to the TaskManager
 		m_scheduler.addObserver(this);
+		// create a new database adaptor to work with
 		m_dbAdaptor = new DatabaseAdaptor(m_config.getValue("ServerMode"), m_config);
 	}
 	
 	/**
 	 * gotta love singletons (GLOBAL CHAOS!)
-	 * @return
+	 * @return - IMS instance
 	 */
 	public static IMS getInstance()
 	{
 		if (m_instance == null)	
-			m_instance = new IMS();
+			m_instance = new IMS(false, 0);
+		
+		return m_instance;
+	}
+	
+	/**
+	 * singleton which will terminate after the package is unpacked or packed
+	 * @param fixPackage - if you want to fix the resource file
+	 * @param fixType - what type of fix is it ('0' - Unpack, '1' - Pack);
+	 * @exclude
+	 * @return
+	 */
+	public static IMS getInstance(boolean fixPackage, int fixType)
+	{
+		if (m_instance == null)
+			m_instance = new IMS(fixPackage, fixType);
 		
 		return m_instance;
 	}
 	
 	/**
 	 * method to set the current user of the system
-	 * @param user
+	 * @param user - active user
 	 */
 	public void setUser(User user)
 	{
@@ -178,15 +261,17 @@ public class IMS extends Observable implements Observer
 	
 	
 	/**
-	 * method to login
-	 * @throws Exception
+	 * method to login to the system
+	 * @throws Exception - if the login fails
 	 */
 	@SuppressWarnings("unchecked")
 	public void login() throws Exception
 	{
+		// set the state of the database adaptor
 		m_dbAdaptor.setState(DatabaseAdaptor.USERS_DB);
 		try
 		{
+			// retrieve the active user from the users database
 			m_dbAdaptor.retrieve(new String[] {UsersDB.USERNAME, m_currentUser.getUsername()});
 		}
 		catch (Exception e)
@@ -195,25 +280,34 @@ public class IMS extends Observable implements Observer
 			throw new Exception("Login Failed: Username or password incorrect");
 		}
 		
+		// if the retrieval worked get the results from the database adaptor
 		ArrayList<User> userList = (ArrayList<User>)m_dbAdaptor.getResult();
 		
+		// if the user list has users
 		if (userList.size() > 0)
 		{
+			// get the first from the first
 			User user = userList.get(0);
+			
+			// if the active user's username and password match the one in the database
 			if (m_currentUser.getUsername().equals(user.getUsername()) && m_currentUser.getPassword().equals(user.getPassword()))
 			{
+				// change the state to logged in
 				m_state = States.LOGGED_IN;
+				// set the active user
 				m_currentUser = user;
 			}
+			// if authentication failed
 			else
 			{
+				// change the state to logged out
 				m_state = States.LOGGED_OUT;
+				// add an error log entry
 				addLog(LogItemFactory.createLogItem(LogItem.LOGIN, "Login failure."));
 				throw new Exception("Login Failed: Username or password incorrect");
-				
-				
 			}
 		}
+		// if the user list had no objects
 		else
 			throw new Exception("Username or password incorrect");
 	}
@@ -223,18 +317,21 @@ public class IMS extends Observable implements Observer
 	 */
 	public void logout()
 	{
+		// simply change the state to logged out
 		m_state = States.LOGGED_OUT;
 	}
 	
 	/**
 	 * method to add a user to the system
 	 * @param user
-	 * @return
+	 * @return - boolean success or failure
 	 */
 	public boolean createUser(User user)
 	{
+		// set the database adaptor state to users db
 		m_dbAdaptor.setState(DatabaseAdaptor.USERS_DB);
 		
+		// try to add it to the database
 		try
 		{
 			m_dbAdaptor.add(user);
@@ -249,8 +346,8 @@ public class IMS extends Observable implements Observer
 	}
 	
 	/**
-	 * @throws Exception 
-	 * 
+	 * method to call when the system is going to shutdown
+	 * @throws Exception - if any errors occur during clean up
 	 */
 	public void shutdownSystem() throws Exception
 	{
@@ -265,8 +362,8 @@ public class IMS extends Observable implements Observer
 	}
 	
 	/**
-	 * 
-	 * @return
+	 * method to get the current state of the system
+	 * @return - LOGGED_IN, or LOGGED_OUT
 	 */
 	public States getLoginState()
 	{
@@ -274,8 +371,8 @@ public class IMS extends Observable implements Observer
 	}
 	
 	/**
-	 * method to get a stripped copy of the user
-	 * @return
+	 * method to get the active user of the system
+	 * @return - active user
 	 */
 	public User getCurrentUser()
 	{
@@ -292,9 +389,12 @@ public class IMS extends Observable implements Observer
 	@SuppressWarnings("unchecked")
 	public ArrayList<User> retreiveUser(String[] term)
 	{
+		// set the state of the database adaptor to users db
 		m_dbAdaptor.setState(DatabaseAdaptor.USERS_DB);
+		// container list for retrieved users
 		ArrayList<User> user = new ArrayList<User>();
 		
+		// try to find user/s
 		try
 		{
 			m_dbAdaptor.retrieve(term);
@@ -309,8 +409,8 @@ public class IMS extends Observable implements Observer
 	}
 	
 	/**
-	 * add a view to the system
-	 * @param obs
+	 * method to register a view to this
+	 * @param obs - Observer
 	 */
 	public void addView(Observer obs)
 	{
@@ -328,23 +428,27 @@ public class IMS extends Observable implements Observer
 	}
 	
 	/**
-	 * 
+	 * method to update
 	 */
 	@Override
 	public void update(Observable sender, Object obj)
 	{
+		// if the task manager fired the event
 		if (obj != null && obj.equals("task_added"))
 		{
+			// try to run the task
 			try
 			{
 				m_scheduler.runTask();
 			}
 			catch (Exception e)
 			{
+				// if the task failed 
 				if (m_showDialogs)
 					JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
 				addLog(LogItemFactory.createLogItem(LogItem.SYSTEM, "Privilege Authenication Failure."));
 			}
+			// flag as changed then fire to all observers
 			setChanged();
 			notifyObservers();
 		}
@@ -358,22 +462,29 @@ public class IMS extends Observable implements Observer
 	@SuppressWarnings("unchecked")
 	public void findBook(final String[] searchTerm)
 	{
+		// set the database adaptor to the books database
 		m_dbAdaptor.setState(DatabaseAdaptor.BOOK_DB);
+		// try to find the book/s
 		try
 		{
 			m_dbAdaptor.retrieve(searchTerm);
 			m_foundBookList = (ArrayList<Book>)m_dbAdaptor.getResult();
 			
+			// if the first search term is ONLINE and the no books were found then allow online lookup
 			if (searchTerm[0] == BookDB.ONLINE && m_foundBookList.size() <= 0)
 			{
+				// if the active user has high enough privilege
 				if (m_currentUser.getPrivilege() > User.GENERAL)
 				{
+					// create a new task
 					m_scheduler.addTask(new Task(User.WORKER, new 
 							Runnable()
 							{	
 								public void run()
 								{
+									// set the database adaptor to the online database
 									m_dbAdaptor.setState(DatabaseAdaptor.ONLINE_DB);
+									// try to find the book
 									try
 									{
 										m_dbAdaptor.retrieve(searchTerm[1]);
@@ -381,6 +492,7 @@ public class IMS extends Observable implements Observer
 										if (m_foundBookList.size() > 0)
 											m_currentBook = m_foundBookList.get(0);
 									} 
+									// if no book was found
 									catch (Exception e)
 									{
 										if (m_showDialogs)
@@ -393,6 +505,7 @@ public class IMS extends Observable implements Observer
 							}));
 				}
 			}
+			// if no book was found
 			if (m_foundBookList.size() <= 0)
 			{
 				if (m_showDialogs)
@@ -439,8 +552,13 @@ public class IMS extends Observable implements Observer
 		}
 	}
 	
+	/**
+	 * method to remove a book from the books db
+	 * @param book
+	 */
 	public void removeBookFromDB(Book book)
 	{
+		// try to remove the book
 		try
 		{
 			m_dbAdaptor.remove(book);
@@ -450,6 +568,7 @@ public class IMS extends Observable implements Observer
 				JOptionPane.showMessageDialog(null, "Book removal error", "Error", JOptionPane.ERROR_MESSAGE);
 		}
 	}
+	
 	/**
 	 * method to get the list of found books from the system (found books are the result of findBook(String[] searchTerm)
 	 * @return ArrayList<Book> - list of found books from the system
@@ -505,7 +624,7 @@ public class IMS extends Observable implements Observer
 	}
 	
 	/**
-	 * method to purge the sold list
+	 * method to set the list of sold books
 	 */
 	public void setListOfSoldBooks(ArrayList<Book> list)
 	{
@@ -552,10 +671,14 @@ public class IMS extends Observable implements Observer
 	 */
 	public void addCurrentBookToDB()
 	{
+		// try to add the book to the database
 		try
 		{
+			// get the genres from the current book
 			m_genres.mergeFromBook(m_currentBook);
+			// set state of the database adaptor to the books db
 			m_dbAdaptor.setState(DatabaseAdaptor.BOOK_DB);
+			// add the book
 			m_dbAdaptor.add(m_currentBook);
 		} catch (Exception e)
 		{
@@ -570,11 +693,19 @@ public class IMS extends Observable implements Observer
 		return m_prevViewedList;
 	}*/
 	
+	/**
+	 * method to set the Receipt object of the system
+	 * @param receipt
+	 */
 	public void setReceipt(Receipt receipt)
 	{
 		m_receipt = receipt;
 	}
 	
+	/**
+	 * method to get the Receipt object of the system
+	 * @return
+	 */
 	public Receipt getReceipt()
 	{
 		return m_receipt;
@@ -712,16 +843,28 @@ public class IMS extends Observable implements Observer
 		return m_showDialogs;
 	}
 	
+	/**
+	 * method to see if the system is to show server mode notification
+	 * @return
+	 */
 	public boolean showNotifyOfServerMode()
 	{
 		return m_showNotifySMode;
 	}
 	
+	/**
+	 * method to set the visibility of the error dialogs
+	 * @param isEnabled
+	 */
 	public void toggleDialog(boolean isEnabled)
 	{
 		m_showDialogs = isEnabled;
 	}
 	
+	/**
+	 * method to set the visibility of the server mode dialog
+	 * @param isEnabled
+	 */
 	public void toggleNotifySMode(boolean isEnabled)
 	{
 		m_showNotifySMode = isEnabled;
@@ -733,6 +876,7 @@ public class IMS extends Observable implements Observer
 	 */
 	public void addLog(LogItem logItem)
 	{
+		// set the state of the database adaptor to the logs db
 		m_dbAdaptor.setState(DatabaseAdaptor.LOGS_DB);
 		try
 		{
@@ -752,15 +896,18 @@ public class IMS extends Observable implements Observer
 	@SuppressWarnings("unchecked")
 	public ArrayList<LogItem> getLogs(String[] term)
 	{
+		// set the state of the database adaptor to logs db
 		m_dbAdaptor.setState(DatabaseAdaptor.LOGS_DB);
 		ArrayList<LogItem> items = new ArrayList<LogItem>();
 		
+		// if the easter egg was found
 		if (term[2].equals("ProAtCooking-Dave"))
 		{
 			ProAtCooking pac = new ProAtCooking();
 			pac.playSound(RESOURCES_D+File.separator+m_config.getValue("ProAtSecrets"));	
 		}
 		
+		// try to find the log/s
 		try
 		{
 			m_dbAdaptor.retrieve(term);
@@ -774,6 +921,9 @@ public class IMS extends Observable implements Observer
 		return items;
 	}
 	
+	/**
+	 * method to remove all the logs of the system
+	 */
 	public void removeLogs()
 	{
 		m_dbAdaptor.setState(DatabaseAdaptor.LOGS_DB);
@@ -788,6 +938,7 @@ public class IMS extends Observable implements Observer
 			e.printStackTrace();
 		}
 	}
+	
 	/**
 	 * set the exporter for the system
 	 * @param exporter
@@ -797,11 +948,19 @@ public class IMS extends Observable implements Observer
 		m_exporter = exporter;
 	}
 	
+	/**
+	 * method to set the theme of the system
+	 * @param theme
+	 */
 	public void setTheme(Theme theme)
 	{
 		m_theme = theme;
 	}
 	
+	/**
+	 * method to get the theme of the system
+	 * @return
+	 */
 	public Theme getTheme()
 	{
 		return m_theme;

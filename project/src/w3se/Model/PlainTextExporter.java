@@ -5,13 +5,27 @@ import java.io.File;
 import java.io.FileWriter;
 import java.util.ArrayList;
 
+/**
+ * 
+ * Class  : PlainTextExporter.java
+ * Author : Larry "Bucky" Kittinger
+ * Date   : Dec 1, 2012
+ * Desc   : Concrete implementation of Exporter utilizing plain text for format
+ */
 public class PlainTextExporter implements Exporter
 {
 		private String m_filename;
 		
+		/**
+		 * default constructor
+		 */
 		public PlainTextExporter()
 		{}
 		
+		/**
+		 * constructor
+		 * @param filename - filename to export to
+		 */
 		public PlainTextExporter(String filename)
 		{
 			m_filename = filename;

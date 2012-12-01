@@ -1,31 +1,38 @@
 package w3se.View.Subpanels;
 
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.JTextField;
 import javax.swing.GroupLayout.Alignment;
-import javax.swing.LayoutStyle.ComponentPlacement;
 
+import w3se.Controller.ConfigViewController;
 import w3se.Controller.Controller;
 import w3se.Model.IMS;
 import w3se.Model.Base.User;
-import w3se.Model.Database.UsersDB;
 
+/**
+ * 
+ * Class  : ExportPanel.java
+ * Author : Larry "Bucky" Kittinger
+ * Date   : Dec 1, 2012
+ * Desc   : Panel for exporting 
+ */
+@SuppressWarnings("serial")
 public class ExportPanel extends JPanel
 {
 
 	public static final int WIDTH = 450;
 	public static final int HEIGHT = 500;
+	/**
+	 * Export as Excel
+	 */
 	public static final int EXCEL_EXP = 0;
+	/**
+	 * Export as plain text
+	 */
 	public static final int TEXT_EXP = 1;
 	
 	private Controller m_controller;
@@ -50,11 +57,11 @@ public class ExportPanel extends JPanel
 		
 		JButton btnExportLogDatabase = new JButton("Export Log Database");
 		
-		btnExportBookDatabase.addActionListener(m_controller.getListener("books_export"));
+		btnExportBookDatabase.addActionListener(m_controller.getListener(ConfigViewController.EXPORT_BOOKS));
 		
-		btnExportUserDatabase.addActionListener(m_controller.getListener("users_export"));
+		btnExportUserDatabase.addActionListener(m_controller.getListener(ConfigViewController.EXPORT_USERS));
 		
-		btnExportLogDatabase.addActionListener(m_controller.getListener("logs_export"));
+		btnExportLogDatabase.addActionListener(m_controller.getListener(ConfigViewController.EXPORT_LOGS));
 		
 		m_exportType = new JComboBox(new String[] {"Excel Exporter", "Plain Text Exporter"});
 		
@@ -101,11 +108,18 @@ public class ExportPanel extends JPanel
 
 	}
 	
+	/**
+	 * method to update the color of the panel
+	 */
 	public void updateColor()
 	{
 		setBackground(IMS.getInstance().getTheme().getSecondaryColor());
 	}
 	
+	/**
+	 * method to get the selected exporter
+	 * @return
+	 */
 	public int getExporterSelection()
 	{
 		return m_exportType.getSelectedIndex();

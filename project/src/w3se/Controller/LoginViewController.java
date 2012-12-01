@@ -1,10 +1,7 @@
 package w3se.Controller;
 
 import java.awt.event.ActionEvent;
-import java.util.Date;
-
 import javax.swing.JOptionPane;
-
 import w3se.Model.IMS;
 import w3se.Model.Task;
 import w3se.Model.Base.LogItem;
@@ -12,11 +9,24 @@ import w3se.Model.Base.LogItemFactory;
 import w3se.Model.Base.User;
 import w3se.View.Panels.LoginPanel;
 
+/**
+ * 
+ * Class  : LoginViewController.java
+ * Author : Larry "Bucky" Kittinger
+ * Date   : Dec 1, 2012
+ * Desc   : Class to define listeners for the login view
+ */
 public class LoginViewController extends AbstractController
 {
+	public static final String LOGIN = "login";
+	public static final String LOGOUT = "logout";
 	private IMS m_model = null;
 	private LoginPanel m_view = null;
 	
+	/**
+	 * constructor
+	 * @param model - main model of the system (IMS)
+	 */
 	public LoginViewController(IMS model)
 	{
 		m_model = model;
@@ -26,7 +36,7 @@ public class LoginViewController extends AbstractController
 	protected void propagateMap()
 	{
 		// add the call back for the login button event
-		addListener("login", new 
+		addListener(LOGIN, new 
 				ListenerAdaptor()
 				{
 					public void actionPerformed(ActionEvent e)
@@ -53,7 +63,7 @@ public class LoginViewController extends AbstractController
 				});
 		
 		// create and add a listener for the logout button event
-		addListener("logout", new
+		addListener(LOGOUT, new
 				ListenerAdaptor()
 				{
 					public void actionPerformed(ActionEvent e)

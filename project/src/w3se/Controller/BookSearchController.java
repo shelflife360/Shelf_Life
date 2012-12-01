@@ -3,13 +3,9 @@ package w3se.Controller;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
-import java.util.Date;
-
-import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.event.ChangeEvent;
-
 import w3se.Model.IMS;
 import w3se.Model.Task;
 import w3se.Model.Base.Book;
@@ -19,20 +15,42 @@ import w3se.Model.Base.User;
 import w3se.Model.Database.BookDB;
 import w3se.View.Panels.BookSearchPanel;
 
+/**
+ * 
+ * Class  : BookSearchController.java
+ * Author : Larry "Bucky" Kittinger
+ * Date   : Nov 26, 2012
+ * Desc   : Class to create controllers for the BookSearch View
+ */
 public class BookSearchController extends AbstractController
 {
+	public static final String SEARCH_BY_TERM = "search_by_term";
+	public static final String CLEAR_RESULTS = "clear_results";
+	public static final String CLEAR_BOOK_INFO = "clear_book_info";
+	public static final String ACCEPT_BOOK_INFO = "accept_book_info";
+	public static final String RESULTS_LIST_CLICK = "results_list_click";
+	public static final String TAB_CHANGED = "tab_changed";
+	public static final String SEARCH_BY_BROWSE = "search_by_browse";
+	public static final String REMOVE_BOOK = "remove_book";
+	
 	private IMS m_model = null;
 	private BookSearchPanel m_view = null;
 	
+	/**
+	 * constructor
+	 * @param model - main model of the system (IMS)
+	 */
 	public BookSearchController(IMS model)
 	{
 		m_model = model;
 		propagateMap();
 	}
 	
+	// fill the hash map listener-key pairs
 	protected void propagateMap()
 	{
-		addListener("search_term", new
+		// listener for keyword search
+		addListener(SEARCH_BY_TERM, new
 				ListenerAdaptor()
 				{
 					public void actionPerformed(ActionEvent e)
@@ -61,7 +79,8 @@ public class BookSearchController extends AbstractController
 					}
 				});
 		
-		addListener("results_clear", new
+		// listener for clearing the results list
+		addListener(CLEAR_RESULTS, new
 				ListenerAdaptor()
 				{
 					public void actionPerformed(ActionEvent e)
@@ -78,7 +97,8 @@ public class BookSearchController extends AbstractController
 					}
 				});
 		
-		addListener("info_clear", new
+		// listener for clearing the book info panel
+		addListener(CLEAR_BOOK_INFO, new
 				ListenerAdaptor()
 				{
 					public void actionPerformed(ActionEvent e)
@@ -94,7 +114,8 @@ public class BookSearchController extends AbstractController
 					}
 				});
 		
-		addListener("info_accept", new
+		// listener for accepting the changes to a book object
+		addListener(ACCEPT_BOOK_INFO, new
 				ListenerAdaptor()
 				{
 					public void actionPerformed(ActionEvent e)
@@ -114,7 +135,8 @@ public class BookSearchController extends AbstractController
 					}
 				});
 		
-		addListener("results_list", new
+		// listener for clicking on a results list item
+		addListener(RESULTS_LIST_CLICK, new
 				ListenerAdaptor()
 				{
 					public void mouseClicked(MouseEvent e)
@@ -134,7 +156,8 @@ public class BookSearchController extends AbstractController
 					}
 				});
 		
-		addListener("tab_changed", new
+		// listener to tell when the tab has changed
+		addListener(TAB_CHANGED, new
 				ListenerAdaptor()
 				{
 					public void stateChanged(ChangeEvent e)
@@ -149,7 +172,8 @@ public class BookSearchController extends AbstractController
 					}
 				});
 		
-		addListener("browse_search", new
+		// listener for browse search
+		addListener(SEARCH_BY_BROWSE, new
 				ListenerAdaptor()
 				{
 					public void actionPerformed(ActionEvent e)
@@ -169,7 +193,8 @@ public class BookSearchController extends AbstractController
 					}
 				});
 		
-		addListener("remove_book", new
+		// listener for removing a book
+		addListener(REMOVE_BOOK, new
 				ListenerAdaptor()
 				{
 					public void actionPerformed(ActionEvent e)
